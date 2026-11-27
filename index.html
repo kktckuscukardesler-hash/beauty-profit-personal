@@ -229,6 +229,22 @@ button.bp-signup-category{cursor:pointer}
 .bp-service-row{border:0;border-radius:0;border-bottom:1px solid #ffffff33;background:transparent}
 .bp-service-summary{display:block;font-weight:400;color:#ead4df}
 </style>
+<style>
+.bp-card-editor{gap:14px;color:#fff8fb}
+.bp-card-editor h2{font-size:18px;margin:0}
+.bp-card-editor label{display:grid;gap:5px;min-width:0}
+.bp-card-editor .bp-check{display:flex;align-items:center;gap:10px}
+.bp-card-editor .bp-check input{width:20px;min-height:20px;accent-color:#b65380}
+.bp-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bp-card-editor :is(input:not([type=checkbox]),select,textarea){background:white!important;color:#30272d!important;-webkit-text-fill-color:#30272d!important;padding:10px;width:100%;min-height:44px;border-radius:10px;font:inherit}
+.bp-card-editor details{padding:14px;background:#ffffff18;border-radius:12px}
+.bp-card-editor details label{margin-top:12px}
+.bp-card-editor img{display:block;max-width:160px;margin:8px 0}
+.bp-time-sheet{position:fixed;inset:auto 0 0;margin:0 auto;width:min(100%,460px);padding:20px 20px max(24px,env(safe-area-inset-bottom));border:0;border-radius:18px 18px 0 0;color:white;background:#412e3c}
+.bp-time-sheet::backdrop{background:#0008}
+.bp-time-actions{display:flex;justify-content:space-between;margin-bottom:18px}
+.bp-time-actions button{font:inherit;border:0;color:#ffd5e6;background:none;padding:10px}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -285,7 +301,21 @@ button.bp-signup-category{cursor:pointer}
       </header>
       <Transition name="bp-slide-next" mode="out-in">
         <div :key="signupStep" class="bp-signup-content">
-          <form v-if="signupStep===1" class="bp-signup-form" @submit.prevent="signupNext">
+          <form v-if="serviceEdit" class="bp-signup-form bp-card-editor" @submit.prevent="finishCard(true)">
+<h1>{{ serviceEdit.selected ? 'Настройки услуги' : 'Новая услуга' }}</h1>
+<p>{{ serviceEdit.category }}</p><h2>{{ serviceEdit.name }}</h2>
+<button type="button" class="bp-signup-category" @click="showTime">Продолжительность <span>{{ card.minutes ? durationText(card.minutes) : 'Нет' }} ›</span></button>
+<dialog ref="timeSheet" class="bp-time-sheet" aria-label="Продолжительность"><div class="bp-time-actions"><button type="button" @click="$refs.timeSheet.close()">Отмена</button><button type="button" @click="card.minutes = hours*60 + mins; $refs.timeSheet.close()">Готово</button></div>
+<div class="bp-pair"><label>Часы<select v-model.number="hours"><option v-for="h in 24" :value="h-1">{{h-1}}</option></select></label><label>Минуты<select v-model.number="mins"><option v-for="m in 60" :value="m-1">{{m-1}}</option></select></label></div></dialog>
+<div class="bp-pair"><label>Цена<input v-model.trim="card.price" inputmode="decimal" pattern="[0-9]+([.,][0-9]{1,2})?" required placeholder="0,00"></label><label>Валюта<select v-model="card.currency"><option v-for="code in currencies">{{code}}</option></select></label></div>
+<label class="bp-check"><input type="checkbox" v-model="card.from">Цена от</label>
+<details><summary>Добавить скидку</summary><label>Скидка, %<input type="number" inputmode="decimal" min="0" max="100" step="0.01" v-model="card.discount"></label></details>
+<h2>Настройки услуги</h2><label class="bp-check"><input type="checkbox" v-model="card.online">Доступна для онлайн-записи</label>
+<details><summary>Фото и описание услуги</summary><label>Описание<textarea rows="3" v-model="card.description"></textarea></label><label>Фото<input type="file" accept="image/*" @change="cardPhoto"></label><img v-if="card.photo" :src="card.photo" alt="Фото услуги"><button v-if="card.photo" type="button" @click="card.photo=''">Убрать фото</button></details>
+<p v-if="cardError" role="alert">{{cardError}}</p>
+<button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
+<button v-if="serviceEdit.selected" type="button" class="bp-signup-category" @click="finishCard(false)">Убрать из выбранных</button></form>
+          <form v-else-if="signupStep===1" class="bp-signup-form" @submit.prevent="signupNext">
             <h1>Как вас зовут?</h1>
             <label class="bp-signup-visually-hidden" for="bp-signup-name">Ваше имя</label>
             <input id="bp-signup-name" v-model.trim="signupName" autocomplete="given-name" enterkeyhint="next" placeholder="Ваше имя" maxlength="80">
@@ -306,7 +336,7 @@ button.bp-signup-category{cursor:pointer}
             <div class="bp-service-tabs" role="group" aria-label="Специализации">
               <button v-for="category in signupSelected" :key="category" type="button" :aria-pressed="category === serviceCategory" @click="openServiceCategory(category)">{{ category }}</button>
             </div>
-            <button v-for="service in servicesFor(serviceCategory)" :key="service.name" type="button" class="bp-signup-category bp-service-row" :class="{selected: service.selected}" :aria-pressed="service.selected" @click="service.selected = !service.selected">
+            <button v-for="service in servicesFor(serviceCategory)" :key="service.name" type="button" class="bp-signup-category bp-service-row" :class="{selected: service.selected}" :aria-pressed="service.selected" @click="editCard(service)">
               <span>{{ service.name }}</span><span class="bp-signup-symbol" aria-hidden="true">{{ service.selected ? '✓' : '+' }}</span>
             </button>
             <button type="button" class="bp-signup-category bp-service-row" @click="addingService = !addingService">Добавить свою услугу <span class="bp-signup-symbol" aria-hidden="true">+</span></button>
@@ -320,7 +350,7 @@ button.bp-signup-category{cursor:pointer}
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
             <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
-            <div class="bp-signup-list"><div v-for="category in signupSelected" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
+            <div class="bp-signup-list"><div v-for="category in signupSelected" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name + (s.details ? ' · ' + [durationText(s.details.minutes), (s.details.from ? 'от ' : '') + s.details.price + ' ' + s.details.currency].filter(Boolean).join(' · ') : '')).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
             <p class="bp-signup-note">Демонстрация регистрации: следующие шаги пока не настроены. Аккаунт ещё не создан.</p>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupBack">Изменить выбор</button></div>
           </div>
@@ -1833,6 +1863,8 @@ var root = {
       configured: configured,
       view: 'loading',
       welcomeSlide: 0,
+      serviceEdit:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
+      currencies:['TRY','GBP','EUR','USD','RUB'],
       serviceCategory: '',
       serviceDraft: '',
       addingService: false,
@@ -2190,7 +2222,7 @@ root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.
 root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;var dx=e.changedTouches[0].clientX-this.welcomeX,dy=e.changedTouches[0].clientY-this.welcomeY;if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.25)this.welcomeMove(dx<0?1:-1); };
 root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view=mode==='signup'?'signupSteps':'welcomeAuth';if(mode==='signup')this.signupStep=1;window.scrollTo(0,0); };
 root.methods.signupScroll = function(){this.$nextTick(function(){window.scrollTo(0,0);});};
-root.methods.signupBack = function(){if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
+root.methods.signupBack = function(){if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
@@ -2207,12 +2239,53 @@ root.methods.openServiceCategory = function(category) {
 root.methods.servicesFor = function(category) {
   return this.serviceOptions.filter(option => option.category === category);
 };
+root.methods.durationText = function(n) {
+  return [Math.floor(n/60) ? Math.floor(n/60)+' ч' : '', n%60 ? n%60+' мин' : ''].filter(Boolean).join(' ');
+};
+root.methods.showTime = function() {
+  this.hours = Math.floor(this.card.minutes/60);
+  this.mins = this.card.minutes%60;
+  this.$refs.timeSheet.showModal();
+};
+root.methods.editCard = function(service) {
+  this.serviceEdit = service;
+  this.card = Object.assign({minutes:0, price:'', currency:'TRY', online:true, discount:'', from:false, photo:'', description:''}, service.details);
+  this.cardError = '';
+  this.photoBusy = false;
+  this.signupScroll();
+};
+root.methods.finishCard = function(selected) {
+  const service = this.serviceEdit;
+  service.selected = selected;
+  service.details = selected ? Object.assign({}, this.card, {price:this.card.price.replace(',', '.')}) : null;
+  if (!this.serviceOptions.includes(service) && selected) this.serviceOptions.push(service);
+  this.serviceEdit = null;
+  this.signupScroll();
+};
+root.methods.cardPhoto = async function(event) {
+  const file = event.target.files[0], card = this.card;
+  if (!file) return;
+  this.photoBusy = true;
+  this.cardError = '';
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const scale = Math.min(1, 800/Math.max(img.width,img.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1,Math.round(img.width*scale));
+    canvas.height = Math.max(1,Math.round(img.height*scale));
+    canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+    card.photo = canvas.toDataURL('image/jpeg',0.75);
+  } catch (_) { if (this.card === card) this.cardError = 'Выберите фото JPEG, PNG или WebP.'; }
+  finally { URL.revokeObjectURL(url); if (this.card === card) this.photoBusy = false; }
+};
 root.methods.addService = function() {
   const name = this.serviceDraft.trim();
   if (!name) return;
   const existing = this.servicesFor(this.serviceCategory).find(option => option.name.toLowerCase() === name.toLowerCase());
-  if (existing) existing.selected = true;
-  else this.serviceOptions.push({ category: this.serviceCategory, name, selected: true });
+  this.editCard(existing || { category:this.serviceCategory, name, selected:false });
   this.serviceDraft = '';
   this.addingService = false;
 };
