@@ -132,6 +132,22 @@ html,body,#app{width:100%;min-width:0}
 .bp-welcome *{box-sizing:border-box}.bp-welcome-inner{width:100%;max-width:420px;flex:1;display:flex;flex-direction:column;min-height:0}.bp-welcome-brand{display:flex;align-items:center;justify-content:center;gap:10px;color:#fff9fc;font-family:"Cormorant Garamond",Georgia,serif;font-size:34px;line-height:1;font-weight:600;letter-spacing:-.04em;margin:0 0 18px}.bp-welcome-brand svg{width:29px;height:29px;color:#f1c8da}.bp-welcome-main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:24px;touch-action:pan-y;min-height:0;padding:12px 0 24px}.bp-welcome-art{width:min(100%,340px);min-height:210px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:16px;background:linear-gradient(155deg,#fff3fa30,#f8d9e514);border:1px solid #fff3fa38;border-radius:30px;box-shadow:0 18px 45px #23152245,inset 0 1px 0 #ffffff35}.bp-welcome-arthead{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;padding:1px 2px 7px}.bp-welcome-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#f8d4e54a;flex:none}.bp-welcome-icon svg{width:23px;height:23px}.bp-welcome-row{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#291d304f;border:1px solid #fff2fa27;border-radius:12px;padding:11px 12px;font-size:12px;line-height:1.25}.bp-welcome-row b{font-size:14px;white-space:nowrap}.bp-welcome-row.bp-highlight{background:#b96083;border-color:#f1c8da55}.bp-welcome-row small{display:block;color:#f4dce7;font-size:10px;margin-top:3px}.bp-welcome-bars{display:flex;align-items:flex-end;justify-content:center;gap:9px;height:48px;padding:3px 8px}.bp-welcome-bars i{display:block;background:linear-gradient(#f4c4d8,#ba6d94);width:22px;border-radius:5px 5px 2px 2px}.bp-welcome-copy{text-align:center;max-width:360px;min-height:126px;display:flex;flex-direction:column;justify-content:flex-start}.bp-welcome-copy h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(30px,8vw,40px);line-height:1.02;letter-spacing:-.025em;font-weight:600;margin:0 0 12px;color:#fff9fc}.bp-welcome-copy p{font-size:14px;line-height:1.55;color:#f3dfe8;margin:0}.bp-welcome-nav{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 16px}.bp-welcome-dot{padding:0;width:9px;height:9px;border:0;border-radius:20px;background:#a58b9a;cursor:pointer;position:relative}.bp-welcome-dot:before{content:"";position:absolute;inset:-10px}.bp-welcome-dot[aria-current=true]{width:24px;background:#f0bfd4}.bp-welcome-arrow{border:0;background:transparent;color:#f4dce7;cursor:pointer;padding:6px 12px;font-size:18px;line-height:1}.bp-welcome-actions{display:grid;gap:10px;width:100%}.bp-welcome-actions button{width:100%;font:700 15px Lato,Arial,sans-serif;min-height:49px;border:1px solid #f8d7e54a;border-radius:13px;cursor:pointer;color:#fff9fc;background:#ffffff16}.bp-welcome-actions .bp-primary{background:linear-gradient(110deg,#a33f68,#bc648a);box-shadow:0 6px 24px #2a162b33}.bp-welcome-actions .bp-quiet{background:transparent;border:0;font-size:12px;font-weight:400;min-height:30px;color:#f0d6e3}.bp-welcome button:focus-visible{outline:2px solid #f3c9de;outline-offset:4px}.bp-welcome-auth{width:min(100%,420px);margin:auto;text-align:center;color:#fff9fc}.bp-welcome-auth h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:40px;line-height:1;margin:20px 0 12px}.bp-welcome-auth p{font-size:15px;line-height:1.6;color:#f3dfe8;margin:0 0 24px}.bp-welcome-auth label{display:block;text-align:left;font-size:13px;margin:12px 0}.bp-welcome-auth input{display:block;width:100%;padding:13px;margin-top:5px;color:#fff9fc;background:#ffffff16;border:1px solid #f8d7e54a;border-radius:12px;font-size:15px;opacity:1}.bp-welcome-auth input::placeholder{color:#e8c6d6}.bp-welcome-auth .bp-welcome-actions{margin-top:20px}
 @media(min-width:761px){.bp-welcome-inner{max-width:460px}.bp-welcome-main{gap:30px}.bp-welcome-art{width:360px}.bp-welcome-copy{min-height:135px}.bp-welcome{padding-top:32px}}@media(max-height:680px){.bp-welcome{padding-top:14px;padding-bottom:14px}.bp-welcome-brand{font-size:29px;margin-bottom:6px}.bp-welcome-main{gap:13px;padding:8px 0 14px}.bp-welcome-art{min-height:174px;padding:11px;gap:6px}.bp-welcome-row{padding:8px 10px}.bp-welcome-copy{min-height:0}.bp-welcome-copy h1{font-size:29px;margin-bottom:8px}.bp-welcome-copy p{font-size:13px}.bp-welcome-nav{margin-bottom:9px}.bp-welcome-actions button{min-height:44px}.bp-welcome-actions{gap:7px}}
 </style>
+
+<style>
+.bp-welcome-main{overflow:hidden;width:100%;display:grid;grid-template-areas:"slide";align-content:center;justify-items:center}
+.bp-welcome-slide{grid-area:slide;width:100%;display:flex;flex-direction:column;align-items:center;gap:24px;min-width:0}
+.bp-welcome-art{height:264px;min-height:264px}
+.bp-welcome-copy{height:150px;min-height:150px}
+.bp-slide-next-enter-active,.bp-slide-prev-enter-active{transition:transform .32s cubic-bezier(.22,.72,.25,1),opacity .32s ease}
+.bp-slide-next-leave-active,.bp-slide-prev-leave-active{transition:transform .20s ease-in,opacity .20s ease}
+.bp-slide-next-enter-from{transform:translateX(44px);opacity:0}
+.bp-slide-next-leave-to{transform:translateX(-44px);opacity:0}
+.bp-slide-prev-enter-from{transform:translateX(-44px);opacity:0}
+.bp-slide-prev-leave-to{transform:translateX(44px);opacity:0}
+.bp-welcome-dot{transition:width .25s ease,background-color .25s ease}
+@media(max-height:680px){.bp-welcome-slide{gap:13px}.bp-welcome-art{height:218px;min-height:218px}.bp-welcome-copy{height:120px;min-height:120px}}
+@media(prefers-reduced-motion:reduce){.bp-slide-next-enter-active,.bp-slide-prev-enter-active,.bp-slide-next-leave-active,.bp-slide-prev-leave-active,.bp-welcome-dot{transition:none}.bp-slide-next-enter-from,.bp-slide-next-leave-to,.bp-slide-prev-enter-from,.bp-slide-prev-leave-to{transform:none}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -143,6 +159,7 @@ html,body,#app{width:100%;min-width:0}
     <section class="bp-welcome"><div class="bp-welcome-inner">
       <div class="bp-welcome-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg><span>Beauty Profit</span></div>
       <div class="bp-welcome-main" @touchstart.passive="welcomeTouchStart" @touchend.passive="welcomeTouchEnd" @keydown.left.prevent="welcomeMove(-1)" @keydown.right.prevent="welcomeMove(1)" tabindex="0" aria-label="Возможности приложения">
+        <Transition :name="welcomeDirection" mode="out-in"><div class="bp-welcome-slide" :key="welcomeSlide">
         <div class="bp-welcome-art" aria-hidden="true">
           <template v-if="welcomeSlide === 0">
             <div class="bp-welcome-arthead"><span class="bp-welcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg></span><span>Калькулятор процедуры</span></div>
@@ -171,8 +188,9 @@ html,body,#app{width:100%;min-width:0}
           </template>
         </div>
         <div class="bp-welcome-copy" aria-live="polite"><h1>{{ welcomeSlides[welcomeSlide].title }}</h1><p>{{ welcomeSlides[welcomeSlide].desc }}</p></div>
+        </div></Transition>
       </div>
-      <div class="bp-welcome-nav" aria-label="Выбор слайда"><button type="button" class="bp-welcome-arrow" @click="welcomeMove(-1)" aria-label="Предыдущий слайд">‹</button><button v-for="(slide,i) in welcomeSlides" :key="i" type="button" class="bp-welcome-dot" :aria-current="i===welcomeSlide" :aria-label="'Слайд '+(i+1)+': '+slide.title" @click="welcomeSlide=i"></button><button type="button" class="bp-welcome-arrow" @click="welcomeMove(1)" aria-label="Следующий слайд">›</button></div>
+      <div class="bp-welcome-nav" aria-label="Выбор слайда"><button type="button" class="bp-welcome-arrow" @click="welcomeMove(-1)" aria-label="Предыдущий слайд">‹</button><button v-for="(slide,i) in welcomeSlides" :key="i" type="button" class="bp-welcome-dot" :aria-current="i===welcomeSlide" :aria-label="'Слайд '+(i+1)+': '+slide.title" @click="welcomeSelect(i)"></button><button type="button" class="bp-welcome-arrow" @click="welcomeMove(1)" aria-label="Следующий слайд">›</button></div>
       <div class="bp-welcome-actions"><button type="button" class="bp-primary" @click="welcomeAuth('signup')">Создать аккаунт</button><button type="button" @click="welcomeAuth('login')">У меня есть аккаунт</button><button type="button" class="bp-quiet" @click="toSite">О приложении</button></div>
     </div></section>
   </template>
@@ -1681,6 +1699,7 @@ var root = {
       configured: configured,
       view: 'loading',
       welcomeSlide: 0,
+      welcomeDirection: "bp-slide-next",
       welcomeX: 0,
       welcomeY: 0,
       welcomeSlides: [
@@ -1857,7 +1876,8 @@ root.mounted = function() {
   this.view = 'welcome';
   try { var preview = new URLSearchParams(window.location.search).get('welcome') === '1'; if(!preview && localStorage.getItem('beauty-profit-personal-demo-entered')==='1') this.view='app'; } catch(e) {}
 };
-root.methods.welcomeMove = function(delta) { this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
+root.methods.welcomeMove = function(delta) { this.welcomeDirection=delta>0?'bp-slide-next':'bp-slide-prev'; this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
+root.methods.welcomeSelect = function(i) { if(i===this.welcomeSlide)return;this.welcomeDirection=i>this.welcomeSlide?'bp-slide-next':'bp-slide-prev';this.welcomeSlide=i; };
 root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.welcomeX=e.changedTouches[0].clientX;this.welcomeY=e.changedTouches[0].clientY;} };
 root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;var dx=e.changedTouches[0].clientX-this.welcomeX,dy=e.changedTouches[0].clientY-this.welcomeY;if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.25)this.welcomeMove(dx<0?1:-1); };
 root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view='welcomeAuth';window.scrollTo(0,0); };
