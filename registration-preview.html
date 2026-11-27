@@ -301,6 +301,24 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-discount-pad button:active{background:#e4cad7}
 @media(max-width:599px){.bp-card-editor .bp-discount{width:100%;height:100dvh;border-radius:0}}
 </style>
+<style>
+.bp-card-editor .bp-media{position:fixed;inset:0;width:min(440px,100%);height:min(680px,100dvh);max-height:100dvh;max-width:100%;padding:0;margin:auto;border:0;border-radius:24px;background:#fff9f7;color:#392933;overflow:auto}
+.bp-media::backdrop{background:#21152088;backdrop-filter:blur(3px)}
+.bp-media header{position:sticky;top:0;z-index:1;display:grid;align-items:center;grid-template-columns:44px 1fr 44px;padding:8px;background:#fff9f7;border-bottom:1px solid #e9dce2;text-align:center}
+.bp-media header button,.bp-media-thumb button{border:0;border-radius:50%;width:44px;height:44px;color:#782e52;background:#f3e5eb;font-size:24px;cursor:pointer}
+.bp-media-content{padding:20px}
+.bp-media textarea{min-height:145px;resize:vertical}
+.bp-media-heading{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px}
+.bp-media-heading h3{margin:0;font-size:16px}
+.bp-media-heading span{color:#80344f;font-weight:700;font-size:13px}
+.bp-media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.bp-media-thumb,.bp-media-add{aspect-ratio:1;border-radius:14px;overflow:hidden}
+.bp-media-thumb{position:relative}
+.bp-card-editor .bp-media-thumb img{width:100%;height:100%;max-width:none;margin:0;object-fit:cover}
+.bp-media-thumb button{position:absolute;top:4px;right:4px}
+.bp-media-add{border:2px dashed #ac6586;background:#fbf1f5;color:#88345b;font-size:32px;cursor:pointer}
+@media(max-width:599px){.bp-card-editor .bp-media{width:100%;height:100dvh;border-radius:0}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -382,7 +400,18 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 <div class="bp-discount-presets"><button type="button" v-for="n in [5,10,20,30,50]" :aria-pressed="discountMode==='percent' && Number(discountDraft)===n" @click="discountMode='percent'; discountDraft=String(n); discountReplace=true">{{n}}%</button></div>
 <div class="bp-discount-pad"><button v-for="key in ['1','2','3','4','5','6','7','8','9',',','0','⌫']" type="button" :aria-label="key==='⌫' ? 'Удалить цифру' : key" @click="discountKey(key)">{{key}}</button></div></div></dialog>
 <h2>Настройки услуги</h2><label class="bp-check"><input type="checkbox" v-model="card.online">Доступна для онлайн-записи</label>
-<details><summary>Фото и описание услуги</summary><label>Описание<textarea rows="3" v-model="card.description"></textarea></label><label>Фото<input type="file" accept="image/*" @change="cardPhoto"></label><img v-if="card.photo" :src="card.photo" alt="Фото услуги"><button v-if="card.photo" type="button" @click="card.photo=''">Убрать фото</button></details>
+<button type="button" class="bp-signup-category" aria-haspopup="dialog" @click="$refs.mediaSheet.showModal()">Фото и описание услуги <span aria-hidden="true">›</span></button>
+<dialog ref="mediaSheet" class="bp-media" aria-labelledby="bp-media-title">
+<header><button type="button" aria-label="Закрыть" @click="$refs.mediaSheet.close()">×</button><h2 id="bp-media-title">Фото и описание услуги</h2></header>
+<div class="bp-media-content">
+<textarea v-model="card.description" rows="5" aria-label="Описание услуги" placeholder="Описание услуги"></textarea>
+<div class="bp-media-heading"><h3>Фотографии</h3><span>Premium</span></div>
+<div class="bp-media-grid">
+<div class="bp-media-thumb" v-for="(photo,index) in card.photos" :key="index"><img :src="photo" :alt="'Фото услуги '+(index+1)"><button type="button" :aria-label="'Удалить фото '+(index+1)" @click="card.photos.splice(index,1)">×</button></div>
+<button class="bp-media-add" type="button" aria-label="Добавить фотографии" :disabled="photoBusy" @click="$refs.mediaInput.click()">{{ photoBusy ? '…' : '+' }}</button>
+<input ref="mediaInput" hidden type="file" accept="image/*" multiple @change="cardPhoto">
+</div><p v-if="mediaError" role="alert">{{mediaError}}</p>
+</div></dialog>
 <p v-if="cardError" role="alert">{{cardError}}</p>
 <button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
 <button v-if="serviceEdit.selected" type="button" class="bp-signup-category" @click="finishCard(false)">Убрать из выбранных</button></form>
@@ -2087,7 +2116,7 @@ var root = {
       view: 'loading',
       welcomeSlide: 0,
       discountMode:'percent', discountDraft:'0', discountReplace:true,
-      serviceEdit:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
+      mediaError:'', serviceEdit:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
       currencyQuery:'',
       serviceCategory: '',
       serviceDraft: '',
@@ -2482,6 +2511,8 @@ root.methods.showTime = function() {
 root.methods.editCard = function(service) {
   this.serviceEdit = service;
   this.card = Object.assign({minutes:0, price:'', currency:'TRY', online:true, discount:'', from:false, photo:'', description:''}, service.details);
+  this.card.photos = Array.isArray(this.card.photos) ? this.card.photos.slice() : this.card.photo ? [this.card.photo] : [];
+  this.mediaError = '';
   this.cardError = '';
   this.photoBusy = false;
   this.signupScroll();
@@ -2535,16 +2566,12 @@ root.methods.finishCard = function(selected) {
   }
   const service = this.serviceEdit;
   service.selected = selected;
-  service.details = selected ? Object.assign({}, this.card, {price:this.card.price.replace(',', '.')}) : null;
+  service.details = selected ? Object.assign({}, this.card, {photo:this.card.photos[0] || '', price:this.card.price.replace(',', '.')}) : null;
   if (!this.serviceOptions.includes(service) && selected) this.serviceOptions.push(service);
   this.serviceEdit = null;
   this.signupScroll();
 };
-root.methods.cardPhoto = async function(event) {
-  const file = event.target.files[0], card = this.card;
-  if (!file) return;
-  this.photoBusy = true;
-  this.cardError = '';
+async function encodeServicePhoto(file) {
   const url = URL.createObjectURL(file);
   try {
     const img = new Image();
@@ -2555,9 +2582,23 @@ root.methods.cardPhoto = async function(event) {
     canvas.width = Math.max(1,Math.round(img.width*scale));
     canvas.height = Math.max(1,Math.round(img.height*scale));
     canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-    card.photo = canvas.toDataURL('image/jpeg',0.75);
-  } catch (_) { if (this.card === card) this.cardError = 'Выберите фото JPEG, PNG или WebP.'; }
-  finally { URL.revokeObjectURL(url); if (this.card === card) this.photoBusy = false; }
+    return canvas.toDataURL('image/jpeg',0.75);
+
+  } finally { URL.revokeObjectURL(url); }
+}
+root.methods.cardPhoto = async function(event) {
+  const files = Array.from(event.target.files), card = this.card;
+  event.target.value = '';
+  if (!files.length || this.photoBusy) return;
+  this.photoBusy = true;
+  this.mediaError = '';
+  try {
+    for (const file of files) {
+      if (this.card !== card) break;
+      try { card.photos.push(await encodeServicePhoto(file)); }
+      catch (_) { if (this.card === card) this.mediaError = 'Не удалось открыть фото. Выберите изображение JPEG, PNG или WebP.'; }
+    }
+  } finally { if (this.card === card) this.photoBusy = false; }
 };
 root.methods.addService = function() {
   const name = this.serviceDraft.trim();
