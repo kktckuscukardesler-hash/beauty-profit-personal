@@ -200,7 +200,7 @@ button.bp-signup-category{cursor:pointer}
 .bp-signup-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 <style>
-.bp-signup :is(#bp-signup-name, #bp-signup-custom) {
+.bp-signup :is(#bp-signup-name, #bp-signup-custom, #bp-service-name) {
   color-scheme: light;
   background: #fff !important;
   color: #241921 !important;
@@ -209,18 +209,25 @@ button.bp-signup-category{cursor:pointer}
   border-color: #88677a !important;
   opacity: 1;
 }
-.bp-signup :is(#bp-signup-name, #bp-signup-custom)::placeholder {
+.bp-signup :is(#bp-signup-name, #bp-signup-custom, #bp-service-name)::placeholder {
   color: #715e69;
   -webkit-text-fill-color: #715e69;
   opacity: 1;
 }
-.bp-signup :is(#bp-signup-name, #bp-signup-custom):focus {
+.bp-signup :is(#bp-signup-name, #bp-signup-custom, #bp-service-name):focus {
   outline: 2px solid #eab0cd !important;
   outline-offset: 2px;
 }
-.bp-signup :is(#bp-signup-name, #bp-signup-custom):-webkit-autofill {
+.bp-signup :is(#bp-signup-name, #bp-signup-custom, #bp-service-name):-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px white inset !important;
 }
+</style>
+<style>
+.bp-service-tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding:3px 2px}
+.bp-service-tabs button{flex:none;background:transparent;color:#fff8fb;border:0;border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}
+.bp-service-tabs button[aria-pressed=true]{background:#71485e}
+.bp-service-row{border:0;border-radius:0;border-bottom:1px solid #ffffff33;background:transparent}
+.bp-service-summary{display:block;font-weight:400;color:#ead4df}
 </style>
 </head>
 <body>
@@ -273,8 +280,8 @@ button.bp-signup-category{cursor:pointer}
     <section class="bp-intro bp-signup"><div class="bp-signup-inner">
       <header class="bp-signup-top">
         <button class="bp-signup-back" type="button" @click="signupBack" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
-        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,2)+' из 2'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span></div>
-        <span class="bp-signup-count">{{ Math.min(signupStep,2) }} / 2</span>
+        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,3)+' из 3'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span></div>
+        <span class="bp-signup-count">{{ Math.min(signupStep,3) }} / 3</span>
       </header>
       <Transition name="bp-slide-next" mode="out-in">
         <div :key="signupStep" class="bp-signup-content">
@@ -294,10 +301,26 @@ button.bp-signup-category{cursor:pointer}
             </div>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" :disabled="!signupSelected.length" @click="signupNext">Продолжить<span v-if="signupSelected.length"> · {{ signupSelected.length }}</span></button></div>
           </div>
+          <div v-else-if="signupStep===3" class="bp-signup-form">
+            <h1>Выберите услуги</h1>
+            <div class="bp-service-tabs" role="group" aria-label="Специализации">
+              <button v-for="category in signupSelected" :key="category" type="button" :aria-pressed="category === serviceCategory" @click="openServiceCategory(category)">{{ category }}</button>
+            </div>
+            <button v-for="service in servicesFor(serviceCategory)" :key="service.name" type="button" class="bp-signup-category bp-service-row" :class="{selected: service.selected}" :aria-pressed="service.selected" @click="service.selected = !service.selected">
+              <span>{{ service.name }}</span><span class="bp-signup-symbol" aria-hidden="true">{{ service.selected ? '✓' : '+' }}</span>
+            </button>
+            <button type="button" class="bp-signup-category bp-service-row" @click="addingService = !addingService">Добавить свою услугу <span class="bp-signup-symbol" aria-hidden="true">+</span></button>
+            <form v-if="addingService" class="bp-signup-add" @submit.prevent="addService">
+              <label class="bp-signup-visually-hidden" for="bp-service-name">Название услуги</label>
+              <input id="bp-service-name" v-model="serviceDraft" maxlength="80" placeholder="Название услуги">
+              <button type="submit" :disabled="!serviceDraft.trim()">Добавить</button>
+            </form>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupNext">{{ serviceOptions.some(s => s.selected && signupSelected.includes(s.category)) ? 'Продолжить' : 'Выбрать услуги позже' }}</button></div>
+          </div>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
             <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
-            <div class="bp-signup-list"><div v-for="category in signupSelected" :key="category" class="bp-signup-category selected"><span>{{ category }}</span><span class="bp-signup-symbol">✓</span></div></div>
+            <div class="bp-signup-list"><div v-for="category in signupSelected" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
             <p class="bp-signup-note">Демонстрация регистрации: следующие шаги пока не настроены. Аккаунт ещё не создан.</p>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupBack">Изменить выбор</button></div>
           </div>
@@ -1810,6 +1833,86 @@ var root = {
       configured: configured,
       view: 'loading',
       welcomeSlide: 0,
+      serviceCategory: '',
+      serviceDraft: '',
+      addingService: false,
+      serviceOptions: Object.entries({
+  "Маникюр": [
+    "SPA-комплекс для рук",
+    "Аппаратный маникюр",
+    "Детский маникюр",
+    "Маникюр + покрытие",
+    "Маникюр + снятие + покрытие",
+    "Маникюр + снятие покрытия",
+    "Массаж рук",
+    "Мужской маникюр",
+    "Наращивание",
+    "Пилочный маникюр",
+    "Ремонт ногтя",
+    "Снятие покрытия",
+    "Укрепление ногтей"
+  ],
+  "Педикюр": [
+    "Аппаратный педикюр",
+    "Педикюр + покрытие",
+    "Обработка стоп"
+  ],
+  "Брови": [
+    "Коррекция бровей",
+    "Окрашивание бровей",
+    "Ламинирование бровей"
+  ],
+  "Ресницы": [
+    "Классическое наращивание ресниц",
+    "Ламинирование ресниц",
+    "Снятие наращённых ресниц"
+  ],
+  "Депиляция": [
+    "Депиляция ног",
+    "Депиляция подмышек",
+    "Депиляция зоны бикини"
+  ],
+  "Парикмахерские услуги": [
+    "Стрижка",
+    "Окрашивание волос",
+    "Укладка"
+  ],
+  "Макияж": [
+    "Дневной макияж",
+    "Вечерний макияж",
+    "Свадебный макияж"
+  ],
+  "Массаж": [
+    "Массаж спины",
+    "Общий массаж",
+    "Массаж лица"
+  ],
+  "Косметология": [
+    "Чистка лица",
+    "Уход за лицом",
+    "Пилинг"
+  ],
+  "Подология": [
+    "Обработка стоп",
+    "Обработка мозолей",
+    "Обработка ногтей"
+  ],
+  "Перманентный макияж": [
+    "Перманентный макияж бровей",
+    "Перманентный макияж губ",
+    "Межресничная стрелка"
+  ],
+  "Услуги барбера": [
+    "Мужская стрижка",
+    "Оформление бороды",
+    "Бритьё"
+  ],
+  "Ногтевой сервис": [
+    "Моделирование ногтей",
+    "Коррекция наращённых ногтей",
+    "Дизайн ногтей"
+  ]
+}).flatMap(([category, names]) => names.map(name => ({ category, name, selected: false }))),
       signupStep: 1,
       signupName: '',
       signupSelected: [],
@@ -2000,7 +2103,31 @@ root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;
 root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view=mode==='signup'?'signupSteps':'welcomeAuth';if(mode==='signup')this.signupStep=1;window.scrollTo(0,0); };
 root.methods.signupScroll = function(){this.$nextTick(function(){window.scrollTo(0,0);});};
 root.methods.signupBack = function(){if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
-root.methods.signupNext = function(){if(this.signupStep===1 && this.signupName.trim()){this.signupStep=2;}else if(this.signupStep===2 && this.signupSelected.length){this.signupStep=3;}this.signupScroll();};
+root.methods.signupNext = function() {
+  if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
+  else if (this.signupStep === 2 && this.signupSelected.length) {
+    this.openServiceCategory(this.signupSelected.includes(this.serviceCategory) ? this.serviceCategory : this.signupSelected[0]);
+    this.signupStep = 3;
+  } else if (this.signupStep === 3) this.signupStep = 4;
+  this.signupScroll();
+};
+root.methods.openServiceCategory = function(category) {
+  this.serviceCategory = category;
+  this.serviceDraft = '';
+  this.addingService = false;
+};
+root.methods.servicesFor = function(category) {
+  return this.serviceOptions.filter(option => option.category === category);
+};
+root.methods.addService = function() {
+  const name = this.serviceDraft.trim();
+  if (!name) return;
+  const existing = this.servicesFor(this.serviceCategory).find(option => option.name.toLowerCase() === name.toLowerCase());
+  if (existing) existing.selected = true;
+  else this.serviceOptions.push({ category: this.serviceCategory, name, selected: true });
+  this.serviceDraft = '';
+  this.addingService = false;
+};
 root.methods.signupToggle = function(category){var i=this.signupSelected.indexOf(category);if(i>=0)this.signupSelected.splice(i,1);else this.signupSelected.push(category);};
 root.methods.signupAdd = function(){var name=this.signupCustom.trim();if(!name)return;var existing=this.signupCategories.find(function(c){return c.toLocaleLowerCase()===name.toLocaleLowerCase();});if(!existing){this.signupCategories.push(name);existing=name;}if(!this.signupSelected.includes(existing))this.signupSelected.push(existing);this.signupCustom='';this.signupAdding=false;};
 root.methods.enterWelcomeDemo = function(){try{localStorage.setItem('beauty-profit-personal-demo-entered','1');}catch(e){}this.view='app';this.$nextTick(function(){window.scrollTo(0,0);});};
