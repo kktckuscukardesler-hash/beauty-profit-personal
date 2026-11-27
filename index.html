@@ -1855,7 +1855,7 @@ root.mounted = function() {
   this.user = { email: 'Демо-кабинет' };
   this.cab = loadDemo() || {plan:'premium',spheres:['nails','lashes','brows','cosmo','depil','pmu','hair'],data:{}};
   this.view = 'welcome';
-  try { if(localStorage.getItem('beauty-profit-personal-demo-entered')==='1') this.view='app'; } catch(e) {}
+  try { var preview = new URLSearchParams(window.location.search).get('welcome') === '1'; if(!preview && localStorage.getItem('beauty-profit-personal-demo-entered')==='1') this.view='app'; } catch(e) {}
 };
 root.methods.welcomeMove = function(delta) { this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
 root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.welcomeX=e.changedTouches[0].clientX;this.welcomeY=e.changedTouches[0].clientY;} };
