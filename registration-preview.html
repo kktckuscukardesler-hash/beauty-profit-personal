@@ -429,7 +429,7 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-prof{display:flex;flex-direction:column;gap:16px;max-width:760px}
 .bp-prof-card{display:flex;align-items:center;gap:16px}
 .bp-prof-av{width:64px!important;height:64px!important;font-size:26px!important}
-.bp-prof-main h2{margin:0!important;font-size:22px!important;color:#30232c!important}.bp-prof-main p{margin:4px 0 0;color:#8a6f7c;font-size:14px}
+.bp-prof-main{min-width:0}.bp-prof-main h2{margin:0!important;font-size:22px!important;color:#30232c!important}.bp-prof-main p{margin:4px 0 0;color:#8a6f7c;font-size:14px}
 .bp-prof-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #F3E6EC;font-size:14px}.bp-prof-row:first-of-type{border-top:0}
 .bp-prof-row span{color:#8a6f7c}.bp-prof-row b{color:#30232c;text-align:right;word-break:break-word}
 .bp-prof-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
@@ -437,6 +437,32 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-prof-actions{display:flex;gap:10px;flex-wrap:wrap}
 .bp-prof-actions button{flex:1;min-width:140px;min-height:48px;border-radius:12px;border:1.5px solid #E2BFD0;background:#fff;color:#8E2F56;font-weight:800;font-size:14px;cursor:pointer}
 .bp-prof-actions button.out{border-color:#f1c6cf;color:#b0234f}
+
+.bp-prof-edit-btn{margin-left:auto;align-self:center;white-space:nowrap;flex:none;border:1.5px solid #E2BFD0;background:#fff;color:#8E2F56;border-radius:12px;padding:10px 16px;font-weight:800;font-size:14px;cursor:pointer}
+.bp-pf-l{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:#6B1F40;margin-top:12px}
+.bp-pf-l input{min-height:48px;border-radius:12px;border:1.5px solid #EAD9E1;padding:0 14px;font-size:16px;color:#30232c;background:#fff;outline:none}
+.bp-pf-l input:focus{border-color:#C25B86}
+.bp-pf-chips{display:flex;flex-wrap:wrap;gap:8px}
+.bp-pf-chip{min-height:44px;padding:8px 16px;border-radius:12px;border:1.5px solid #E2BFD0;background:#FBF1F6;color:#6B1F40;font-weight:800;font-size:14px;cursor:pointer}
+.bp-pf-chip.on{background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;border-color:transparent}
+.bp-pf-plans{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bp-pf-plan{display:flex;flex-direction:column;gap:2px;align-items:flex-start;padding:12px;border-radius:12px;border:1.5px solid #E2BFD0;background:#fff;cursor:pointer;text-align:left}
+.bp-pf-plan b{font-size:14px;color:#30232c}.bp-pf-plan small{font-size:12px;color:#8a6f7c}
+.bp-pf-plan.on{border-color:#8E2F56;background:#F6E3EC;box-shadow:0 0 0 2px #f3d3e1}
+.bp-pf-warn,.bp-pf-err{margin:10px 0 0;color:#b0234f;font-size:13px;font-weight:700}
+.bp-pf-err{margin:0;padding:12px 14px;border-radius:12px;background:#fbe8ee}
+.bp-pf-note{margin:10px 0 0;font-size:12px;color:#9a8290}
+.bp-prof-actions button.save{border:0;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff}.bp-prof-actions button.save:disabled{opacity:.6}
+.bp-pf-soc>span{display:flex;align-items:center;gap:8px}
+.bp-soc-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bp-soc{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;border:1.5px solid #EAD9E1;background:#fff;text-align:left;cursor:pointer;text-decoration:none;color:#30232c;min-width:0}
+.bp-soc span{min-width:0}.bp-soc b{display:block;font-size:14px}.bp-soc small{display:block;font-size:12px;color:#8a6f7c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-soc.on{border-color:#C25B86;background:#FBF1F6}
+.bp-soc-ic{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background-repeat:no-repeat;background-position:center;background-size:18px}
+.bp-soc-ig .bp-soc-ic{background-color:#d6336c;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='5'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Ccircle cx='17.5' cy='6.5' r='1' fill='white'/%3E%3C/svg%3E")}
+.bp-soc-fb .bp-soc-ic{background-color:#1877f2;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v8h4v-8h3l1-4h-4V8z'/%3E%3C/svg%3E")}
+.bp-soc-tg .bp-soc-ic{background-color:#229ed9;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M21 4 2.5 11.2c-.9.4-.9 1.6.1 1.9l4.6 1.4 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.7 3.4c.7.5 1.6.1 1.8-.7L23 5.3C23.2 4.3 22 3.6 21 4zM9.5 14.3l8.6-7.6-10.4 6.4'/%3E%3C/svg%3E")}
+@media (max-width:600px){.bp-soc-list{grid-template-columns:1fr}.bp-pf-plans{grid-template-columns:1fr}}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1631,17 +1657,34 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 </template>
 
-<template v-if="v.tabProfile"><div class="bp-prof">
-<section class="bpd-card bp-prof-card"><span class="bpd-avatar bp-prof-av">{{ v.profile.initial }}</span><div class="bp-prof-main"><h2>{{ v.profile.name }}</h2><p>{{ v.profile.plan }}</p></div></section>
+<template v-if="v.tabProfile"><template v-if="v.profile.edit.editing"><div class="bp-prof bp-prof-edit">
+<section class="bpd-card"><div class="bpd-card-head"><h2>Мои данные</h2></div>
+<label class="bp-pf-l">Имя<input :value="v.profile.edit.form.name" @input="v.profile.edit.set('name', $event)" maxlength="80" autocomplete="name"></label>
+<label class="bp-pf-l">Телефон<input :value="v.profile.edit.form.phone" @input="v.profile.edit.set('phone', $event)" type="tel" inputmode="tel" placeholder="+90 548 000 0000" maxlength="30"></label>
+<label class="bp-pf-l">Почта для входа<input :value="v.profile.edit.form.email" @input="v.profile.edit.set('email', $event)" type="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="120"></label></section>
+<section class="bpd-card"><div class="bpd-card-head"><h2>Пароль</h2><button type="button" class="bp-text-btn" @click="v.profile.edit.togglePass">{{ v.profile.edit.form.showPass ? 'Скрыть' : 'Показать' }}</button></div>
+<label class="bp-pf-l">Текущий пароль<input :value="v.profile.edit.form.curPass" @input="v.profile.edit.set('curPass', $event)" :type="v.profile.edit.form.showPass ? 'text' : 'password'" autocomplete="current-password" placeholder="Нужен, чтобы сменить пароль или почту"></label>
+<label class="bp-pf-l">Новый пароль<input :value="v.profile.edit.form.newPass" @input="v.profile.edit.set('newPass', $event)" :type="v.profile.edit.form.showPass ? 'text' : 'password'" autocomplete="new-password" placeholder="Оставьте пустым, если не меняете"></label></section>
+<section class="bpd-card"><div class="bpd-card-head"><h2>Мои сферы</h2></div><div class="bp-pf-chips"><button v-for="n in v.profile.edit.niches" :key="n.id" type="button" class="bp-pf-chip" :class="{on: n.on}" :aria-pressed="n.on" @click="v.profile.edit.toggleSphere(n.id)">{{ n.on ? '✓ ' : '+ ' }}{{ n.label }}</button></div><p v-if="v.profile.edit.tooMany" class="bp-pf-warn">В тарифе «Мастер» можно до 2 сфер.</p></section>
+<section class="bpd-card"><div class="bpd-card-head"><h2>Тариф</h2></div><div class="bp-pf-plans"><button v-for="p in v.profile.edit.plans" :key="p.id" type="button" class="bp-pf-plan" :class="{on: p.on}" :aria-pressed="p.on" @click="v.profile.edit.setPlan(p.id)"><b>{{ p.label }}</b><small>{{ p.price }}</small></button></div><p class="bp-pf-note">Оплата пока не подключена — тариф просто меняется в кабинете.</p></section>
+<section class="bpd-card"><div class="bpd-card-head"><h2>Социальные сети</h2></div>
+<label class="bp-pf-l bp-pf-soc bp-soc-ig"><span><i class="bp-soc-ic"></i>Instagram</span><input :value="v.profile.edit.form.ig" @input="v.profile.edit.set('ig', $event)" placeholder="@ваш_ник или ссылка" autocapitalize="off" spellcheck="false"></label>
+<label class="bp-pf-l bp-pf-soc bp-soc-fb"><span><i class="bp-soc-ic"></i>Facebook</span><input :value="v.profile.edit.form.fb" @input="v.profile.edit.set('fb', $event)" placeholder="ник или ссылка на страницу" autocapitalize="off" spellcheck="false"></label>
+<label class="bp-pf-l bp-pf-soc bp-soc-tg"><span><i class="bp-soc-ic"></i>Telegram</span><input :value="v.profile.edit.form.tg" @input="v.profile.edit.set('tg', $event)" placeholder="@ваш_ник" autocapitalize="off" spellcheck="false"></label></section>
+<p v-if="v.profile.edit.form.err" class="bp-pf-err" role="alert">{{ v.profile.edit.form.err }}</p>
+<div class="bp-prof-actions"><button type="button" @click="v.profile.edit.cancel">Отмена</button><button type="button" class="save" :disabled="v.profile.edit.form.busy" @click="v.profile.edit.save">{{ v.profile.edit.form.busy ? 'Сохраняем…' : 'Сохранить' }}</button></div>
+</div></template><template v-else><div class="bp-prof">
+<section class="bpd-card bp-prof-card"><span class="bpd-avatar bp-prof-av">{{ v.profile.initial }}</span><div class="bp-prof-main"><h2>{{ v.profile.name }}</h2><p>{{ v.profile.plan }}</p></div><button type="button" class="bp-prof-edit-btn" @click="v.profile.edit.start">Редактировать</button></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Мои данные</h2></div>
 <div class="bp-prof-row"><span>Имя</span><b>{{ v.profile.name }}</b></div>
 <div class="bp-prof-row"><span>Почта для входа</span><b>{{ v.profile.email || '—' }}</b></div>
 <div class="bp-prof-row"><span>Телефон</span><b>{{ v.profile.phone || '—' }}</b></div>
 <div class="bp-prof-row"><span>Тариф</span><b>{{ v.profile.planShort }}</b></div>
 <div class="bp-prof-row"><span>Мои сферы</span><b>{{ v.profile.spheres }}</b></div></section>
+<section class="bpd-card"><div class="bpd-card-head"><h2>Социальные сети</h2><button type="button" class="bp-text-btn" @click="v.profile.edit.start">Подключить</button></div><div class="bp-soc-list"><template v-for="s in v.profile.socials" :key="s.id"><a v-if="s.connected" class="bp-soc on" :class="'bp-soc-' + s.id" :href="s.link" target="_blank" rel="noopener"><i class="bp-soc-ic"></i><span><b>{{ s.label }}</b><small>{{ s.value }}</small></span></a><button v-else type="button" class="bp-soc" :class="'bp-soc-' + s.id" @click="v.profile.edit.start"><i class="bp-soc-ic"></i><span><b>{{ s.label }}</b><small>Не подключено</small></span></button></template></div></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Коротко</h2></div><div class="bp-prof-stats"><div><strong>{{ v.profile.clients }}</strong><span>клиентов</span></div><div><strong>{{ v.profile.services }}</strong><span>услуг</span></div><div><strong>{{ v.profile.appts }}</strong><span>записей</span></div></div></section>
 <div class="bp-prof-actions"><button type="button" @click="v.profile.toRemind">Напоминания</button><button type="button" @click="v.profile.toStats">Статистика</button><button v-if="v.hasLogout" type="button" class="out" @click="v.logout">Выйти</button></div>
-</div></template>
+</div></template></template>
 <template v-if="v.tabRemind">
 <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
 <section aria-label="Заканчиваются материалы" style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 10px">
@@ -2132,6 +2175,7 @@ this.state = {
   period: 'month', seq: 10, catOpen: false, catPicked: {}, catQ: '', lib: {}, libCustom: {}, libQ: '', libNew: '', libOpen: {}
 };
 if (props && props.saved) { var sv0 = props.saved; var me0 = this; Object.keys(sv0).forEach(function (k) { if (sv0[k] != null) { me0.state[k] = sv0[k]; } }); this.state.today = t; this.state.day = t; this.state.aform = { clientId: '', svc: this.state.aform.svc, date: t, time: '12:00', price: '' }; }
+try { if (window.BP_NEXT_TAB) { this.state.tab = window.BP_NEXT_TAB; window.BP_NEXT_TAB = null; } } catch (e) {}
 }
 chosenNiches() {
 var L = this.lib(); var BPC_N = L.BPC_N, bpcNum = L.bpcNum, bpcKey = L.bpcKey, bpcAdd = L.bpcAdd, bpcParse = L.bpcParse, bpcLabel = L.bpcLabel;
@@ -2203,6 +2247,34 @@ var profile = {
   clients: st.clients.length, services: niches.reduce(function (t, n) { return t + self.servicesOf(n.id).length; }, 0), appts: st.appts.length,
   toRemind: function () { up({ tab: 'remind' }); }, toStats: function () { up({ tab: 'dash' }); }
 };
+
+var pf = st.pf || null;
+var pfSet = function (k, val) { var o = {}; Object.keys(pf || {}).forEach(function (x) { o[x] = pf[x]; }); o.err = ''; o[k] = val; up({ pf: o }); };
+var allNiches = self.lib().BPC_N.map(function (n) { return { id: n.id, label: n.label }; });
+var profSocial = profAcc.social || {};
+var socLink = function (kind, v) { v = String(v || '').trim(); if (!v) { return ''; } if (/^https?:\/\//i.test(v)) { return v; } v = v.replace(/^@/, ''); return kind === 'ig' ? 'https://instagram.com/' + v : (kind === 'fb' ? 'https://facebook.com/' + v : 'https://t.me/' + v); };
+var socials = [['ig', 'Instagram'], ['fb', 'Facebook'], ['tg', 'Telegram']].map(function (s) { var val = profSocial[s[0]] || ''; return { id: s[0], label: s[1], value: val, link: socLink(s[0], val), connected: !!val }; });
+var editApi = {
+  editing: !!pf,
+  form: pf || {},
+  start: function () { up({ pf: { name: profAcc.name || '', phone: profAcc.phone || '', email: (self.props.email || '').indexOf('@') > 0 ? self.props.email : '', curPass: '', newPass: '', ig: profSocial.ig || '', fb: profSocial.fb || '', tg: profSocial.tg || '', spheres: niches.map(function (x) { return x.id; }), plan: ({ start: 1, master: 1, salon: 1 })[self.props.plan] ? self.props.plan : 'master', err: '', busy: false, showPass: false } }); },
+  cancel: function () { up({ pf: null }); },
+  set: function (k, e) { pfSet(k, e && e.target ? e.target.value : e); },
+  togglePass: function () { pfSet('showPass', !pf.showPass); },
+  toggleSphere: function (id) { var l = (pf.spheres || []).slice(); var i = l.indexOf(id); if (i >= 0) { if (l.length > 1) { l.splice(i, 1); } } else { l.push(id); } pfSet('spheres', l); },
+  setPlan: function (p) { pfSet('plan', p); },
+  niches: allNiches.map(function (n) { return { id: n.id, label: n.label, on: !!(pf && pf.spheres && pf.spheres.indexOf(n.id) >= 0) }; }),
+  plans: [['start', 'Старт', '$0'], ['master', 'Мастер', '$4,99/мес'], ['salon', 'Салон Pro', '$19,99/мес']].map(function (p) { return { id: p[0], label: p[1], price: p[2], on: !!(pf && pf.plan === p[0]) }; }),
+  tooMany: !!(pf && pf.plan === 'master' && pf.spheres && pf.spheres.length > 2),
+  save: async function () {
+    if (!pf || pf.busy) { return; }
+    if (pf.plan === 'master' && pf.spheres.length > 2) { pfSet('err', 'В тарифе «Мастер» можно до 2 сфер. Уберите лишние или выберите «Салон Pro».'); return; }
+    var o = {}; Object.keys(pf).forEach(function (x) { o[x] = pf[x]; }); o.busy = true; up({ pf: o });
+    var r = window.BP_PROFILE_SAVE ? await window.BP_PROFILE_SAVE(pf) : { err: 'Не удалось сохранить.' };
+    if (r && r.err) { var o2 = {}; Object.keys(pf).forEach(function (x) { o2[x] = pf[x]; }); o2.busy = false; o2.err = r.err; up({ pf: o2 }); }
+  }
+};
+profile.edit = editApi; profile.socials = socials;
 var tabDefs = [['profile', 'Профиль'], ['svcs', 'Мои услуги'], ['calc', 'Калькулятор'], ['appts', 'Запись клиентов'], ['income', 'Доходы'], ['dash', 'Статистика']];
 var tabs = tabDefs.map(function (t) { var on = st.tab === t[0]; return { id: t[0], label: t[1], on: on, off: !on, pick: function () { up({ tab: t[0] }); } }; });
 
@@ -2978,6 +3050,41 @@ root.mounted = function () {
   this.$watch(function () {
     return JSON.stringify({ view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, signupClientList: self.signupClientList, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
   }, function (json) { try { sessionStorage.setItem(BP_SESSION_KEY, json); } catch (e) {} });
+};
+
+// Сохранение профиля из кабинета
+window.BP_PROFILE_SAVE = async function (d) {
+  var vm = window.BPC_APP; if (!vm) { return { err: 'Не удалось сохранить.' }; }
+  var accs = bpAccounts();
+  var old = vm.user && vm.user.email && vm.user.email.indexOf('@') > 0 ? vm.user.email : '';
+  var acc = old && accs[old] ? accs[old] : null;
+  var email = String(d.email || '').trim().toLowerCase();
+  if (!bpEmailOk(email)) { return { err: 'Проверьте почту для входа.' }; }
+  if (email !== old && accs[email]) { return { err: 'Эта почта уже занята другим аккаунтом.' }; }
+  if (d.newPass && d.newPass.length < 6) { return { err: 'Новый пароль — не короче 6 символов.' }; }
+  if (!acc) {
+    if (!d.newPass) { return { err: 'Придумайте пароль, чтобы сохранить аккаунт.' }; }
+    acc = { created: Date.now() };
+  } else if (d.newPass || email !== old) {
+    if (!d.curPass || acc.h !== await bpHash(old, d.curPass)) { return { err: d.newPass ? 'Текущий пароль указан неверно.' : 'Чтобы сменить почту, введите текущий пароль.' }; }
+  }
+  var pass = d.newPass || d.curPass;
+  if (pass) { acc.h = await bpHash(email, pass); }
+  acc.name = String(d.name || '').trim() || acc.name || '';
+  acc.phone = String(d.phone || '').trim();
+  acc.social = { ig: String(d.ig || '').trim(), fb: String(d.fb || '').trim(), tg: String(d.tg || '').trim() };
+  acc.plan = d.plan;
+  var cab = vm.cab || { data: {} };
+  if (d.spheres && d.spheres.length) { cab.spheres = d.spheres.slice(); cab.data = cab.data || {}; cab.data.svcs = cab.data.svcs || {}; cab.spheres.forEach(function (id) { if (!cab.data.svcs[id]) { cab.data.svcs[id] = []; } }); }
+  cab.plan = d.plan;
+  acc.cab = cab;
+  if (old && old !== email) { delete accs[old]; }
+  accs[email] = acc;
+  if (!bpSaveAccounts(accs)) { return { err: 'Браузер не разрешил сохранение.' }; }
+  try { var rem = bpRemembered(); if (rem && rem.email === old) { localStorage.setItem(BP_REM_KEY, JSON.stringify({ email: email, h: acc.h })); } } catch (e) {}
+  vm.user = { email: email }; vm.cab = cab; saveDemo(cab);
+  window.BP_NEXT_TAB = 'profile'; vm.appKey++;
+  return { ok: true };
 };
 root.methods.welcomeMove = function(delta) { this.welcomeDirection=delta>0?'bp-slide-next':'bp-slide-prev'; this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
 root.methods.welcomeSelect = function(i) { if(i===this.welcomeSlide)return;this.welcomeDirection=i>this.welcomeSlide?'bp-slide-next':'bp-slide-prev';this.welcomeSlide=i; };
