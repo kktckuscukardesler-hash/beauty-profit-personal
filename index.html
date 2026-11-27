@@ -124,6 +124,7 @@ html,body,#app{width:100%;min-width:0}
 @media(max-width:760px){.bpc-cabinet{display:block}.bp-side{padding:12px 12px 8px;gap:9px}.bp-brand{justify-content:center}.bp-brand-name{font-size:30px}.bp-brand small{font-size:8px}.bp-brand-mark{width:32px;height:32px}.bp-menu-label,.bp-side-footer{display:none}.bpc-cabinet .bp-side nav[aria-label="Разделы"]{gap:5px!important}.bpc-cabinet .bp-side nav[aria-label="Разделы"] button{font-size:11px!important;min-height:45px!important;padding:5px 4px!important;gap:3px;background:#FAF9F8!important;border-radius:9px!important}.bp-side nav svg{width:16px;height:16px}.bpc-cabinet>header>div{grid-template-columns:1fr auto!important;grid-template-areas:"section actions" "spheres spheres";padding:9px 12px!important;gap:7px!important}.bp-header-brand{display:none}.bp-top-title{font-size:19px}.bp-top-actions{justify-content:flex-end}.bp-top-actions>span{font-size:9px!important}.bp-top-actions button{min-height:36px!important;padding:5px 7px!important}.bp-spheres{width:100%;max-width:100%;overflow-x:auto;min-width:0}.bp-spheres button{min-height:38px!important}.bpc-cabinet main{padding:14px 12px 24px!important}.bp-greeting{display:block}.bp-welcome h1{font-size:19px}.bp-welcome p:not(.bp-eyebrow){margin-top:3px;font-size:12px}.bp-dash{gap:11px}.bp-kpis{gap:8px}.bp-kpi{grid-template-columns:minmax(0,1fr) 26px;padding:11px 10px;min-height:92px;gap:3px}.bp-kpi-head>span:first-child{font-size:11px}.bp-kpi-head>.bp-symbol{width:26px;height:26px;border-radius:8px}.bp-kpi-head>.bp-symbol svg{width:16px;height:16px}.bp-kpi strong{font-size:clamp(19px,5.8vw,24px)}.bp-kpi small{font-size:10px}.bp-dash-grid,.bp-dash>.bp-dash-grid:last-child{grid-template-columns:1fr;gap:10px}.bp-dash>.bp-dash-grid:last-child>.bp-quote,.bp-dash>.bp-dash-grid:last-child>section:first-child{grid-column:auto;grid-row:auto}.bp-panel{padding:14px}.bp-quick{grid-template-columns:1fr}.bp-quick button,.bp-text-btn{min-height:44px}.bp-quote h2{font-size:22px}.bp-graph svg{max-height:160px}}
 @media(max-width:340px){.bp-kpis{grid-template-columns:1fr}.bp-top-actions>span{display:none}}
 
+ .bp-home-link{cursor:pointer;text-decoration:none}.bp-home-link:focus-visible{outline:2px solid #8E2F56;outline-offset:4px;border-radius:6px}
 </style>
 </head>
 <body>
@@ -157,7 +158,7 @@ html,body,#app{width:100%;min-width:0}
           <div style="width:36px;height:36px;border-radius:10px;background:#8E2F56;display:flex;align-items:center;justify-content:center">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"></path></svg>
           </div>
-          <span style="font-family:Lato,Arial,sans-serif;font-weight:700;font-size:15px">Beauty Profit Calculator</span>
+          <a class="bp-home-link" href="#" @click.prevent="toSite" style="font-family:Lato,Arial,sans-serif;font-weight:700;font-size:15px;color:inherit">Beauty Profit Calculator</a>
         </div>
         <h1 style="margin:4px 0 0;font-family:Lato,Arial,sans-serif;font-weight:700;font-size:24px">{{ auth.mode === 'signup' ? 'Регистрация' : 'Вход' }}</h1>
         <p style="margin:0;font-size:15px;color:#554A50">{{ auth.mode === 'signup' ? 'Создайте аккаунт — первые 7 дней бесплатно.' : 'Войдите, чтобы открыть свой кабинет.' }}</p>
@@ -242,7 +243,7 @@ html,body,#app{width:100%;min-width:0}
 <div :style="`width: 36px; height: 36px; border-radius: 10px; background: ${v.accent}; display: flex; align-items: center; justify-content: center`">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"></path></svg>
 </div>
-<span style="font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 16px">Beauty Profit Calculator</span>
+<a class="bp-home-link" href="#" @click.prevent="v.home" style="font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 16px;color:inherit">Beauty Profit Calculator</a>
 </div>
 <nav style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; font-size: 15px; font-weight: 500">
 <a href="#how" style="text-decoration: none; color: #554A50">Как работает</a>
@@ -448,7 +449,7 @@ html,body,#app{width:100%;min-width:0}
 </section>
 
 <footer style="max-width: 1180px; margin: 0 auto; padding: 0 24px 40px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 14px; color: #776A71">
-<span>Beauty Profit Calculator</span>
+<a class="bp-home-link" href="#" @click.prevent="v.home" style="color:inherit">Beauty Profit Calculator</a>
 <span>[Ваш Instagram / Telegram для связи]</span>
 </footer>
 
@@ -534,7 +535,7 @@ html,body,#app{width:100%;min-width:0}
 <script type="text/x-template" id="tpl-app">
 <div class="bpc-cabinet" style="font-family: Lato, Arial, sans-serif; color: #30272D; background: #FAF9F8; min-height: 100vh">
 
-<aside class="bp-side"><div class="bp-brand"><div class="bp-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg></div><div><div class="bp-brand-name"><em>Beauty</em> Profit</div><small>BUSINESS SUITE</small></div></div><div class="bp-menu-label">Рабочее пространство</div><nav aria-label="Разделы" style="max-width: 1180px; margin: 0 auto; padding: 0 20px 12px; display: flex; flex-wrap: wrap; gap: 6px">
+<aside class="bp-side"><a class="bp-brand bp-home-link" href="#" @click.prevent="v.back" aria-label="Beauty Profit — на главную страницу"><div class="bp-brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg></div><div><div class="bp-brand-name"><em>Beauty</em> Profit</div><small>BUSINESS SUITE</small></div></a><div class="bp-menu-label">Рабочее пространство</div><nav aria-label="Разделы" style="max-width: 1180px; margin: 0 auto; padding: 0 20px 12px; display: flex; flex-wrap: wrap; gap: 6px">
 <template v-for="(tb, $index) in v.tabs">
 <template v-if="tb.on">
 <button type="button" aria-current="page" @click="tb.pick" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 44px; padding: 10px 18px; border-radius: 12px; border: none; background: #F3E6EC; color: #6B1F40; cursor: pointer"><template v-if="tb.id === 'dash'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></template><template v-if="tb.id === 'svcs'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z"/></svg></template><template v-if="tb.id === 'calc'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg></template><template v-if="tb.id === 'appts'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-12 5h2m3 0h2"/></svg></template><template v-if="tb.id === 'income'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 15l4-4 4 3 6-7"/></svg></template><template v-if="tb.id === 'remind'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12a2 2 0 0 0 4 0"/></svg></template><span>{{ tb.label }}</span></button>
@@ -543,8 +544,8 @@ html,body,#app{width:100%;min-width:0}
 <button type="button" @click="tb.pick" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 44px; padding: 10px 18px; border-radius: 12px; border: none; background: transparent; color: #554A50; cursor: pointer"><template v-if="tb.id === 'dash'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></template><template v-if="tb.id === 'svcs'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z"/></svg></template><template v-if="tb.id === 'calc'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg></template><template v-if="tb.id === 'appts'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-12 5h2m3 0h2"/></svg></template><template v-if="tb.id === 'income'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 15l4-4 4 3 6-7"/></svg></template><template v-if="tb.id === 'remind'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12a2 2 0 0 0 4 0"/></svg></template><span>{{ tb.label }}</span></button>
 </template>
 </template>
-</nav><div class="bp-side-footer"><b>Beauty Profit</b>Ваш бизнес. Ваши правила.</div></aside>
-<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><div class="bp-top-title">{{ v.pageLabel }}</div><div class="bp-header-brand" aria-label="Beauty Profit"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></div><div class="bp-spheres" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #F9F2F5; border: 1px solid #F3E6EC; border-radius: 999px; padding: 6px 6px 6px 16px">
+</nav><div class="bp-side-footer"><a class="bp-home-link" href="#" @click.prevent="v.back" style="color:inherit"><b>Beauty Profit</b></a>Ваш бизнес. Ваши правила.</div></aside>
+<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><div class="bp-top-title">{{ v.pageLabel }}</div><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.back" aria-label="Beauty Profit — на главную страницу"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><div class="bp-spheres" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #F9F2F5; border: 1px solid #F3E6EC; border-radius: 999px; padding: 6px 6px 6px 16px">
 <span style="font-size: 14px; font-weight: 700; color: #6B1F40">Мои сферы:</span>
 <template v-for="(sp, $index) in v.spheres">
 <template v-if="sp.on">
@@ -1177,6 +1178,7 @@ return { accent: accent, niches: niches, n: n, plans: plans,
   hasChosen: chosen.length > 0,
   showApp: st.view === 'app', showSite: st.view !== 'app',
   chosenIds: chosen.length ? chosen : [cur], planId: st.plan || 'trial',
+  home: function () { self.setState({ view: 'site', step: null }); window.scrollTo(0, 0); },
   backToSite: function () { self.setState({ view: 'site' }); },
   openApp: function () { if (self.props.onCabinet) { self.setState({ step: null }); self.props.onCabinet(); return; } self.setState({ view: 'app', step: null }); if (typeof window !== 'undefined' && window.scrollTo) { window.scrollTo(0, 0); } },
   editChosen: function () {
@@ -1762,7 +1764,7 @@ var root = {
       var self = this;
       sb.auth.signOut().then(function () { self.user = null; self.cab = null; self.view = 'landing'; self.mainKey++; });
     },
-    toSite: function () { this.view = 'landing'; this.mainKey++; },
+    toSite: function () { this.view = 'landing'; this.mainKey++; this.$nextTick(function () { window.scrollTo(0, 0); }); },
     // --- autosave ---
     onAppState: function (state) {
       var self = this, timer = null;
@@ -1805,6 +1807,7 @@ root.methods.onDone = function(plan,spheres) {
   this.cab = {plan:plan || 'premium',spheres:spheres,data:(this.cab && this.cab.data) || {}};
   saveDemo(this.cab); this.appKey++; this.view='app';
 };
+root.methods.toSite = function() { if(this.cab) saveDemo(this.cab); this.view='landing'; this.mainKey++; this.$nextTick(function(){window.scrollTo(0,0);}); };
 root.methods.logout = function() { this.toSite(); };
 root.methods.onAppState = function(state) {
   var self=this;
