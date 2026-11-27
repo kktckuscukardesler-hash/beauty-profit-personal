@@ -310,7 +310,6 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-media textarea{min-height:145px;resize:vertical}
 .bp-media-heading{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px}
 .bp-media-heading h3{margin:0;font-size:16px}
-.bp-media-heading span{color:#80344f;font-weight:700;font-size:13px}
 .bp-media-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .bp-media-thumb,.bp-media-add{aspect-ratio:1;border-radius:14px;overflow:hidden}
 .bp-media-thumb{position:relative}
@@ -405,7 +404,7 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 <header><button type="button" aria-label="Закрыть" @click="$refs.mediaSheet.close()">×</button><h2 id="bp-media-title">Фото и описание услуги</h2></header>
 <div class="bp-media-content">
 <textarea v-model="card.description" rows="5" aria-label="Описание услуги" placeholder="Описание услуги"></textarea>
-<div class="bp-media-heading"><h3>Фотографии</h3><span>Premium</span></div>
+<div class="bp-media-heading"><h3>Фотографии</h3></div>
 <div class="bp-media-grid">
 <div class="bp-media-thumb" v-for="(photo,index) in card.photos" :key="index"><img :src="photo" :alt="'Фото услуги '+(index+1)"><button type="button" :aria-label="'Удалить фото '+(index+1)" @click="card.photos.splice(index,1)">×</button></div>
 <button class="bp-media-add" type="button" aria-label="Добавить фотографии" :disabled="photoBusy" @click="$refs.mediaInput.click()">{{ photoBusy ? '…' : '+' }}</button>
