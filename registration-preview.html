@@ -426,41 +426,6 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 
 .bp-pick-open{font-size:15px;font-weight:700;min-height:48px;padding:10px 22px;border-radius:999px;border:1.5px solid #8E2F56;background:#fff;color:#8E2F56;cursor:pointer}
 .bpd{display:flex;flex-direction:column;gap:16px}
-.bpd2{display:flex;flex-direction:column;gap:16px}
-.bpd2-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
-.bpd2-main{display:flex;flex-direction:column;gap:16px;min-width:0}
-.bpd2-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.bpd2-kpi strong{display:block;font-size:26px;font-weight:800;color:#30232c;letter-spacing:-.02em}
-.bpd2-kpi>div{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;flex-wrap:wrap}
-.bpd2-kpi span{font-size:13px;color:#7c6470}
-.bpd2-kpi em{font-style:normal;font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px}.bpd2-kpi em.up{background:#e8f5ee;color:#2f8a5b}.bpd2-kpi em.down{background:#fbe8ee;color:#c0395f}
-.bpd2-sched-scroll{overflow-x:auto}
-.bpd2-sched-grid{display:grid;grid-template-columns:52px repeat(4,minmax(150px,1fr));gap:8px;min-width:660px}
-.bpd2-times{position:relative;margin-top:30px}
-.bpd2-times span{position:absolute;left:0;transform:translateY(-50%);font-size:11px;color:#9a8290}
-.bpd2-col-head{height:30px;font-size:12px;font-weight:800;color:#6B1F40;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bpd2-col-body{position:relative;border-radius:12px;background:#FCF8FA}
-.bpd2-line{position:absolute;left:0;right:0;height:1px;background:#F0E4EA}
-.bpd2-block{position:absolute;left:4px;right:4px;border:0;border-left:4px solid var(--c);border-radius:10px;background:color-mix(in srgb,var(--c) 14%,#fff);padding:6px 8px;text-align:left;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;gap:2px;box-shadow:0 2px 8px #8e2f5614}
-.bpd2-block b{font-size:12px;color:#30232c;line-height:1.2}.bpd2-block small{font-size:11px;color:#7c6470}
-.bpd2-block.done{opacity:.55}
-.bpd2-empty-note{margin:10px 0 0;font-size:13px;color:#9a8290;text-align:center}
-.bpd2-chart-wrap{position:relative}
-.bpd2-tip{position:absolute;transform:translate(-50%,-140%);background:#8E2F56;color:#fff;font-size:11px;font-weight:800;padding:4px 8px;border-radius:8px;white-space:nowrap;pointer-events:none}
-.bpd2-months{display:grid;grid-template-columns:repeat(12,1fr);font-size:11px;color:#9a8290;text-align:center;margin-top:4px}.bpd2-months .on{color:#8E2F56;font-weight:800}
-.bpd2-side{position:sticky;top:12px}
-.bpd2-today{border:1.5px solid #E2BFD0;background:#fff;color:#8E2F56;border-radius:10px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer}
-.bpd2-weeknav{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:13px;font-weight:700;color:#4d3a45}
-.bpd2-weeknav button{width:32px;height:32px;border-radius:10px;border:1px solid #F0E4EA;background:#fff;color:#8E2F56;font-size:18px;cursor:pointer}
-.bpd2-week button.istoday:not(.today) b{color:#8E2F56}
-.bpd2-daytitle{margin:14px 0 8px!important;font-size:14px!important;color:#30232c!important}
-.bpd2-appt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid #F3E6EC;border-left:4px solid var(--c);background:#fff;border-radius:14px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
-.bpd2-appt:hover{background:#FBF5F8}.bpd2-appt.done{opacity:.6}
-.bpd2-appt-txt{flex:1;min-width:0}.bpd2-appt-txt b{display:block;font-size:14px;color:#30232c}.bpd2-appt-txt small{display:block;font-size:12px;color:#8a6f7c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bpd2-price{font-weight:800;color:#8E2F56;font-size:14px;white-space:nowrap}
-.bpd2-add{width:100%;margin-top:6px;border:0;border-radius:12px;padding:12px;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;font-weight:800;font-size:14px;cursor:pointer}
-@media (max-width:1100px){.bpd2-grid{grid-template-columns:minmax(0,1fr)}.bpd2-side{position:static;order:-1}}
-@media (max-width:600px){.bpd2-kpis{grid-template-columns:1fr 1fr 1fr;gap:8px}.bpd2-kpi{padding:12px!important}.bpd2-kpi strong{font-size:18px}.bpd2-kpi span{font-size:11px}}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
 .bpd-head p{margin:4px 0 0;color:#7c6470;font-size:14px}
@@ -1252,31 +1217,40 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 </template>
 
-<template v-if="v.tabDash"><div class="bp-dash bpd2">
-<div class="bpd-head"><div><h1>Здравствуйте{{ v.dashboard.who ? ', ' + v.dashboard.who : '' }}!</h1><p>С возвращением. Вот как идут дела.</p></div></div>
-<div class="bpd2-grid">
-<div class="bpd2-main">
-<div class="bpd2-kpis"><div v-for="k in v.dashboard.kpis" :key="k.label" class="bpd-card bpd2-kpi"><strong>{{ k.value }}</strong><div><span>{{ k.label }}</span><em v-if="k.delta" :class="k.up ? 'up' : 'down'">{{ k.up ? '↑' : '↓' }} {{ k.delta }}</em></div></div></div>
-<section class="bpd-card bpd2-sched"><div class="bpd-card-head"><h2>Расписание</h2><span class="bpd-muted">{{ v.dashboard.selTitle }} и 3 следующих дня</span></div>
-<div class="bpd2-sched-scroll"><div class="bpd2-sched-grid">
-<div class="bpd2-times" :style="{height: v.dashboard.schedHeight}"><span v-for="h in v.dashboard.hours" :key="h.label" :style="{top: h.top + 'px'}">{{ h.label }}</span></div>
-<div v-for="c in v.dashboard.schedCols" :key="c.key" class="bpd2-col"><div class="bpd2-col-head">{{ c.title }}</div><div class="bpd2-col-body" :style="{height: v.dashboard.schedHeight}"><i v-for="h in v.dashboard.hours" :key="h.label" class="bpd2-line" :style="{top: h.top + 'px'}"></i><button v-for="b in c.blocks" :key="b.id" type="button" class="bpd2-block" :class="{done: b.done}" :style="{top: b.top, height: b.height, '--c': b.color}" @click="b.open"><b>{{ b.service }}</b><small>{{ b.client }} · {{ b.time }}</small></button></div></div>
-</div></div>
-<p v-if="v.dashboard.schedEmpty" class="bpd2-empty-note">В эти дни записей нет. Выберите другой день справа или добавьте запись.</p></section>
-<section class="bpd-card bpd2-sales"><div class="bpd-card-head"><h2>Продажи</h2><span class="bpd-muted">по месяцам, {{ v.dashboard.salesYear }}</span></div>
-<div v-if="v.dashboard.salesEmpty" class="bp-empty">Отметьте записи выполненными — здесь появится доход по месяцам.</div>
-<template v-else><div class="bpd2-chart-wrap"><svg class="bpd-chart" viewBox="0 0 400 150" preserveAspectRatio="none" role="img" aria-label="Доход по месяцам"><defs><linearGradient id="bpdSales" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C25B86" stop-opacity=".32"/><stop offset="1" stop-color="#C25B86" stop-opacity="0"/></linearGradient></defs><line x1="10" x2="390" y1="18" y2="18" stroke="#EFE4EA" stroke-dasharray="3 5"/><line x1="10" x2="390" y1="73" y2="73" stroke="#EFE4EA" stroke-dasharray="3 5"/><line x1="10" x2="390" y1="128" y2="128" stroke="#EFE4EA"/><line :x1="v.dashboard.curX" :x2="v.dashboard.curX" :y1="v.dashboard.curY" y2="128" stroke="#C25B86" stroke-dasharray="3 3"/><path :d="v.dashboard.salesArea" fill="url(#bpdSales)"/><path :d="v.dashboard.salesPath" fill="none" stroke="#8E2F56" stroke-width="2.4"/></svg><span class="bpd2-tip" :style="{left: (v.dashboard.curX / 4) + '%', top: (v.dashboard.curY / 1.5) + '%'}">{{ v.dashboard.curVal }}</span></div>
-<div class="bpd2-months"><span v-for="(m,i) in v.dashboard.salesMonths" :key="m" :class="{on: i === v.dashboard.curMonth}">{{ m }}</span></div></template></section>
+<template v-if="v.tabDash"><div class="bp-dash bpd">
+<div class="bpd-head"><div><h1>Здравствуйте{{ v.dashboard.who ? ', ' + v.dashboard.who : '' }}!</h1><p>С возвращением. Вот как идут дела.</p></div><div class="bpd-user"><span class="bpd-avatar">{{ v.dashboard.whoInitial }}</span><span><b>{{ v.dashboard.who || 'Мастер' }}</b><small>{{ v.planName }}</small></span></div></div>
+<div class="bpd-grid">
+<section class="bpd-card bpd-fin"><div class="bpd-card-head"><h2>Финансовая аналитика</h2><div class="bpd-seg"><button type="button" :class="{on: v.dashboard.range===7}" @click="v.dashboard.setWeek">Неделя</button><button type="button" :class="{on: v.dashboard.range===30}" @click="v.dashboard.setMonth">Месяц</button></div></div>
+<div class="bpd-legend"><span><i style="background:#8E2F56"></i>Доход</span><span><i style="background:#E6A9C3"></i>Расходы</span><span v-if="v.dashboard.tInc !== v.dashboard.tProfit || v.dashboard.chartMax.indexOf('1 ') !== 0" class="bpd-max">макс. {{ v.dashboard.chartMax }}</span></div>
+<svg class="bpd-chart" viewBox="0 0 400 150" preserveAspectRatio="none" role="img" aria-label="Доходы и расходы по дням"><defs><linearGradient id="bpdInc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C25B86" stop-opacity=".35"/><stop offset="1" stop-color="#C25B86" stop-opacity="0"/></linearGradient></defs><line v-for="y in v.dashboard.gridY" :key="y" x1="10" x2="390" :y1="y" :y2="y" stroke="#EFE4EA" stroke-dasharray="3 5"/><path :d="v.dashboard.incArea" fill="url(#bpdInc)"/><path :d="v.dashboard.cstLine" fill="none" stroke="#E6A9C3" stroke-width="2" stroke-linecap="round"/><path :d="v.dashboard.incLine" fill="none" stroke="#8E2F56" stroke-width="2.4" stroke-linecap="round"/></svg>
+<div class="bpd-xaxis"><span v-for="(l,i) in v.dashboard.xLabels" :key="i">{{ l }}</span></div></section>
+<div class="bpd-money">
+<section class="bpd-card bpd-mini"><div><h3>Доход</h3><strong>{{ v.dashboard.tInc }}</strong><small :class="v.dashboard.incUp ? 'up' : 'down'">{{ v.dashboard.incUp ? '↗' : '↘' }} {{ v.dashboard.incDelta }} {{ v.dashboard.prevLabel }}</small></div><svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="bpdSp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C25B86" stop-opacity=".35"/><stop offset="1" stop-color="#C25B86" stop-opacity="0"/></linearGradient></defs><path :d="v.dashboard.incSpark.area" fill="url(#bpdSp1)"/><path :d="v.dashboard.incSpark.line" fill="none" stroke="#8E2F56" stroke-width="2"/></svg></section>
+<section class="bpd-card bpd-mini"><div><h3>Расходы и налог</h3><strong>{{ v.dashboard.tCst }}</strong><small :class="v.dashboard.cstUp ? 'down' : 'up'">{{ v.dashboard.cstUp ? '↗' : '↘' }} {{ v.dashboard.cstDelta }} {{ v.dashboard.prevLabel }}</small></div><svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path :d="v.dashboard.cstSpark.area" fill="#F6E3EC"/><path :d="v.dashboard.cstSpark.line" fill="none" stroke="#D98AAB" stroke-width="2"/></svg></section>
+<section class="bpd-card bpd-profit"><h3>Чистая прибыль {{ v.dashboard.rangeLabel }}</h3><strong>{{ v.dashboard.tProfit }}</strong></section>
 </div>
-<aside class="bpd-card bpd2-side"><div class="bpd-card-head"><h2>Записи</h2><button type="button" class="bpd2-today" @click="v.dashboard.toToday">Сегодня</button></div>
-<div class="bpd2-weeknav"><button type="button" aria-label="Предыдущая неделя" @click="v.dashboard.prevWeek">‹</button><span>{{ v.dashboard.weekTitle }}</span><button type="button" aria-label="Следующая неделя" @click="v.dashboard.nextWeek">›</button></div>
-<div class="bpd-week bpd2-week"><button v-for="d in v.dashboard.week" :key="d.key" type="button" :class="{today: d.on, istoday: d.today}" @click="d.pick"><small>{{ d.wd }}</small><b>{{ d.num }}</b><i v-if="d.has"></i></button></div>
-<h3 class="bpd2-daytitle">{{ v.dashboard.selTitle }}</h3>
-<button v-for="a in v.dashboard.dayList" :key="a.id" type="button" class="bpd2-appt" :class="{done: a.done}" :style="{'--c': a.color}" @click="a.open"><span class="bpd-avatar sm">{{ a.initial }}</span><span class="bpd2-appt-txt"><b>{{ a.client }}</b><small>{{ a.service }}</small><small>{{ a.time }}{{ a.done ? ' · выполнено' : '' }}</small></span><span class="bpd2-price">{{ a.price }}</span></button>
-<div v-if="!v.dashboard.dayList.length" class="bp-empty">На этот день записей нет</div>
-<button type="button" class="bpd2-add" @click="v.dashboard.newAppt">+ Новая запись</button>
+<aside class="bpd-side">
+<section class="bpd-card bpd-cal"><div class="bpd-card-head"><h2>{{ v.dashboard.monthTitle }}</h2></div><div class="bpd-week"><button v-for="d in v.dashboard.cal" :key="d.num" type="button" :class="{today: d.today}" @click="d.open"><small>{{ d.wd }}</small><b>{{ d.num }}</b><i v-if="d.has"></i></button></div></section>
+<section class="bpd-card bpd-today"><div class="bpd-card-head"><h2>Сегодня</h2><button type="button" class="bp-text-btn" @click="v.dashboard.openAppts">Все записи →</button></div>
+<button v-for="a in v.dashboard.todayList" :key="a.id" type="button" class="bpd-meet" :class="{done: a.done}" @click="a.open"><span class="bpd-avatar sm">{{ a.initial }}</span><span class="bpd-meet-txt"><b>{{ a.client }}</b><small>{{ a.service }}</small><small>{{ a.time }}{{ a.done ? ' · выполнено' : '' }}</small></span></button>
+<div v-if="!v.dashboard.todayList.length" class="bp-empty">На сегодня записей нет</div>
+<div class="bpd-card-head bpd-sub"><h2>Ближайшие</h2></div>
+<button v-for="a in v.dashboard.upcoming.filter(x => x.date !== 'Сегодня')" :key="'u'+a.id" type="button" class="bpd-meet" @click="a.open"><span class="bpd-avatar sm">{{ a.initial }}</span><span class="bpd-meet-txt"><b>{{ a.client }}</b><small>{{ a.service }}</small><small>{{ a.time }} · {{ a.date }}</small></span></button>
+<div v-if="!v.dashboard.upcoming.filter(x => x.date !== 'Сегодня').length" class="bp-empty">Пока нет предстоящих записей</div></section>
 </aside>
+<section class="bpd-card bpd-res"><div class="bpd-card-head"><h2>Записи по дням</h2><div class="bpd-legend"><span><i style="background:#E6A9C3"></i>Прошлая неделя</span><span><i style="background:#8E2F56"></i>Эта неделя</span></div></div>
+<div class="bpd-bars"><div v-for="r in v.dashboard.res" :key="r.wd" class="bpd-bar"><div class="bpd-bar-pair"><span class="prev" :style="{height: r.prev}" :title="r.prevN"></span><span class="now" :style="{height: r.now}" :title="r.nowN"></span></div><small>{{ r.wd }}</small></div></div>
+<p class="bpd-note">На этой неделе {{ v.dashboard.resThis }}, на прошлой {{ v.dashboard.resLast }}</p></section>
+<section class="bpd-card bpd-visits"><div class="bpd-card-head"><h2>Визиты</h2><span class="bpd-muted">30 дней</span></div>
+<div v-for="r in v.dashboard.visits" :key="r.label" class="bpd-vrow"><div><span>{{ r.label }}</span><b>{{ r.n }}</b></div><div class="bpd-track"><span :style="{width: r.w, background: r.color}"></span></div></div></section>
+<section class="bpd-card bpd-svcs"><div class="bpd-card-head"><h2>Услуги</h2><span class="bpd-muted">доход, 30 дней</span></div>
+<div v-if="v.dashboard.donutEmpty" class="bp-empty">Отметьте записи выполненными — здесь появится доля каждой услуги.</div>
+<div v-else class="bpd-donut-wrap"><svg class="bpd-donut" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="#F3E6EC" stroke-width="12"/><circle v-for="s in v.dashboard.donut" :key="s.name" cx="50" cy="50" r="40" fill="none" :stroke="s.color" stroke-width="12" :stroke-dasharray="s.dash" :stroke-dashoffset="s.offset" transform="rotate(-90 50 50)"/><text x="50" y="48" text-anchor="middle" class="bpd-donut-n">{{ v.dashboard.donut[0] ? v.dashboard.donut[0].pct : '' }}</text><text x="50" y="60" text-anchor="middle" class="bpd-donut-s">{{ v.dashboard.donutCount }} визитов</text></svg>
+<ul class="bpd-dlist"><li v-for="s in v.dashboard.donut" :key="'l'+s.name"><i :style="{background: s.color}"></i><span>{{ s.name }}</span><b>{{ s.pct }}</b></li></ul></div></section>
+<section class="bpd-card bpd-sched"><div class="bpd-card-head"><h2>Записи на 10 дней</h2><span class="bpd-muted">по услугам</span></div>
+<div v-if="!v.dashboard.sched.length" class="bp-empty">Добавьте услуги в «Мои услуги» — здесь появится расписание по ним.</div><div v-else class="bpd-sched-scroll"><table><thead><tr><th>Услуга</th><th v-for="d in v.dashboard.schedDays" :key="d">{{ d }}</th></tr></thead><tbody><tr v-for="r in v.dashboard.sched" :key="r.name"><td>{{ r.name }}</td><td v-for="(c,i) in r.cells" :key="i"><span class="bpd-dot" :class="{on: c}" :style="c ? {background: r.color} : {}">{{ c ? '✓' : '' }}</span></td></tr></tbody></table></div></section>
 </div>
+<div class="bpd-actions"><button type="button" @click="v.dashboard.openAppts">+ Новая запись</button><button type="button" @click="v.dashboard.openClients">+ Новый клиент</button><button type="button" @click="v.dashboard.openCalc">Рассчитать услугу</button></div>
 </div></template>
 
 <template v-if="v.tabSvcs">
@@ -2478,65 +2452,6 @@ var dashboard = {total:money(dashTotal),profit:money(dashProfit),cost:money(dash
     res: res, resThis: sum(weekKeys.map(cntOn)), resLast: sum(lastWeekKeys.map(cntOn)),
     cal: cal, monthTitle: monthTitle, visits: visits, donut: donut, donutEmpty: !svcArr.length, donutCount: dashDone.length,
     sched: sched, schedDays: nextKeys.map(function (k) { return bpcParse(k).getDate(); }), todayList: todayList
-  });
-})();
-
-// ===== «Обзор» v2: расписание дня, продажи, записи справа =====
-(function () {
-  var BPC_MO2 = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-  var WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-  var palette = ['#8E2F56', '#B8507D', '#6B1F40', '#D98AAB', '#A3466F'];
-  var td = bpcParse(st.today);
-  var selDay = st.dashDay || st.today;
-  var wOff = st.dashWeek || 0;
-  var monday = bpcAdd(td, -((td.getDay() + 6) % 7) + 7 * wOff);
-  var week = Array.from({ length: 7 }, function (_, i) { var k = bpcKey(bpcAdd(monday, i)); var d = bpcParse(k); var n = appts.filter(function (a) { return a.date === k; }).length; return { key: k, wd: WD[i], num: d.getDate(), on: k === selDay, today: k === st.today, has: n > 0, pick: function () { up({ dashDay: k }); } }; });
-  var weekTitle = (function () { var a = bpcParse(week[0].key), b = bpcParse(week[6].key); return a.getDate() + ' ' + BPC_MO2[a.getMonth()] + ' — ' + b.getDate() + ' ' + BPC_MO2[b.getMonth()]; })();
-  var durOf = function (a) { var t = Number(self.svcOf(a.svc).time); return t > 0 ? t : 1; };
-  var hm = function (h) { var H = Math.floor(h), M = Math.round((h - H) * 60); if (M === 60) { H++; M = 0; } return (H < 10 ? '0' : '') + H + ':' + (M < 10 ? '0' : '') + M; };
-  var toH = function (t) { var p = String(t || '12:00').split(':'); return (+p[0] || 0) + (+p[1] || 0) / 60; };
-  var svcColor = {}; var ci = 0;
-  var colorOf = function (name) { if (!svcColor[name]) { svcColor[name] = palette[ci++ % palette.length]; } return svcColor[name]; };
-  // список записей выбранного дня
-  var dayList = appts.filter(function (a) { return a.date === selDay; }).sort(function (a, b) { return a.time.localeCompare(b.time); }).map(function (a) { var s0 = toH(a.time), nm = self.svcOf(a.svc).name; return { id: a.id, client: nameOf(a.clientId), initial: (nameOf(a.clientId) || '?').slice(0, 1).toUpperCase(), service: nm, time: hm(s0) + ' – ' + hm(s0 + durOf(a)), price: money(a.price), done: a.done, color: colorOf(nm), open: function () { up({ tab: 'appts', day: a.date }); } }; });
-  var selD = bpcParse(selDay);
-  var selTitle = selDay === st.today ? 'Сегодня' : (WD[(selD.getDay() + 6) % 7] + ', ' + selD.getDate() + ' ' + BPC_MO2[selD.getMonth()]);
-  // расписание: 4 дня начиная с выбранного
-  var cols = Array.from({ length: 4 }, function (_, i) { return bpcKey(bpcAdd(selD, i)); });
-  var colAppts = cols.map(function (k) { return appts.filter(function (a) { return a.date === k; }); });
-  var minH = 9, maxH = 19;
-  colAppts.forEach(function (list) { list.forEach(function (a) { var s0 = toH(a.time); minH = Math.min(minH, Math.floor(s0)); maxH = Math.max(maxH, Math.ceil(s0 + durOf(a))); }); });
-  var ROW = 52;
-  var hours = []; for (var h = minH; h <= maxH; h++) { hours.push({ label: hm(h), top: (h - minH) * ROW }); }
-  var schedCols = cols.map(function (k, i) { var d = bpcParse(k); return { key: k, title: (k === st.today ? 'Сегодня' : WD[(d.getDay() + 6) % 7]) + ', ' + d.getDate() + ' ' + BPC_MO2[d.getMonth()], blocks: colAppts[i].map(function (a) { var s0 = toH(a.time), du = durOf(a), nm = self.svcOf(a.svc).name, c = colorOf(nm); return { id: a.id, service: nm, client: nameOf(a.clientId), time: hm(s0) + '–' + hm(s0 + du), top: ((s0 - minH) * ROW + 2) + 'px', height: Math.max(26, du * ROW - 4) + 'px', color: c, done: a.done, open: function () { up({ tab: 'appts', day: k }); } }; }) }; });
-  // KPI
-  var monthKey = st.today.slice(0, 7);
-  var prevMonth = (function () { var d = new Date(td.getFullYear(), td.getMonth() - 1, 1); return bpcKey(d).slice(0, 7); })();
-  var revM = doneAppts.filter(function (a) { return a.date.slice(0, 7) === monthKey; }).reduce(function (t, a) { return t + a.price; }, 0);
-  var revP = doneAppts.filter(function (a) { return a.date.slice(0, 7) === prevMonth; }).reduce(function (t, a) { return t + a.price; }, 0);
-  var todayN = appts.filter(function (a) { return a.date === st.today; }).length;
-  var ydN = appts.filter(function (a) { return a.date === bpcKey(bpcAdd(td, -7)); }).length;
-  var pct = function (now, before) { if (!before) { return now ? '+100%' : '0%'; } var d = Math.round((now - before) / before * 100); return (d > 0 ? '+' : '') + d + '%'; };
-  var kpis = [
-    { label: 'Клиентов в базе', value: String(clients.length), delta: '', up: true },
-    { label: 'Доход за ' + ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'][td.getMonth()], value: money(revM), delta: pct(revM, revP), up: revM >= revP },
-    { label: 'Записей сегодня', value: String(todayN), delta: pct(todayN, ydN), up: todayN >= ydN }
-  ];
-  // продажи по месяцам текущего года
-  var yr = td.getFullYear();
-  var monthsInc = Array.from({ length: 12 }, function (_, m) { var key = yr + '-' + (m < 9 ? '0' : '') + (m + 1); return doneAppts.filter(function (a) { return a.date.slice(0, 7) === key; }).reduce(function (t, a) { return t + a.price; }, 0); });
-  var mMax = Math.max.apply(null, [1].concat(monthsInc));
-  var W = 400, top = 18, bot = 128;
-  var pts = monthsInc.map(function (v, i) { return [10 + i * (W - 20) / 11, bot - (bot - top) * v / mMax]; });
-  var path = ''; if (pts.length) { path = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1); for (var i = 0; i < pts.length - 1; i++) { var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2; path += ' C' + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + ',' + Math.min(bot, p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + ' ' + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + ',' + Math.min(bot, p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1); } }
-  var curM = td.getMonth();
-  Object.assign(dashboard, {
-    week: week, weekTitle: weekTitle, prevWeek: function () { up({ dashWeek: wOff - 1 }); }, nextWeek: function () { up({ dashWeek: wOff + 1 }); }, toToday: function () { up({ dashWeek: 0, dashDay: st.today }); },
-    dayList: dayList, selTitle: selTitle, newAppt: function () { up({ tab: 'appts', day: selDay }); },
-    schedCols: schedCols, hours: hours, schedHeight: ((maxH - minH) * ROW + 8) + 'px', schedEmpty: !colAppts.some(function (l) { return l.length; }),
-    kpis: kpis,
-    salesPath: path, salesArea: path ? path + ' L' + (W - 10) + ',' + bot + ' L10,' + bot + ' Z' : '', salesMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'], curMonth: curM,
-    curX: pts[curM] ? pts[curM][0] : 0, curY: pts[curM] ? pts[curM][1] : bot, curVal: money(monthsInc[curM]), salesYear: yr, salesMax: money(mMax), salesEmpty: !monthsInc.some(function (v) { return v; })
   });
 })();
 
