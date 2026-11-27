@@ -340,7 +340,13 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-client-fields{display:grid;gap:14px;margin-bottom:16px;color:white}
 .bp-client-fields label{display:block}.bp-client-fields input{margin-top:6px;color:#30272d!important;-webkit-text-fill-color:#30272d;background:white!important}
 </style>
-</head>
+<style>
+.bp-contact-list{margin:10px 0}
+.bp-contact-row{display:flex;align-items:center;gap:12px;min-height:58px;color:#fff8fb;cursor:pointer;border-bottom:1px solid #ffffff26}
+.bp-contact-row small{display:block;color:#efdce6}.bp-contact-row>span:nth-child(2){flex:1;overflow-wrap:anywhere}
+.bp-contact-avatar{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:50%;background:#895772}
+.bp-signup-form .bp-contact-row input[type=checkbox]{width:20px;height:20px;min-height:0;padding:0;accent-color:#c34f86}
+</style></head>
 <body>
 <div id="app" v-cloak></div>
 
@@ -477,14 +483,23 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="clientEntry=true">Добавить моих клиентов</button><button type="button" class="bp-client-skip" @click="signupNext">Пропустить</button></div>
             </template>
             <template v-else>
-              <h1>Мои клиенты</h1>
-              <form class="bp-client-fields" @submit.prevent="saveSignupClient">
+              <h1>Добавьте клиентов</h1>
+              <label v-if="clientChoices.length" class="bp-client-fields"><input v-model.trim="clientQuery" type="search" placeholder="Поиск клиентов" aria-label="Поиск клиентов"></label>
+              <div class="bp-contact-list"><label v-for="c in visibleContacts" :key="JSON.stringify([c.name,c.phone])" class="bp-contact-row">
+                <span aria-hidden="true" class="bp-contact-avatar">{{c.name.slice(0,1).toLocaleUpperCase()}}</span>
+                <span>{{c.name}}<small v-if="c.phone">{{c.phone}}</small></span>
+                <input type="checkbox" v-model="c.selected">
+              </label></div>
+              <p v-if="clientChoices.length && !visibleContacts.length">Совпадений нет</p>
+              <button v-if="canPickContacts" class="bp-signup-category" type="button" @click="pickContacts">Выбрать из контактов телефона</button>
+              <button type="button" class="bp-client-skip" @click="manualClient=!manualClient">Добавить вручную</button>
+              <form v-if="manualClient" class="bp-client-fields" @submit.prevent="saveSignupClient">
                 <label>Имя клиента<input v-model.trim="clientName" required></label>
-                <label>Телефон <small>(по желанию)</small><input v-model.trim="clientPhone" type="tel"></label>
-                <button type="submit" class="bp-signup-primary" :disabled="!clientName">Добавить клиента</button>
+                <label>Телефон (по желанию)<input v-model.trim="clientPhone" type="tel"></label>
+                <button type="submit" class="bp-signup-primary" :disabled="!clientName">Добавить в список</button>
               </form>
               <p role="status">{{clientNotice}}</p>
-              <div class="bp-signup-bottom"><button class="bp-signup-primary" type="button" @click="signupNext">Продолжить</button></div>
+              <div class="bp-signup-bottom"><button class="bp-signup-primary" type="button" @click="confirmClients">{{clientChoices.some(c => c.selected) ? 'Добавить выбранных · ' + clientChoices.filter(c => c.selected).length : 'Пропустить'}}</button></div>
             </template>
           </div>
           <div v-else class="bp-signup-form">
@@ -2327,6 +2342,7 @@ var root = {
     "Японский маникюр"
   ]
 }).flatMap(([category, names]) => names.map(name => ({ category, name, selected: false }))),
+      clientChoices:[], clientQuery:'', manualClient:false, canPickContacts:!!(navigator.contacts && navigator.contacts.select),
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
       signupName: '',
@@ -2361,6 +2377,10 @@ var root = {
     },
     orderedSignupCategories: function() {
       return this.signupCategories.filter(category => this.signupSelected.includes(category));
+    },
+    visibleContacts: function() {
+      const query = this.clientQuery.toLocaleLowerCase();
+      return this.clientChoices.filter(c => (c.name+' '+c.phone).toLocaleLowerCase().includes(query));
     },
     currencyMatches: function () {
       const query = this.currencyQuery.toLocaleLowerCase("ru");
@@ -2527,21 +2547,46 @@ root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.
 root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;var dx=e.changedTouches[0].clientX-this.welcomeX,dy=e.changedTouches[0].clientY-this.welcomeY;if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.25)this.welcomeMove(dx<0?1:-1); };
 root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view=mode==='signup'?'signupSteps':'welcomeAuth';if(mode==='signup')this.signupStep=1;window.scrollTo(0,0); };
 root.methods.signupScroll = function(){this.$nextTick(function(){window.scrollTo(0,0);});};
-root.methods.saveSignupClient = function() {
-  const name = this.clientName.trim();
+root.methods.stageClient = function(name, phone) {
+  name = name.trim();
+  phone = phone.trim();
   if (!name) return;
+  const same = this.clientChoices.find(c => this.sameContact(c, {name,phone}));
+  if (same) same.selected = true;
+  else this.clientChoices.push({name,phone,selected:true});
+};
+root.methods.sameContact = function(a,b) {
+  const digits = value => String(value || '').replace(/\D/g,'');
+  return a.name.trim().toLowerCase() === b.name.trim().toLowerCase() && digits(a.phone) === digits(b.phone);
+};
+root.methods.pickContacts = async function() {
+  this.clientNotice = '';
+  try {
+    const contacts = await navigator.contacts.select(['name','tel'], {multiple:true});
+    for (const contact of contacts) this.stageClient((contact.name || [])[0] || (contact.tel || [])[0] || '', (contact.tel || [])[0] || '');
+  } catch (error) {
+    if (error.name !== 'AbortError') this.clientNotice = 'Можно добавить клиента вручную.';
+  }
+};
+root.methods.saveSignupClient = function() {
+  this.stageClient(this.clientName,this.clientPhone);
+  this.clientName = ''; this.clientPhone = ''; this.manualClient = false; this.clientQuery = '';
+};
+root.methods.confirmClients = function() {
+  const selected = this.clientChoices.filter(c => c.selected);
+  if (!selected.length) { this.signupNext(); return; }
   const cab = loadDemo() || this.cab;
   const data = cab.data || {};
-  const clients = data.clients || [];
+  const clients = (data.clients || []).slice();
   let seq = Number(data.seq) || 10;
-  while (clients.some(client => client.id === 'c' + seq)) seq++;
-  const client = {id:'c' + seq, name, phone:this.clientPhone.trim(), note:''};
-  const next = Object.assign({}, cab, {data:Object.assign({}, data, {clients:clients.concat(client), seq:seq+1})});
-  if (!saveDemo(next)) { this.clientNotice = 'Не удалось сохранить клиента на устройстве.'; return; }
-  this.cab = next;
-  this.clientName = '';
-  this.clientPhone = '';
-  this.clientNotice = 'Клиент добавлен: ' + name;
+  for (const contact of selected) {
+    if (clients.some(c => this.sameContact(c,contact))) continue;
+    while (clients.some(c => c.id === 'c'+seq)) seq++;
+    clients.push({id:'c'+seq++, name:contact.name, phone:contact.phone, note:''});
+  }
+  const next = Object.assign({},cab,{data:Object.assign({},data,{clients,seq})});
+  if (!saveDemo(next)) { this.clientNotice='Не удалось сохранить клиентов на устройстве.'; return; }
+  this.cab = next; this.signupNext();
 };
 root.methods.signupBack = function(){if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
 root.methods.signupNext = function() {
