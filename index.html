@@ -401,6 +401,20 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bpc-cabinet .bp-top-actions>span{display:inline-flex!important;align-items:center;white-space:nowrap;font-size:12px!important;font-weight:700!important;padding:8px 12px!important;border-radius:999px!important}
 .bpc-cabinet .bp-top-actions button{min-height:40px!important;padding:8px 16px!important;font-size:14px!important;font-weight:700!important;border-radius:12px!important;color:#6B1F40!important;border:1.5px solid #E2BFD0!important;background:#fff!important}
 @media (max-width:760px){.bpc-cabinet header>div{flex-wrap:wrap!important;row-gap:4px!important}.bpc-cabinet header .bp-spheres{order:1;flex-basis:100%!important}.bpc-cabinet .bp-top-actions{order:2;width:100%;justify-content:flex-end}.bpc-cabinet .bp-top-actions button{min-height:36px!important;padding:6px 14px!important}}
+
+.bp-pick{background:#fff;border:1px solid #F0E4EA;border-radius:18px;padding:16px 18px;box-shadow:0 6px 24px #8e2f560f;display:flex;flex-direction:column;gap:12px}
+.bp-pick-head b{display:block;font-size:16px;color:#30232c}.bp-pick-head small{display:block;font-size:13px;color:#7c6470;margin-top:4px}
+.bp-pick-title{font-size:13px;font-weight:800;color:#6B1F40;margin-bottom:6px}
+.bp-pick-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:8px}
+.bp-pick-item{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:10px 14px;border-radius:12px;border:1.5px solid #EAD9E1;background:#FCF8FA;color:#30232c;font-size:14px;font-weight:700;text-align:left;cursor:pointer}
+.bp-pick-item i{font-style:normal;color:#C25B86;font-size:16px;font-weight:800;flex:none}
+.bp-pick-item.on{border-color:#8E2F56;background:#F6E3EC}.bp-pick-item.on i{color:#8E2F56}
+.bp-pick-item.has{opacity:.55;cursor:default}.bp-pick-item.has i{font-size:11px;color:#9a8290;font-weight:700}
+.bp-pick-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.bp-pick-cancel{border:1.5px solid #E2BFD0;background:#fff;color:#6B1F40;border-radius:12px;padding:10px 18px;font-weight:700;font-size:14px;cursor:pointer}
+.bp-pick-add{border:0;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;border-radius:12px;padding:10px 22px;font-weight:800;font-size:14px;cursor:pointer}.bp-pick-add:disabled{opacity:.45;cursor:default}
+.bp-svc-btns{display:flex;gap:10px;flex-wrap:wrap}
+.bp-pick-open{font-size:15px;font-weight:700;min-height:48px;padding:10px 22px;border-radius:999px;border:1.5px solid #8E2F56;background:#fff;color:#8E2F56;cursor:pointer}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd2{display:flex;flex-direction:column;gap:16px}
 .bpd2-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
@@ -1259,8 +1273,12 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <h2 style="margin: 0; font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 24px">Мои услуги</h2>
 <p style="margin: 0; font-size: 14px; color: #776A71">{{ v.sphereLabel }} — нажмите на услугу, чтобы открыть её в калькуляторе</p>
 </div>
-<button type="button" @click="v.addSvcGo" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">+ Добавить услугу</button>
+<div class="bp-svc-btns"><button type="button" class="bp-pick-open" @click="v.pick.show">Выбрать из списка</button><button type="button" @click="v.addSvcGo" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">+ Своя услуга</button></div>
 </div>
+<div v-if="v.pick.open" class="bp-pick"><div class="bp-pick-head"><b>Выберите услуги — {{ v.sphereLabel }}</b><small>Тот же список, что при регистрации. Отмеченные появятся в «Мои услуги».</small></div>
+<div v-for="g in v.pick.groups" :key="g.title" class="bp-pick-group"><div v-if="v.pick.groups.length > 1" class="bp-pick-title">{{ g.title }}</div><div class="bp-pick-list"><button v-for="it in g.items" :key="it.name" type="button" class="bp-pick-item" :class="{on: it.on, has: it.has}" :disabled="it.has" :aria-pressed="it.on" @click="it.toggle"><span>{{ it.name }}</span><i>{{ it.has ? 'уже есть' : (it.on ? '✓' : '+') }}</i></button></div></div>
+<div v-if="!v.pick.groups.length" class="bp-empty">Для этой сферы готового списка нет — добавьте услугу вручную.</div>
+<div class="bp-pick-actions"><button type="button" class="bp-pick-cancel" @click="v.pick.close">Отмена</button><button type="button" class="bp-pick-add" :disabled="!v.pick.count" @click="v.pick.add">Добавить{{ v.pick.count ? ' (' + v.pick.count + ')' : '' }}</button></div></div>
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px">
 <template v-for="(sc, $index) in v.svcCards">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
@@ -2296,6 +2314,38 @@ var svcApi = {
   cancel: function () { up({ delAsk: false }); },
   remove: function () { var o = copySvcs(); var rest = svcList.filter(function (x) { return x.id !== curSvc.id; }); o[active.id] = rest; up({ svcs: o, svcId: rest.length ? rest[0].id : '', delAsk: false }); }
 };
+
+// Выбор услуг из того же списка, что при регистрации
+var pickCats = []; try { Object.keys(BP_CAT_TO_NICHE).forEach(function (c) { if (BP_CAT_TO_NICHE[c] === active.id) { pickCats.push(c); } }); } catch (e) {}
+var pickCatalog = (typeof window !== 'undefined' && window.BP_SVC_CATALOG) || {};
+var pickHave = {}; svcList.forEach(function (x) { pickHave[String(x.name || '').toLowerCase()] = true; });
+var pickSel = st.svcPicked || {};
+var pickSeen = {};
+var pickGroups = pickCats.map(function (cat) {
+  var items = (pickCatalog[cat] || []).filter(function (n) { var k = n.toLowerCase(); if (pickSeen[k]) { return false; } pickSeen[k] = true; return true; }).map(function (n) {
+    var has = !!pickHave[n.toLowerCase()], on = !has && !!pickSel[n];
+    return { name: n, has: has, on: on, toggle: function () { if (has) { return; } var o = {}; Object.keys(pickSel).forEach(function (k) { o[k] = pickSel[k]; }); o[n] = !pickSel[n]; up({ svcPicked: o }); } };
+  });
+  return { title: cat, items: items };
+}).filter(function (g) { return g.items.length; });
+var pickCount = Object.keys(pickSel).filter(function (k) { return pickSel[k] && !pickHave[k.toLowerCase()]; }).length;
+var pickApi = {
+  open: function () { up({ svcPick: true, svcPicked: {} }); },
+  close: function () { up({ svcPick: false, svcPicked: {} }); },
+  add: function () {
+    var names = Object.keys(pickSel).filter(function (k) { return pickSel[k] && !pickHave[k.toLowerCase()]; });
+    if (!names.length) { up({ svcPick: false }); return; }
+    var o = copySvcs(), list = svcList.slice(), seq = st.seq, mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; });
+    names.forEach(function (n) {
+      var idx = null; active.services.forEach(function (p, i) { if (idx == null && p[0].toLowerCase() === n.toLowerCase()) { idx = i; } });
+      var id = 'n' + (seq++);
+      list.push({ id: id, name: n, time: idx != null ? active.services[idx][1] : 1, idx: idx });
+      mm[active.id + '|' + id] = [];
+    });
+    o[active.id] = list;
+    up({ svcs: o, mats: mm, seq: seq, svcPick: false, svcPicked: {} });
+  }
+};
 var myPrice = st.prices[key] != null ? st.prices[key] : '';
 var mp = bpcNum(myPrice);
 var profit = mp * (1 - r.ded) - r.cost;
@@ -2515,7 +2565,7 @@ return {
   catClose: function () { up({ catOpen: false, catPicked: {}, catQ: '' }); },
   catSearch: function (e) { up({ catQ: e.target.value }); },
   catCustom: function () { var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = mats.concat([{ name: '', unit: 'шт', pack: '', hint: '1', price: '', use: '1' }]); up({ mats: mm, catOpen: false, catPicked: {}, catQ: '' }); },
-  svcCards: svcCards, sphereLabel: active.label, addSvcGo: function () { svcApi.add(); },
+  svcCards: svcCards, sphereLabel: active.label, addSvcGo: function () { svcApi.add(); }, pick: { open: !!st.svcPick, groups: pickGroups, count: pickCount, show: pickApi.open, close: pickApi.close, add: pickApi.add },
   svcPills: svcPills, svc: svcApi, svcName: curSvc ? curSvc.name : '', hasSvc: !!curSvc, noSvc: !curSvc, delAsk: !!st.delAsk && !!curSvc, notDelAsk: !st.delAsk && !!curSvc, svcTime: st.times[key] != null ? st.times[key] : String(r.time), matRows: matRows,
   res: { mats: money(r.mats), over: money(r.over), cost: money(r.cost), min: money(r.min), rec: money(r.rec), myPrice: myPrice,
     profit: mp > 0 ? money(profit) : '—', perHour: mp > 0 && r.time > 0 ? money(profit / r.time) : '—', status: status, statusBg: sBg, statusColor: sCol },
@@ -2592,7 +2642,7 @@ var root = {
       serviceCategory: '',
       serviceDraft: '',
       addingService: false,
-      serviceOptions: Object.entries({
+      serviceOptions: Object.entries(window.BP_SVC_CATALOG = {
   "Ногтевой сервис": [
     "Классический маникюр",
     "Аппаратный маникюр",
