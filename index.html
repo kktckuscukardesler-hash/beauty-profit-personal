@@ -592,6 +592,28 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-sphere-options button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;padding:8px 12px;border:0;border-radius:9px;background:white;color:#30272d;text-align:left;font:inherit;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
 .bp-sphere-options button[aria-pressed=true],.bp-sphere-options button:hover{background:#fbf1f6;color:#6b1f40}
 @media(max-width:760px){.bpc-cabinet .bp-top-actions{width:auto;flex-wrap:wrap!important}}
+
+@media (max-width:760px){
+  .bpc-cabinet{
+    --mobile-nav-row:max(44px,2.9rem);
+    --mobile-nav-height:calc(var(--mobile-nav-row) + var(--mobile-nav-row) + 15px + env(safe-area-inset-bottom,0px));
+  }
+  .bpc-cabinet .bp-side nav[aria-label="Разделы"]{
+    position:fixed;inset:auto 0 0;z-index:10;box-sizing:border-box;
+    grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:var(--mobile-nav-row);
+    gap:2px!important;padding:6px max(6px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left))!important;
+    background:#fffafb;border-top:1px solid #eadde3;box-shadow:0 -3px 14px #53263712;
+  }
+  .bpc-cabinet .bp-side nav[aria-label="Разделы"] button{
+    flex-direction:row;gap:4px;padding:2px!important;min-height:0!important;line-height:1.15;
+  }
+  .bpc-cabinet main{padding-bottom:calc(var(--mobile-nav-height) + 16px)!important}
+}
+@media (min-width:600px) and (max-width:760px){
+  .bpc-cabinet{--mobile-nav-height:calc(var(--mobile-nav-row) + 13px + env(safe-area-inset-bottom,0px))}
+  .bpc-cabinet .bp-side nav[aria-label="Разделы"]{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .bpc-cabinet .bp-side nav[aria-label="Разделы"] button{flex-direction:column}
+}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
