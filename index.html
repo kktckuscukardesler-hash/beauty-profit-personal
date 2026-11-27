@@ -359,6 +359,23 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-plan-feats{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .bp-plan-feat{display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.35;color:#f6e6ee}
 .bp-plan-feat svg{flex:none;width:18px;height:18px;color:#efb4cf;margin-top:1px}
+.bp-phone-step input.bp-auth-field{margin-top:10px;background:#ffffff14!important;color:#fff8fb!important;-webkit-text-fill-color:#fff8fb;caret-color:#fff8fb}
+.bp-phone-step input.bp-auth-field::placeholder{color:#d7bdcc;-webkit-text-fill-color:#d7bdcc}
+.bp-phone-step input.bp-auth-field:-webkit-autofill,.bp-phone-step input.bp-auth-field:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #47333f inset!important;box-shadow:0 0 0 1000px #47333f inset!important;-webkit-text-fill-color:#fff8fb!important;transition:background-color 99999s ease-out 0s}
+.bp-pass-wrap{position:relative}
+.bp-pass-wrap input.bp-auth-field{padding-right:96px}
+.bp-pass-toggle{position:absolute;right:6px;top:calc(50% + 5px);transform:translateY(-50%);border:0;background:none;color:#f2c8da;font:700 13px Nunito,Arial,sans-serif;padding:10px;cursor:pointer}
+.bp-signup .bp-signup-form p.bp-pass-hint{margin:8px 0 0;font-size:12px!important;color:#c9adbd!important}
+.bp-plan-warn{margin-top:12px;padding:12px 14px;border-radius:12px;background:#ffd6e71f;border:1px solid #ffb3cf55;color:#ffe3ee;font:600 14px/1.45 Nunito,Arial,sans-serif}
+.bp-plan-warn button{display:block;margin-top:8px;border:0;background:none;color:#ffd0e3;font:800 14px Nunito,Arial,sans-serif;padding:0;text-decoration:underline;cursor:pointer}
+.bp-login-form{display:flex;flex-direction:column;gap:12px;width:100%}
+.bp-login-form label{display:flex;flex-direction:column;gap:6px;text-align:left}
+.bp-login-err{color:#b0234f!important;font-weight:700}
+.bp-login-note{font-size:12px!important;opacity:.8}
+.bp-login-form input{color:#30272d!important;-webkit-text-fill-color:#30272d;background:#fff!important;caret-color:#30272d}
+.bp-login-form input::placeholder{color:#a8919d;-webkit-text-fill-color:#a8919d}
+.bp-login-form .bp-login-err{color:#ffd0e0!important}
+.bp-plan-warn{margin:0 0 12px}
 .bp-media-done{position:sticky;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:#fff9f7;border-top:1px solid #e9dce2}
 .bp-media-done .bp-signup-primary{width:100%;margin-top:0}
 .bp-media[open]{display:flex;flex-direction:column}
@@ -577,13 +594,22 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
           </div>
           <form v-else-if="signupStep===6" class="bp-signup-form bp-phone-step" @submit.prevent="signupPhoneSubmit">
             <h1>Зарегистрируйтесь, чтобы не потерять данные</h1>
-            <p>Укажите номер телефона, чтобы не потерять доступ к своей странице.</p>
+            <p>Укажите телефон, почту и пароль, чтобы не потерять доступ к своей странице.</p>
             <div class="bp-phone-row">
               <button type="button" class="bp-phone-country" :aria-label="'Код страны: '+signupCountryInfo().name+' +'+signupCountryInfo().code" @click="openCountryPicker"><span aria-hidden="true">{{ signupCountryInfo().flag }}</span> +{{ signupCountryInfo().code }} <span aria-hidden="true">›</span></button>
               <label class="bp-signup-visually-hidden" for="bp-signup-phone">Номер телефона</label>
               <input id="bp-signup-phone" v-model="signupPhone" type="tel" inputmode="tel" autocomplete="tel-national" enterkeyhint="done" placeholder="Номер телефона" maxlength="20">
             </div>
-            <button type="submit" class="bp-signup-primary" :disabled="signupPhone.replace(/\D/g,'').length < 6">Продолжить</button>
+            <label class="bp-signup-visually-hidden" for="bp-signup-email">Электронная почта</label>
+            <input id="bp-signup-email" class="bp-auth-field" v-model.trim="signupEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="Электронная почта" maxlength="120" @input="signupAccountError=''">
+            <div class="bp-pass-wrap">
+              <label class="bp-signup-visually-hidden" for="bp-signup-pass">Пароль</label>
+              <input id="bp-signup-pass" class="bp-auth-field" v-model="signupPass" :type="signupShowPass ? 'text' : 'password'" autocomplete="new-password" placeholder="Придумайте пароль" maxlength="100">
+              <button type="button" class="bp-pass-toggle" :aria-label="signupShowPass ? 'Скрыть пароль' : 'Показать пароль'" @click="signupShowPass=!signupShowPass">{{ signupShowPass ? 'Скрыть' : 'Показать' }}</button>
+            </div>
+            <p class="bp-pass-hint">Почта и пароль — для входа в следующий раз. Пароль не короче 6 символов.</p>
+            <p v-if="signupAccountError" class="bp-phone-notice" role="alert">{{ signupAccountError }}</p>
+            <button type="submit" class="bp-signup-primary" :disabled="!signupFormOk()">Продолжить</button>
             <div class="bp-phone-or"><span>или</span></div>
             <button type="button" class="bp-auth-provider bp-auth-apple" @click="signupProvider('Apple')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"/></svg>Продолжить с Apple</button>
             <button type="button" class="bp-auth-provider bp-auth-google" @click="signupProvider('Google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>Продолжить с Google</button>
@@ -602,6 +628,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
           <div v-else-if="signupStep===7" class="bp-signup-form bp-plan-step">
             <h1>Выберите тариф</h1>
             <p>Калькулятор бесплатный всегда. Тариф можно сменить в любой момент.</p>
+            <div v-if="signupPlanTooSmall()" class="bp-plan-warn" role="alert">В тарифе «Мастер» можно до 2 сфер, а вы выбрали {{ signupSelected.length }}. Выберите «Салон Pro» или оставьте 2 сферы.<button type="button" @click="signupStep=2;signupScroll()">Изменить сферы</button></div>
             <div class="bp-plan-list" role="radiogroup" aria-label="Тарифы">
               <button v-for="pl in signupPlans" :key="pl.id" type="button" role="radio" :aria-checked="signupPlan===pl.id" class="bp-plan-card" :class="{selected: signupPlan===pl.id}" @click="signupPlan=pl.id">
                 <span class="bp-plan-head"><span class="bp-plan-name">{{ pl.name }} <em v-if="pl.popular" class="bp-plan-badge">Популярный</em></span><span class="bp-plan-radio" aria-hidden="true"></span></span>
@@ -610,23 +637,24 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
                 <span class="bp-plan-feats"><span v-for="ft in pl.features" :key="ft" class="bp-plan-feat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ ft }}</span></span>
               </button>
             </div>
-            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupNext">{{ signupPlanInfo().cta }}</button></div>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" :disabled="signupPlanTooSmall()" @click="signupNext">{{ signupPlanInfo().cta }}</button></div>
           </div>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
+            <p v-if="user && user.email && user.email.indexOf('@')>0" class="bp-signup-help">Почта для входа: {{ user.email }}</p>
             <p v-if="signupPhoneFull" class="bp-signup-help">Телефон: {{ signupPhoneFull }}</p>
             <p class="bp-signup-help">Тариф: {{ signupPlanInfo().name }} — {{ signupPlanInfo().price }} {{ signupPlanInfo().period }}</p>
             <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
             <div class="bp-signup-list"><div v-for="category in orderedSignupCategories" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name + (s.details ? ' · ' + [durationText(s.details.minutes), (s.details.from ? 'от ' : '') + s.details.price + ' ' + s.details.currency].filter(Boolean).join(' · ') : '')).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
-            <p class="bp-signup-note">Демонстрация регистрации: номер и тариф сохранены на этом устройстве. Оплата и аккаунт на сервере пока не подключены.</p>
-            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupBack">Изменить выбор</button></div>
+            <p class="bp-signup-note">Аккаунт сохранён на этом устройстве: в следующий раз войдите по почте и паролю через «У меня есть аккаунт». Оплата и сервер пока не подключены.</p>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="enterWelcomeDemo">Перейти в кабинет</button><button type="button" class="bp-client-skip" @click="signupBack">Изменить выбор</button></div>
           </div>
         </div>
       </Transition>
     </div></section>
   </template>
   <template v-if="view === 'welcomeAuth'">
-    <section class="bp-intro"><div class="bp-welcome-auth"><div class="bp-welcome-brand"><svg class="bp-official-logo" viewBox="0 0 550 340" role="img" aria-label="Beauty Profit"><path transform="translate(95,0)" fill="currentColor" fill-rule="evenodd" d="M62,18 70,20 78,24 82,29 86,38 86,121 87,122 68,132 46,146 36,156 27,168 22,182 20,196 23,207 30,218 43,230 62,239 90,243 112,242 100,242 80,242 58,236 43,227 34,218 30,208 28,202 30,190 32,182 38,172 58,152 72,142 84,136 86,136 86,184 85,190 80,200 76,204 68,206 142,206 152,205 175,199 193,189 194,190 194,236 193,244 190,250 186,255 182,258 174,260 254,260 244,258 237,254 233,250 228,242 226,232 226,192 227,192 250,192 266,188 284,182 294,174 304,163 310,147 310,132 308,124 304,114 294,104 276,96 260,92 232,92 194,97 158,106 126,116 93,130 91,128 91,124 94,121 100,115 118,109 148,100 184,92 198,86 206,78 210,69 212,62 211,49 206,40 199,32 187,24 174,20 161,18ZM170,108 176,112 183,120 188,129 190,138 191,154 189,165 186,174 180,182 172,190 160,198 140,202 124,202 120,201 117,198 116,194 116,122 136,114 164,106ZM190,101 222,96 244,96 257,99 268,106 274,112 278,120 282,134 280,154 274,168 270,174 262,180 251,186 240,188 226,188 226,148 225,138 222,128 216,118 211,114 203,108 190,103ZM168,28 178,36 184,50 184,66 179,80 171,88 160,95 116,108 116,24 118,22 146,22 160,24ZM302,10 299,28 295,36 290,41 281,45 262,46 279,48 290,52 296,58 298,64 301,74 301,84 303,66 306,59 310,54 323,48 340,46 324,46 317,44 310,40 304,30 302,18Z"/><path transform="translate(0,280)" fill="currentColor" fill-rule="evenodd" d="M510,10 508,16 510,13 513,12 521,12 522,12 522,48 520,51 530,51 528,49 528,12 530,12 538,12 540,12 543,16 542,10ZM488,10 490,12 490,48 488,51 498,51 496,49 496,12 497,10ZM474,10 450,10 452,14 452,49 450,51 460,51 457,48 458,31 466,30 470,32 472,34 471,26 470,28 467,30 458,30 457,28 457,12 458,12 470,12 476,16ZM350,10 352,13 352,48 350,51 360,51 357,48 357,33 358,32 364,32 377,50 386,51 384,50 380,46 370,32 370,31 375,28 378,24 378,18 377,15 370,10ZM358,12 366,12 371,14 372,17 373,22 370,29 362,31 357,30ZM307,10 309,14 308,50 306,51 316,51 314,48 314,34 326,33 332,30 336,26 336,19 332,12 326,10ZM314,12 324,12 329,16 330,24 329,28 326,31 322,32 316,32 314,31ZM235,10 238,12 250,32 250,48 248,51 258,51 256,49 256,32 268,14 272,10 266,10 266,11 266,14 256,29 254,28 244,13 244,11 246,10ZM192,10 191,16 196,12 204,12 206,12 206,48 203,51 213,51 211,49 211,12 212,12 220,12 226,16 224,10ZM146,10 148,13 148,42 150,46 156,51 161,52 168,52 173,49 175,47 178,40 178,13 180,10 174,10 176,14 176,42 174,46 167,50 160,50 154,45 152,32 153,12 155,10ZM58,10 60,12 60,48 57,51 84,51 85,45 80,50 66,50 65,49 65,32 66,30 75,30 78,32 80,34 80,26 76,30 66,30 65,28 65,12 66,12 78,12 82,12 84,16 83,10ZM10,10 12,14 12,48 11,50 9,51 29,51 38,48 41,44 42,36 38,32 32,29 38,23 38,18 38,15 30,10ZM18,30 28,30 34,34 36,40 32,48 27,50 19,50 18,49ZM18,12 26,11 32,15 33,22 30,28 27,28 19,28 18,28ZM414,10 404,12 398,18 395,26 394,34 398,42 402,48 410,52 418,52 426,50 433,42 436,34 436,27 434,20 430,14 422,10ZM413,10 420,12 426,16 429,22 430,29 430,37 428,43 424,48 418,51 412,50 408,48 404,44 400,34 401,24 404,16 408,12ZM116,9 98,49 96,51 102,51 100,50 100,48 104,38 106,36 120,36 122,38 127,48 125,51 136,51 133,49ZM114,19 116,20 120,32 119,35 108,35 106,34 112,20Z"/></svg></div><h1>{{ auth.mode === 'signup' ? 'Создать аккаунт' : 'Вход в аккаунт' }}</h1><p>Это личная демоверсия. Регистрация и вход пока не подключены. Для просмотра не нужно вводить настоящие данные.</p><label v-if="auth.mode === 'signup'">Ваше имя<input disabled placeholder="Имя"></label><label>Электронная почта<input disabled placeholder="name@example.com"></label><label>Пароль<input disabled type="password" placeholder="••••••••"></label><div class="bp-welcome-actions"><button type="button" @click="view='welcome'">Назад</button></div></div></section>
+    <section class="bp-intro"><div class="bp-welcome-auth"><div class="bp-welcome-brand"><svg class="bp-official-logo" viewBox="0 0 550 340" role="img" aria-label="Beauty Profit"><path transform="translate(95,0)" fill="currentColor" fill-rule="evenodd" d="M62,18 70,20 78,24 82,29 86,38 86,121 87,122 68,132 46,146 36,156 27,168 22,182 20,196 23,207 30,218 43,230 62,239 90,243 112,242 100,242 80,242 58,236 43,227 34,218 30,208 28,202 30,190 32,182 38,172 58,152 72,142 84,136 86,136 86,184 85,190 80,200 76,204 68,206 142,206 152,205 175,199 193,189 194,190 194,236 193,244 190,250 186,255 182,258 174,260 254,260 244,258 237,254 233,250 228,242 226,232 226,192 227,192 250,192 266,188 284,182 294,174 304,163 310,147 310,132 308,124 304,114 294,104 276,96 260,92 232,92 194,97 158,106 126,116 93,130 91,128 91,124 94,121 100,115 118,109 148,100 184,92 198,86 206,78 210,69 212,62 211,49 206,40 199,32 187,24 174,20 161,18ZM170,108 176,112 183,120 188,129 190,138 191,154 189,165 186,174 180,182 172,190 160,198 140,202 124,202 120,201 117,198 116,194 116,122 136,114 164,106ZM190,101 222,96 244,96 257,99 268,106 274,112 278,120 282,134 280,154 274,168 270,174 262,180 251,186 240,188 226,188 226,148 225,138 222,128 216,118 211,114 203,108 190,103ZM168,28 178,36 184,50 184,66 179,80 171,88 160,95 116,108 116,24 118,22 146,22 160,24ZM302,10 299,28 295,36 290,41 281,45 262,46 279,48 290,52 296,58 298,64 301,74 301,84 303,66 306,59 310,54 323,48 340,46 324,46 317,44 310,40 304,30 302,18Z"/><path transform="translate(0,280)" fill="currentColor" fill-rule="evenodd" d="M510,10 508,16 510,13 513,12 521,12 522,12 522,48 520,51 530,51 528,49 528,12 530,12 538,12 540,12 543,16 542,10ZM488,10 490,12 490,48 488,51 498,51 496,49 496,12 497,10ZM474,10 450,10 452,14 452,49 450,51 460,51 457,48 458,31 466,30 470,32 472,34 471,26 470,28 467,30 458,30 457,28 457,12 458,12 470,12 476,16ZM350,10 352,13 352,48 350,51 360,51 357,48 357,33 358,32 364,32 377,50 386,51 384,50 380,46 370,32 370,31 375,28 378,24 378,18 377,15 370,10ZM358,12 366,12 371,14 372,17 373,22 370,29 362,31 357,30ZM307,10 309,14 308,50 306,51 316,51 314,48 314,34 326,33 332,30 336,26 336,19 332,12 326,10ZM314,12 324,12 329,16 330,24 329,28 326,31 322,32 316,32 314,31ZM235,10 238,12 250,32 250,48 248,51 258,51 256,49 256,32 268,14 272,10 266,10 266,11 266,14 256,29 254,28 244,13 244,11 246,10ZM192,10 191,16 196,12 204,12 206,12 206,48 203,51 213,51 211,49 211,12 212,12 220,12 226,16 224,10ZM146,10 148,13 148,42 150,46 156,51 161,52 168,52 173,49 175,47 178,40 178,13 180,10 174,10 176,14 176,42 174,46 167,50 160,50 154,45 152,32 153,12 155,10ZM58,10 60,12 60,48 57,51 84,51 85,45 80,50 66,50 65,49 65,32 66,30 75,30 78,32 80,34 80,26 76,30 66,30 65,28 65,12 66,12 78,12 82,12 84,16 83,10ZM10,10 12,14 12,48 11,50 9,51 29,51 38,48 41,44 42,36 38,32 32,29 38,23 38,18 38,15 30,10ZM18,30 28,30 34,34 36,40 32,48 27,50 19,50 18,49ZM18,12 26,11 32,15 33,22 30,28 27,28 19,28 18,28ZM414,10 404,12 398,18 395,26 394,34 398,42 402,48 410,52 418,52 426,50 433,42 436,34 436,27 434,20 430,14 422,10ZM413,10 420,12 426,16 429,22 430,29 430,37 428,43 424,48 418,51 412,50 408,48 404,44 400,34 401,24 404,16 408,12ZM116,9 98,49 96,51 102,51 100,50 100,48 104,38 106,36 120,36 122,38 127,48 125,51 136,51 133,49ZM114,19 116,20 120,32 119,35 108,35 106,34 112,20Z"/></svg></div><h1>{{ auth.mode === 'signup' ? 'Создать аккаунт' : 'Вход в аккаунт' }}</h1><template v-if="auth.mode !== 'signup'"><form class="bp-login-form" @submit.prevent="demoLogin"><p>Войдите по почте и паролю, которые указали при регистрации.</p><label>Электронная почта<input v-model.trim="auth.email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@example.com" @input="auth.err=''"></label><label>Пароль<input v-model="auth.pass" type="password" autocomplete="current-password" placeholder="••••••••" @input="auth.err=''"></label><p v-if="auth.err" class="bp-login-err" role="alert">{{ auth.err }}</p><button type="submit" class="bp-signup-primary" :disabled="auth.busy || !auth.email || !auth.pass">{{ auth.busy ? 'Входим…' : 'Войти' }}</button><p class="bp-login-note">Демоверсия: вход работает на том устройстве и в том браузере, где вы регистрировались.</p><div class="bp-welcome-actions"><button type="button" @click="view='welcome'">Назад</button><button type="button" @click="welcomeAuth('signup')">Создать аккаунт</button></div></form></template><template v-else><p>Это личная демоверсия. Регистрация и вход пока не подключены. Для просмотра не нужно вводить настоящие данные.</p><label>Ваше имя<input disabled placeholder="Имя"></label><label>Электронная почта<input disabled placeholder="name@example.com"></label><label>Пароль<input disabled type="password" placeholder="••••••••"></label><div class="bp-welcome-actions"><button type="button" @click="view='welcome'">Назад</button></div></template></div></section>
   </template>
   <template v-if="view === 'setup'">
     <div style="max-width:640px;margin:60px auto;padding:24px;background:#FFFFFF;border-radius:20px;border:1px solid #EAE3E7">
@@ -2443,6 +2471,7 @@ var root = {
       askingNotifications:false, notificationNotice:'',
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
+      signupEmail: '', signupPass: '', signupShowPass: false, signupAccountError: '',
       signupPlan: 'master', signupPlans: [
         { id: 'start', name: 'Старт', price: '$0', period: '/ навсегда', sub: 'Калькулятор цены — бесплатно всегда', cta: 'Начать бесплатно', features: ['Калькулятор себестоимости и цены', 'Мои материалы и мои услуги', '7 дней CRM в подарок: клиенты, записи, статистика'] },
         { id: 'master', name: 'Мастер', price: '$4,99', period: '/ месяц', sub: 'Для частного мастера', popular: true, cta: 'Выбрать «Мастер»', features: ['До 2 сфер на выбор', 'Клиенты, записи, напоминания', 'Статистика: выручка, материалы, расходы, прибыль', 'Склад: материалы списываются сами'] },
@@ -2739,9 +2768,14 @@ root.methods.filteredCountries = function () {
 root.methods.openCountryPicker = function () { this.countryQuery = ''; this.$refs.countrySheet.showModal(); };
 root.methods.pickCountry = function (iso) { this.signupCountry = iso; this.$refs.countrySheet.close(); var el = document.getElementById('bp-signup-phone'); if (el) el.focus(); };
 root.methods.signupProvider = function (name) { this.signupAuthNotice = 'Вход через ' + name + ' заработает после подключения сервера. Пока можно продолжить по номеру телефона.'; };
-root.methods.signupPhoneSubmit = function () {
-  var digits = this.signupPhone.replace(/\D/g, '');
-  if (digits.length < 6) return;
+root.methods.signupPhoneSubmit = async function () {
+  if (!this.signupFormOk()) return;
+  var email = this.signupEmail.trim().toLowerCase();
+  var accs = bpAccounts();
+  if (accs[email]) { this.signupAccountError = 'Эта почта уже зарегистрирована. Войдите через «У меня уже есть аккаунт».'; return; }
+  accs[email] = { h: await bpHash(email, this.signupPass), name: this.signupName, phone: '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim().replace(/^0+/, ''), plan: this.signupPlan, created: Date.now() };
+  if (!bpSaveAccounts(accs)) { this.signupAccountError = 'Не удалось сохранить аккаунт на устройстве.'; return; }
+  this.signupPass = ''; this.signupAccountError = ''; this.user = { email: email };
   this.signupPhoneFull = '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim().replace(/^0+/, '');
   this.signupAuthNotice = '';
   try { localStorage.setItem('bpSignupPhone', this.signupPhoneFull); } catch (e) {}
@@ -2750,6 +2784,29 @@ root.methods.signupPhoneSubmit = function () {
 
 
 root.methods.signupPlanInfo = function () { var id = this.signupPlan; return this.signupPlans.find(function (p) { return p.id === id; }) || this.signupPlans[0]; };
+
+var BP_ACC_KEY = 'beauty-profit-personal-accounts';
+function bpAccounts() { try { return JSON.parse(localStorage.getItem(BP_ACC_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function bpSaveAccounts(a) { try { localStorage.setItem(BP_ACC_KEY, JSON.stringify(a)); return true; } catch (e) { return false; } }
+async function bpHash(email, pass) {
+  var text = 'bp-demo:' + email.toLowerCase() + ':' + pass;
+  try { var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); }
+  catch (e) { var h = 0; for (var i = 0; i < text.length; i++) { h = (h * 31 + text.charCodeAt(i)) | 0; } return 'x' + h; }
+}
+function bpEmailOk(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e || ''); }
+root.methods.signupFormOk = function () { return this.signupPhone.replace(/\D/g, '').length >= 6 && bpEmailOk(this.signupEmail) && this.signupPass.length >= 6; };
+root.methods.signupPlanTooSmall = function () { return this.signupPlan === 'master' && this.signupSelected.length > 2; };
+root.methods.demoLogin = async function () {
+  var email = (this.auth.email || '').trim().toLowerCase();
+  this.auth.err = ''; if (!email || !this.auth.pass) return;
+  this.auth.busy = true;
+  try {
+    var acc = bpAccounts()[email];
+    if (!acc || acc.h !== await bpHash(email, this.auth.pass)) { this.auth.err = 'Неверная почта или пароль.'; return; }
+    this.user = { email: email }; this.auth.pass = '';
+    this.enterWelcomeDemo();
+  } finally { this.auth.busy = false; }
+};
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
@@ -2759,7 +2816,7 @@ root.methods.signupNext = function() {
   else if (this.signupStep === 4) { this.notificationNotice=''; this.signupStep=5; }
   else if (this.signupStep === 5) { this.signupAuthNotice=''; this.signupStep=6; }
   else if (this.signupStep === 6) this.signupStep=7;
-  else if (this.signupStep === 7) { try { localStorage.setItem('bpSignupPlan', this.signupPlan); } catch (e) {} this.signupStep=8; }
+  else if (this.signupStep === 7) { if (this.signupPlanTooSmall()) return; try { localStorage.setItem('bpSignupPlan', this.signupPlan); var a = bpAccounts(); if (this.user && a[this.user.email]) { a[this.user.email].plan = this.signupPlan; bpSaveAccounts(a); } } catch (e) {} this.signupStep=8; }
   this.signupScroll();
 };
 root.methods.openServiceCategory = function(category) {
