@@ -622,6 +622,16 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-soc-tt .bp-soc-ic{background-color:#171418;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M14 3v13a4 4 0 1 1-4-4M14 3c0 4 3 6 7 6'/%3E%3C/svg%3E")}
 .bp-profile-dialog{box-sizing:border-box;width:min(360px,90vw);max-height:88dvh;border:1px solid #ead4de;border-radius:20px;padding:24px;box-shadow:0 16px 60px #451a3733;color:#382833}
 .bp-profile-dialog::backdrop{background:#32162460}.bp-profile-dialog form{display:grid;gap:12px}.bp-profile-dialog h2{margin:0}.bp-profile-dialog button{border:1px solid #e4d3db;background:white;color:#782c50;border-radius:12px;min-height:42px;font:inherit;cursor:pointer}.bp-profile-dialog .save{background:#803051;color:white}.bp-profile-dialog a{color:#782c50}.bp-profile-dialog p{color:#933751;margin:0}
+
+.bp-prof .bp-profile-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:22px;row-gap:0;padding:12px 16px}
+.bp-profile-facts .bpd-card-head,.bp-profile-facts .bp-prof-row:last-child{grid-column:1/-1}
+.bp-profile-facts .bpd-card-head{margin:0 0 4px}
+.bp-profile-facts .bp-prof-row{display:block;min-width:0;padding:6px 0;font-size:13px;line-height:1.35}
+.bp-profile-facts .bp-prof-row span,.bp-profile-facts .bp-prof-row b{display:block;text-align:left}
+.bp-profile-facts .bp-prof-row b{overflow-wrap:anywhere}
+.bp-profile-facts .bp-prof-row:last-child span,.bp-profile-facts .bp-prof-row:last-child b{display:inline}
+.bp-profile-facts .bp-prof-row:last-child span{margin-right:8px}
+@media(max-width:480px){.bp-prof .bp-profile-facts{padding:10px 12px;column-gap:12px}.bp-profile-facts .bp-prof-row{padding:5px 0}}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1718,7 +1728,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <dialog class="bp-profile-dialog" ref="photoDialog" aria-label="Фото профиля"><form method="dialog"><h2>Фото профиля</h2><input ref="profileFile" type="file" accept="image/*" hidden @change="v.profile.changePhoto($event)"><img v-if="v.profile.photo" class="bp-photo-preview" :src="v.profile.photo" alt="Фото профиля">
 <button type="button" class="save" :disabled="v.profile.photoBusy" @click="$refs.profileFile.click()">{{ v.profile.photoBusy?'Сохраняем…':v.profile.photo?'Заменить фото':'Выбрать фото' }}</button>
 <button type="button" v-if="v.profile.photo" :disabled="v.profile.photoBusy" @click="v.profile.removePhoto">Удалить фото</button><p role="alert" v-if="v.profile.mediaError">{{ v.profile.mediaError }}</p><button>Закрыть</button></form></dialog>
-<section class="bpd-card"><div class="bpd-card-head"><h2>Мои данные</h2></div>
+<section class="bpd-card bp-profile-facts"><div class="bpd-card-head"><h2>Мои данные</h2></div>
 <div class="bp-prof-row"><span>Имя</span><b>{{ v.profile.name }}</b></div>
 <div class="bp-prof-row"><span>Почта для входа</span><b>{{ v.profile.email || '—' }}</b></div>
 <div class="bp-prof-row"><span>Телефон</span><b>{{ v.profile.phone || '—' }}</b></div>
