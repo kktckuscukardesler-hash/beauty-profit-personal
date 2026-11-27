@@ -346,6 +346,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-contact-row small{display:block;color:#efdce6}.bp-contact-row>span:nth-child(2){flex:1;overflow-wrap:anywhere}
 .bp-contact-avatar{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:50%;background:#895772}
 .bp-signup-form .bp-contact-row input[type=checkbox]{width:20px;height:20px;min-height:0;padding:0;accent-color:#c34f86}
+</style><style>
+.bp-reminder-preview{display:flex;align-items:center;gap:12px;text-align:left;margin:0 auto 32px;max-width:310px;border:1px solid #ffffff30;background:#ffffff15;padding:14px;border-radius:18px;color:#fff4fa;font-size:14px}
+.bp-reminder-preview>span{display:grid;place-items:center;flex:0 0 40px;height:40px;border-radius:50%;background:#f4d5e3;color:#803956;font-weight:700}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -397,8 +400,8 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
     <section class="bp-intro bp-signup"><div class="bp-signup-inner">
       <header class="bp-signup-top">
         <button class="bp-signup-back" type="button" @click="signupBack" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
-        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,4)+' из 4'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span></div>
-        <span class="bp-signup-count">{{ Math.min(signupStep,4) }} / 4</span>
+        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,5)+' из 5'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span><span :class="{active:signupStep>=5}"></span></div>
+        <span class="bp-signup-count">{{ Math.min(signupStep,5) }} / 5</span>
       </header>
       <Transition name="bp-slide-next" mode="out-in">
         <div :key="signupStep" class="bp-signup-content">
@@ -501,6 +504,18 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <p role="status">{{clientNotice}}</p>
               <div class="bp-signup-bottom"><button class="bp-signup-primary" type="button" @click="confirmClients">{{clientChoices.some(c => c.selected) ? 'Добавить выбранных · ' + clientChoices.filter(c => c.selected).length : 'Пропустить'}}</button></div>
             </template>
+          </div>
+          <div v-else-if="signupStep===5" class="bp-signup-form bp-client-step">
+            <div class="bp-client-intro">
+              <div class="bp-reminder-preview" aria-label="Пример уведомления"><span aria-hidden="true">BP</span><div><strong>Beauty Profit</strong><br>Напомните клиенту о записи сегодня в 14:30</div></div>
+              <h1>Не пропустите напоминания</h1>
+              <p>Разрешите уведомления о предстоящих визитах и новых заявках на онлайн-запись.</p>
+            </div>
+            <div class="bp-signup-bottom">
+              <p v-if="notificationNotice" role="status">{{notificationNotice}}</p>
+              <button class="bp-signup-primary" type="button" :disabled="askingNotifications" @click="requestSignupNotifications">Разрешить уведомления</button>
+              <button class="bp-client-skip" type="button" @click="signupNext">Настроить позже</button>
+            </div>
           </div>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
@@ -2343,6 +2358,7 @@ var root = {
   ]
 }).flatMap(([category, names]) => names.map(name => ({ category, name, selected: false }))),
       clientChoices:[], clientQuery:'', manualClient:false, canPickContacts:!!(navigator.contacts && navigator.contacts.select),
+      askingNotifications:false, notificationNotice:'',
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
       signupName: '',
@@ -2589,13 +2605,33 @@ root.methods.confirmClients = function() {
   this.cab = next; this.signupNext();
 };
 root.methods.signupBack = function(){if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
+root.methods.requestSignupNotifications = async function() {
+  if (this.askingNotifications) return;
+  const api = window.Notification;
+  if (!api || !window.isSecureContext || typeof api.requestPermission !== 'function') {
+    this.notificationNotice = 'В этом браузере запрос недоступен. Вы можете продолжить настройку.';
+    return;
+  }
+  this.askingNotifications = true;
+  try {
+    const permission = api.permission === 'default' ? await api.requestPermission() : api.permission;
+    if (this.signupStep !== 5) return;
+    if (permission === 'granted') this.signupNext();
+    else this.notificationNotice = permission === 'denied'
+      ? 'Уведомления выключены. Включить их можно в настройках сайта.'
+      : 'Разрешение пока не выбрано. Вы можете продолжить настройку.';
+  } catch (_) {
+    this.notificationNotice = 'Не удалось запросить разрешение. Вы можете продолжить настройку.';
+  } finally { this.askingNotifications = false; }
+};
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
     this.openServiceCategory(this.signupSelected.includes(this.serviceCategory) ? this.serviceCategory : this.orderedSignupCategories[0]);
     this.signupStep = 3;
   } else if (this.signupStep === 3) { this.clientEntry=false; this.signupStep=4; }
-  else if (this.signupStep === 4) this.signupStep=5;
+  else if (this.signupStep === 4) { this.notificationNotice=''; this.signupStep=5; }
+  else if (this.signupStep === 5) this.signupStep=6;
   this.signupScroll();
 };
 root.methods.openServiceCategory = function(category) {
