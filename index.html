@@ -392,6 +392,15 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bpc-cabinet .bp-spheres button[aria-pressed="false"]:hover{border-color:#C25B86!important;color:#8E2F56!important}
 .bpc-cabinet .bp-spheres button:active{transform:scale(.97)}
 @media (max-width:760px){.bpc-cabinet .bp-spheres{padding:8px 2px!important}.bpc-cabinet .bp-spheres button{min-height:52px!important;padding:11px 22px!important;font-size:16px!important}.bpc-cabinet .bp-spheres>span{font-size:14px!important}}
+
+.bpc-cabinet header>div{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;grid-template-areas:none!important}
+.bpc-cabinet header .bp-spheres{flex:1 1 auto!important;min-width:0!important;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;padding:12px 8px 14px 2px!important;margin:-6px 0!important}
+.bpc-cabinet header .bp-spheres::-webkit-scrollbar{display:none}
+.bpc-cabinet header .bp-spheres>span,.bpc-cabinet header .bp-spheres button{flex:none!important;white-space:nowrap}
+.bpc-cabinet .bp-top-actions{flex:none!important;display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;margin-left:auto}
+.bpc-cabinet .bp-top-actions>span{display:inline-flex!important;align-items:center;white-space:nowrap;font-size:12px!important;font-weight:700!important;padding:8px 12px!important;border-radius:999px!important}
+.bpc-cabinet .bp-top-actions button{min-height:40px!important;padding:8px 16px!important;font-size:14px!important;font-weight:700!important;border-radius:12px!important;color:#6B1F40!important;border:1.5px solid #E2BFD0!important;background:#fff!important}
+@media (max-width:760px){.bpc-cabinet header>div{flex-wrap:wrap!important;row-gap:4px!important}.bpc-cabinet header .bp-spheres{order:1;flex-basis:100%!important}.bpc-cabinet .bp-top-actions{order:2;width:100%;justify-content:flex-end}.bpc-cabinet .bp-top-actions button{min-height:36px!important;padding:6px 14px!important}}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1157,7 +1166,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </template>
 </nav><div class="bp-side-footer"><a class="bp-home-link" href="#" @click.prevent="v.goDash" style="color:inherit"><b>Beauty Profit</b></a>Ваш бизнес. Ваши правила.</div></aside>
-<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><div class="bp-top-title">{{ v.pageLabel }}</div><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><div class="bp-spheres" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #F9F2F5; border: 1px solid #F3E6EC; border-radius: 999px; padding: 6px 6px 6px 16px">
+<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><div class="bp-spheres" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #F9F2F5; border: 1px solid #F3E6EC; border-radius: 999px; padding: 6px 6px 6px 16px">
 <span style="font-size: 14px; font-weight: 700; color: #6B1F40">Мои сферы:</span>
 <template v-for="(sp, $index) in v.spheres">
 <template v-if="sp.on">
@@ -1170,9 +1179,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div><div class="bp-top-actions"><span style="background: #F3E6EC; color: #6B1F40; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 999px">Тариф {{ v.planName }}{{ v.planNote }}</span>
 <template v-if="v.hasLogout">
 <button type="button" @click="v.logout" :title="v.userEmail" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 12px; border-radius: 999px; border: 1px solid #E0D6DC; background: #FFFFFF; color: #554A50; cursor: pointer">Выйти</button>
-</template>
-<template v-if="v.hasBack">
-<button type="button" @click="v.back" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 12px; border-radius: 999px; border: 1px solid #E0D6DC; background: #FFFFFF; color: #554A50; cursor: pointer">← На сайт</button>
 </template>
 </div></div></header>
 
