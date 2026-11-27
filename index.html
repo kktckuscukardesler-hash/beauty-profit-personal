@@ -623,15 +623,11 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-profile-dialog{box-sizing:border-box;width:min(360px,90vw);max-height:88dvh;border:1px solid #ead4de;border-radius:20px;padding:24px;box-shadow:0 16px 60px #451a3733;color:#382833}
 .bp-profile-dialog::backdrop{background:#32162460}.bp-profile-dialog form{display:grid;gap:12px}.bp-profile-dialog h2{margin:0}.bp-profile-dialog button{border:1px solid #e4d3db;background:white;color:#782c50;border-radius:12px;min-height:42px;font:inherit;cursor:pointer}.bp-profile-dialog .save{background:#803051;color:white}.bp-profile-dialog a{color:#782c50}.bp-profile-dialog p{color:#933751;margin:0}
 
-.bp-prof .bp-profile-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:22px;row-gap:0;padding:12px 16px}
-.bp-profile-facts .bpd-card-head,.bp-profile-facts .bp-prof-row:last-child{grid-column:1/-1}
+.bp-prof .bp-profile-facts{display:block;padding:12px 16px}
 .bp-profile-facts .bpd-card-head{margin:0 0 4px}
-.bp-profile-facts .bp-prof-row{display:block;min-width:0;padding:6px 0;font-size:13px;line-height:1.35}
-.bp-profile-facts .bp-prof-row span,.bp-profile-facts .bp-prof-row b{display:block;text-align:left}
-.bp-profile-facts .bp-prof-row b{overflow-wrap:anywhere}
-.bp-profile-facts .bp-prof-row:last-child span,.bp-profile-facts .bp-prof-row:last-child b{display:inline}
-.bp-profile-facts .bp-prof-row:last-child span{margin-right:8px}
-@media(max-width:480px){.bp-prof .bp-profile-facts{padding:10px 12px;column-gap:12px}.bp-profile-facts .bp-prof-row{padding:5px 0}}
+.bp-profile-facts .bp-prof-row{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);align-items:baseline;gap:12px;padding:6px 0;font-size:13px;line-height:1.35}
+.bp-profile-facts .bp-prof-row b{min-width:0;text-align:right;overflow-wrap:anywhere}
+@media(max-width:480px){.bp-prof .bp-profile-facts{padding:10px 12px}.bp-profile-facts .bp-prof-row{padding:5px 0}}
 .bp-network-item{position:relative;display:inline-flex}.bp-network-item>a{display:inline-flex;border-radius:13px}.bp-network-list{gap:16px;padding-bottom:4px}.bp-network-list .bp-network-pencil{position:absolute;right:-8px;bottom:-6px;display:grid;place-items:center;width:25px;height:25px;border:1px solid #dec6d3;background:#fff;color:#742749;box-shadow:0 1px 4px #52213a22}
 .bpc-cabinet .bp-prof{box-sizing:border-box;width:92%;max-width:580px;min-width:0;margin-inline:auto}
 .bp-prof-edit .bp-pf-l input{box-sizing:border-box;min-width:0;max-width:100%}
