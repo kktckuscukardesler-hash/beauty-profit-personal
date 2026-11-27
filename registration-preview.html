@@ -318,6 +318,16 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-media-add{border:2px dashed #ac6586;background:#fbf1f5;color:#88345b;font-size:32px;cursor:pointer}
 @media(max-width:599px){.bp-card-editor .bp-media{width:100%;height:100dvh;border-radius:0}}
 </style>
+<style>
+.bp-card-editor label.bp-switch{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;cursor:pointer}
+.bp-card-editor .bp-switch input{position:absolute;opacity:0;right:0;width:46px;height:28px;min-height:0;margin:0}
+.bp-switch-track{box-sizing:border-box;position:relative;flex:0 0 46px;height:28px;border:1px solid #827781;background:#827781;border-radius:20px;pointer-events:none}
+.bp-switch-track::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 1px 3px #34203242;transition:transform .16s ease}
+.bp-switch input:checked+.bp-switch-track{background:#3171c4;border-color:#3171c4}
+.bp-switch input:checked+.bp-switch-track::after{transform:translateX(18px)}
+.bp-switch input:focus-visible+.bp-switch-track{outline:2px solid #6c3051;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.bp-switch-track::after{transition:none}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -387,7 +397,7 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 <div class="bp-pair"><label>Цена<input v-model.trim="card.price" inputmode="decimal" pattern="[0-9]+([.,][0-9]{1,2})?" required placeholder="0,00"></label><div class="bp-currency-field"><span>Валюта</span><button type="button" aria-haspopup="dialog" @click="currencyQuery=''; $refs.currencySheet.showModal()">{{card.currency}} ⌄</button></div></div><dialog ref="currencySheet" class="bp-time-sheet" aria-labelledby="bp-currency-title"><header><h2 id="bp-currency-title">Валюта услуги</h2><button type="button" class="bp-sheet-close" aria-label="Закрыть" @click="$refs.currencySheet.close()">×</button></header>
 <input v-model.trim="currencyQuery" type="search" @keydown.enter.prevent aria-label="Поиск валюты" placeholder="Валюта, код или страна">
 <div class="bp-currency-list"><button type="button" v-for="entry in currencyMatches" :key="entry[0]" :aria-pressed="card.currency===entry[0]" @click="card.currency=entry[0]; $refs.currencySheet.close()"><span>{{entry[1]}}</span><b>{{entry[0]}}</b></button><p v-if="!currencyMatches.length">Валюта не найдена</p></div></dialog>
-<label class="bp-check"><input type="checkbox" v-model="card.from">Цена от</label>
+<label class="bp-switch"><span>Цена от</span><input type="checkbox" role="switch" v-model="card.from"><span class="bp-switch-track" aria-hidden="true"></span></label>
 <button class="bp-signup-category" type="button" aria-haspopup="dialog" @click="openDiscount">{{ Number(card.discount) ? 'Скидка' : 'Добавить скидку' }} <span>{{ Number(card.discount) ? card.discount + (card.discountMode === 'amount' ? ' ' + card.currency : '%') : '+' }}</span></button>
 <p v-if="Number(card.discount) && card.price">Цена со скидкой · {{ discountTotal(card.discount, card.discountMode) }} {{card.currency}}</p>
 <dialog ref="discountSheet" class="bp-discount" aria-labelledby="bp-discount-title" @keydown="discountKeyboard">
@@ -398,7 +408,7 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 <div class="bp-discount-controls"><button class="bp-discount-mode" type="button" @click="switchDiscountMode">{{discountMode === 'amount' ? 'В процентах' : 'От цены'}}</button>
 <div class="bp-discount-presets"><button type="button" v-for="n in [5,10,20,30,50]" :aria-pressed="discountMode==='percent' && Number(discountDraft)===n" @click="discountMode='percent'; discountDraft=String(n); discountReplace=true">{{n}}%</button></div>
 <div class="bp-discount-pad"><button v-for="key in ['1','2','3','4','5','6','7','8','9',',','0','⌫']" type="button" :aria-label="key==='⌫' ? 'Удалить цифру' : key" @click="discountKey(key)">{{key}}</button></div></div></dialog>
-<h2>Настройки услуги</h2><label class="bp-check"><input type="checkbox" v-model="card.online">Доступна для онлайн-записи</label>
+<h2>Настройки услуги</h2><label class="bp-switch"><span>Доступна для онлайн-записи</span><input type="checkbox" role="switch" v-model="card.online"><span class="bp-switch-track" aria-hidden="true"></span></label>
 <button type="button" class="bp-signup-category" aria-haspopup="dialog" @click="$refs.mediaSheet.showModal()">Фото и описание услуги <span aria-hidden="true">›</span></button>
 <dialog ref="mediaSheet" class="bp-media" aria-labelledby="bp-media-title">
 <header><button type="button" aria-label="Закрыть" @click="$refs.mediaSheet.close()">×</button><h2 id="bp-media-title">Фото и описание услуги</h2></header>
