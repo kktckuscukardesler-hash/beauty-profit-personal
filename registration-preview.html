@@ -345,6 +345,16 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 #bp-signup-phone:-webkit-autofill,#bp-signup-phone:-webkit-autofill:hover,#bp-signup-phone:-webkit-autofill:focus,#bp-signup-name:-webkit-autofill,#bp-signup-name:-webkit-autofill:hover,#bp-signup-name:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #47333f inset!important;box-shadow:0 0 0 1000px #47333f inset!important;-webkit-text-fill-color:#fff8fb!important;caret-color:#fff8fb;transition:background-color 99999s ease-out 0s}
 #bp-signup-phone:autofill,#bp-signup-name:autofill{background:#47333f!important;color:#fff8fb!important}
 .bp-phone-row input#bp-signup-phone{caret-color:#fff8fb}
+.bp-code-step .bp-code-phone{color:#fff8fb;white-space:nowrap}
+.bp-code-boxes{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 4px;cursor:text}
+.bp-code-box{display:grid;place-items:center;height:58px;border-radius:13px;border:1px solid #ffffff25;background:#ffffff14;color:#fff8fb;font:700 24px Nunito,Arial,sans-serif;transition:border-color .15s,box-shadow .15s}
+.bp-code-box.filled{border-color:#e6a9c3}
+.bp-code-boxes:focus-within .bp-code-box.current{border-color:#efb0cf;box-shadow:0 0 0 2px #efb0cf45}
+.bp-code-box.error{border-color:#ff8fa8}
+.bp-code-boxes input#bp-signup-code{position:absolute;inset:0;width:100%;height:100%;min-height:0;opacity:0;border:0;padding:0;font-size:16px;color:transparent;background:transparent;caret-color:transparent}
+.bp-signup .bp-signup-form p.bp-code-demo{margin:10px 0 0;font-size:12px!important;color:#c9adbd!important;text-align:center}
+.bp-code-resend:disabled{opacity:.6;cursor:default;font-weight:600}
+.bp-code-resend{margin-top:10px}
 .bp-media-done{position:sticky;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:#fff9f7;border-top:1px solid #e9dce2}
 .bp-media-done .bp-signup-primary{width:100%;margin-top:0}
 .bp-media[open]{display:flex;flex-direction:column}
@@ -446,7 +456,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
         <span class="bp-signup-count">{{ Math.min(signupStep,6) }} / 6</span>
       </header>
       <Transition name="bp-slide-next" mode="out-in">
-        <div :key="signupStep" class="bp-signup-content">
+        <div :key="signupStep + (signupCodeSent ? 'c' : '')" class="bp-signup-content">
           <form v-if="serviceEdit" class="bp-signup-form bp-card-editor" @submit.prevent="finishCard(true)">
 <h1>{{ serviceEdit.selected ? 'Настройки услуги' : 'Новая услуга' }}</h1>
 <p>{{ serviceEdit.category }}</p><h2>{{ serviceEdit.name }}</h2>
@@ -561,6 +571,20 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <button class="bp-client-skip" type="button" @click="signupNext">Настроить позже</button>
             </div>
           </div>
+          <form v-else-if="signupStep===6 && signupCodeSent" class="bp-signup-form bp-phone-step bp-code-step" @submit.prevent="signupCodeSubmit">
+            <h1>Введите код</h1>
+            <p>Мы отправили SMS с кодом на номер <b class="bp-code-phone">{{ signupPhoneFull }}</b></p>
+            <label class="bp-code-boxes" for="bp-signup-code">
+              <span v-for="i in 6" :key="i" class="bp-code-box" :class="{filled: signupCode.length >= i, current: signupCode.length === i-1, error: !!signupCodeError}">{{ signupCode[i-1] || '' }}</span>
+              <input id="bp-signup-code" ref="codeInput" v-model="signupCode" @input="signupCodeInput" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" aria-label="Код из SMS">
+            </label>
+            <p v-if="signupCodeError" class="bp-phone-notice" role="alert">{{ signupCodeError }}</p>
+            <p class="bp-code-demo">Демоверсия: SMS пока не приходит — введите любые 6 цифр.</p>
+            <button type="submit" class="bp-signup-primary" :disabled="signupCode.length < 6">Подтвердить</button>
+            <button v-if="signupResendIn > 0" type="button" class="bp-client-skip bp-code-resend" disabled>Отправить код повторно через 0:{{ String(signupResendIn).padStart(2,'0') }}</button>
+            <button v-else type="button" class="bp-client-skip bp-code-resend" @click="signupResendCode">Отправить код ещё раз</button>
+            <button type="button" class="bp-client-skip bp-code-change" @click="signupChangePhone">Изменить номер</button>
+          </form>
           <form v-else-if="signupStep===6" class="bp-signup-form bp-phone-step" @submit.prevent="signupPhoneSubmit">
             <h1>Зарегистрируйтесь, чтобы не потерять данные</h1>
             <p>Напишите номер телефона, и мы отправим вам код подтверждения.</p>
@@ -2415,7 +2439,7 @@ var root = {
       askingNotifications:false, notificationNotice:'',
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
-      signupCountry: bpDefaultCountry(), signupPhone: '', signupPhoneFull: '', signupAuthNotice: '', countryQuery: '',
+      signupCountry: bpDefaultCountry(), signupPhone: '', signupPhoneFull: '', signupAuthNotice: '', countryQuery: '', signupCodeSent: false, signupCode: '', signupCodeError: '', signupResendIn: 0,
       signupName: '',
       signupSelected: [],
       signupCategories: ['Ногтевой сервис','Брови','Ресницы','Депиляция','Парикмахерские услуги','Макияж','Массаж','Косметология','Подология','Перманентный макияж','Услуги барбера'],
@@ -2659,7 +2683,7 @@ root.methods.confirmClients = function() {
   if (!saveDemo(next)) { this.clientNotice='Не удалось сохранить клиентов на устройстве.'; return; }
   this.cab = next; this.signupNext();
 };
-root.methods.signupBack = function(){if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
+root.methods.signupBack = function(){if(this.signupStep===6 && this.signupCodeSent){this.signupChangePhone();return;}if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
 root.methods.requestSignupNotifications = async function() {
   if (this.askingNotifications) return;
   const api = window.Notification;
@@ -2709,11 +2733,30 @@ root.methods.signupProvider = function (name) { this.signupAuthNotice = 'Вхо�
 root.methods.signupPhoneSubmit = function () {
   var digits = this.signupPhone.replace(/\D/g, '');
   if (digits.length < 6) return;
-  this.signupPhoneFull = '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim();
-  try { localStorage.setItem('bpSignupPhone', this.signupPhoneFull); } catch (e) {}
+  this.signupPhoneFull = '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim().replace(/^0+/, '');
   this.signupAuthNotice = '';
+  this.signupCode = ''; this.signupCodeError = ''; this.signupCodeSent = true;
+  this.signupStartResendTimer(); this.signupScroll(); this.signupFocusCode();
+};
+root.methods.signupStartResendTimer = function () {
+  var self = this; clearInterval(this._resendTimer); this.signupResendIn = 60;
+  this._resendTimer = setInterval(function () { if (self.signupResendIn > 0) self.signupResendIn--; if (self.signupResendIn <= 0 || !self.signupCodeSent) clearInterval(self._resendTimer); }, 1000);
+};
+root.methods.signupFocusCode = function () { var self = this; setTimeout(function () { var el = document.getElementById('bp-signup-code'); if (el) el.focus(); }, 350); };
+root.methods.signupCodeInput = function () {
+  this.signupCode = (this.signupCode || '').replace(/\D/g, '').slice(0, 6);
+  this.signupCodeError = '';
+  if (this.signupCode.length === 6) this.signupCodeSubmit();
+};
+root.methods.signupCodeSubmit = function () {
+  if (this.signupCode.length < 6) { this.signupCodeError = 'Введите все 6 цифр кода.'; return; }
+  clearInterval(this._resendTimer); this.signupCodeSent = false;
+  try { localStorage.setItem('bpSignupPhone', this.signupPhoneFull); } catch (e) {}
   this.signupNext();
 };
+root.methods.signupResendCode = function () { this.signupCode = ''; this.signupCodeError = ''; this.signupAuthNotice = ''; this.signupStartResendTimer(); this.signupFocusCode(); };
+root.methods.signupChangePhone = function () { clearInterval(this._resendTimer); this.signupCodeSent = false; this.signupCode = ''; this.signupCodeError = ''; this.signupScroll(); };
+
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
