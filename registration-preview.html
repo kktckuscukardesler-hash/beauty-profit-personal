@@ -307,6 +307,41 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-media header{position:sticky;top:0;z-index:1;display:grid;align-items:center;grid-template-columns:44px 1fr 44px;padding:8px;background:#fff9f7;border-bottom:1px solid #e9dce2;text-align:center}
 .bp-media header button,.bp-media-thumb button{border:0;border-radius:50%;width:44px;height:44px;color:#782e52;background:#f3e5eb;font-size:24px;cursor:pointer}
 .bp-media-content{padding:20px}
+.bp-phone-step h1{margin-bottom:12px!important}
+.bp-phone-row{display:grid;grid-template-columns:auto 1fr;gap:10px;margin:6px 0 4px}
+.bp-phone-country{display:flex;align-items:center;gap:6px;min-height:54px;padding:0 14px;border-radius:13px;border:1px solid #ffffff25;background:#ffffff14;color:#fff8fb;font:600 16px Nunito,Arial,sans-serif;cursor:pointer;white-space:nowrap}
+.bp-phone-country span:last-child{color:#e6a9c3;font-size:20px;line-height:1}
+.bp-phone-step .bp-signup-primary{margin-top:12px}
+.bp-phone-or{display:flex;align-items:center;gap:12px;margin:20px 0;color:#d7bdcc;font:600 14px Nunito,Arial,sans-serif}
+.bp-phone-or::before,.bp-phone-or::after{content:"";flex:1;height:1px;background:#ffffff26}
+.bp-auth-provider{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:50px;margin-bottom:10px;border-radius:12px;font:700 15px Nunito,Arial,sans-serif;cursor:pointer}
+.bp-auth-provider svg{width:20px;height:20px;flex:none}
+.bp-auth-apple{background:#000;color:#fff;border:1px solid #ffffff2e}
+.bp-auth-google{background:#fff;color:#2b2229;border:1px solid #fff}
+.bp-signup .bp-signup-form p.bp-phone-notice{margin:4px 0 0;color:#ffd6e7!important;text-align:center}
+.bp-phone-login{margin-top:8px}
+.bp-signup .bp-signup-form p.bp-phone-terms{margin:auto 0 0;padding-top:24px;font-size:12px!important;color:#c9adbd!important;text-align:center}
+.bp-country{position:fixed;inset:0;width:min(440px,100%);height:min(680px,100dvh);max-height:100dvh;max-width:100%;padding:0;margin:auto;border:0;border-radius:24px;background:#fff9f7;color:#392933;overflow:hidden}
+.bp-country[open]{display:flex;flex-direction:column}
+.bp-country::backdrop{background:#1c101b99}
+.bp-country header{display:grid;align-items:center;grid-template-columns:44px 1fr 44px;padding:8px;border-bottom:1px solid #e9dce2;text-align:center}
+.bp-country header button{border:0;border-radius:50%;width:44px;height:44px;color:#782e52;background:#f3e5eb;font-size:24px;cursor:pointer}
+.bp-country h2{margin:0;font:700 17px Nunito,Arial,sans-serif;color:#30232c}
+.bp-country-search{padding:12px 16px}
+.bp-country-search input{width:100%;min-height:46px;border-radius:12px;border:1px solid #e4d7dc;background:#fff;color:#30272d;padding:0 14px;font:500 16px Nunito,Arial,sans-serif;outline:none}
+.bp-country-search input:focus{border-color:#c34f86}
+.bp-country-list{list-style:none;margin:0;padding:0 8px 16px;overflow:auto;flex:1}
+.bp-country-list button{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:8px 10px;border:0;border-radius:10px;background:none;color:#30232c;font:500 16px Nunito,Arial,sans-serif;text-align:left;cursor:pointer}
+.bp-country-list button.selected{background:#f5e3ec;font-weight:700}
+.bp-country-name{flex:1;min-width:0}
+.bp-country-code{color:#8a5b72}
+.bp-country-empty{padding:20px;text-align:center;color:#8a5b72}
+@media(max-width:599px){.bp-country{width:100%;height:100dvh;border-radius:0}}
+.bp-phone-row input#bp-signup-phone{background:#ffffff14!important;color:#fff8fb!important;-webkit-text-fill-color:#fff8fb;border:1px solid #ffffff25;min-width:0}
+.bp-phone-row input#bp-signup-phone::placeholder{color:#d7bdcc;-webkit-text-fill-color:#d7bdcc}
+.bp-signup-progress{min-width:0}
+.bp-signup-progress span{flex:1 1 0;min-width:0;max-width:42px}
+.bp-country,.bp-country *{box-sizing:border-box}
 .bp-media-done{position:sticky;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:#fff9f7;border-top:1px solid #e9dce2}
 .bp-media-done .bp-signup-primary{width:100%;margin-top:0}
 .bp-media[open]{display:flex;flex-direction:column}
@@ -404,8 +439,8 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
     <section class="bp-intro bp-signup"><div class="bp-signup-inner">
       <header class="bp-signup-top">
         <button class="bp-signup-back" type="button" @click="signupBack" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
-        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,5)+' из 5'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span><span :class="{active:signupStep>=5}"></span></div>
-        <span class="bp-signup-count">{{ Math.min(signupStep,5) }} / 5</span>
+        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,6)+' из 6'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span><span :class="{active:signupStep>=5}"></span><span :class="{active:signupStep>=6}"></span></div>
+        <span class="bp-signup-count">{{ Math.min(signupStep,6) }} / 6</span>
       </header>
       <Transition name="bp-slide-next" mode="out-in">
         <div :key="signupStep" class="bp-signup-content">
@@ -523,11 +558,36 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <button class="bp-client-skip" type="button" @click="signupNext">Настроить позже</button>
             </div>
           </div>
+          <form v-else-if="signupStep===6" class="bp-signup-form bp-phone-step" @submit.prevent="signupPhoneSubmit">
+            <h1>Зарегистрируйтесь, чтобы не потерять данные</h1>
+            <p>Напишите номер телефона, и мы отправим вам код подтверждения.</p>
+            <div class="bp-phone-row">
+              <button type="button" class="bp-phone-country" :aria-label="'Код страны: '+signupCountryInfo().name+' +'+signupCountryInfo().code" @click="openCountryPicker"><span aria-hidden="true">{{ signupCountryInfo().flag }}</span> +{{ signupCountryInfo().code }} <span aria-hidden="true">›</span></button>
+              <label class="bp-signup-visually-hidden" for="bp-signup-phone">Номер телефона</label>
+              <input id="bp-signup-phone" v-model="signupPhone" type="tel" inputmode="tel" autocomplete="tel-national" enterkeyhint="done" placeholder="Номер телефона" maxlength="20">
+            </div>
+            <button type="submit" class="bp-signup-primary" :disabled="signupPhone.replace(/\D/g,'').length < 6">Получить код</button>
+            <div class="bp-phone-or"><span>или</span></div>
+            <button type="button" class="bp-auth-provider bp-auth-apple" @click="signupProvider('Apple')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"/></svg>Продолжить с Apple</button>
+            <button type="button" class="bp-auth-provider bp-auth-google" @click="signupProvider('Google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>Продолжить с Google</button>
+            <p v-if="signupAuthNotice" class="bp-phone-notice" role="status">{{ signupAuthNotice }}</p>
+            <button type="button" class="bp-client-skip bp-phone-login" @click="welcomeAuth('login')">У меня уже есть аккаунт</button>
+            <p class="bp-phone-terms">Продолжая, вы соглашаетесь с условиями пользовательского соглашения, политикой конфиденциальности и даёте согласие на обработку персональных данных.</p>
+            <dialog ref="countrySheet" class="bp-country" aria-labelledby="bp-country-title" @close="countryQuery=''">
+              <header><button type="button" aria-label="Закрыть" @click="$refs.countrySheet.close()">×</button><h2 id="bp-country-title">Код страны</h2></header>
+              <div class="bp-country-search"><input ref="countrySearch" v-model="countryQuery" type="search" placeholder="Страна или код" aria-label="Поиск страны"></div>
+              <ul class="bp-country-list">
+                <li v-for="c in filteredCountries()" :key="c.iso"><button type="button" :class="{selected:c.iso===signupCountry}" @click="pickCountry(c.iso)"><span aria-hidden="true">{{ c.flag }}</span><span class="bp-country-name">{{ c.name }}</span><span class="bp-country-code">+{{ c.code }}</span></button></li>
+                <li v-if="!filteredCountries().length" class="bp-country-empty">Ничего не найдено</li>
+              </ul>
+            </dialog>
+          </form>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
+            <p v-if="signupPhoneFull" class="bp-signup-help">Телефон: {{ signupPhoneFull }}</p>
             <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
             <div class="bp-signup-list"><div v-for="category in orderedSignupCategories" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name + (s.details ? ' · ' + [durationText(s.details.minutes), (s.details.from ? 'от ' : '') + s.details.price + ' ' + s.details.currency].filter(Boolean).join(' · ') : '')).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
-            <p class="bp-signup-note">Демонстрация регистрации: следующие шаги пока не настроены. Аккаунт ещё не создан.</p>
+            <p class="bp-signup-note">Демонстрация регистрации: код по SMS пока не отправляется, аккаунт ещё не создан. Это заработает после подключения сервера.</p>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupBack">Изменить выбор</button></div>
           </div>
         </div>
@@ -2352,6 +2412,7 @@ var root = {
       askingNotifications:false, notificationNotice:'',
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
+      signupCountry: bpDefaultCountry(), signupPhone: '', signupPhoneFull: '', signupAuthNotice: '', countryQuery: '',
       signupName: '',
       signupSelected: [],
       signupCategories: ['Ногтевой сервис','Брови','Ресницы','Депиляция','Парикмахерские услуги','Макияж','Массаж','Косметология','Подология','Перманентный макияж','Услуги барбера'],
@@ -2615,6 +2676,41 @@ root.methods.requestSignupNotifications = async function() {
     this.notificationNotice = 'Не удалось запросить разрешение. Вы можете продолжить настройку.';
   } finally { this.askingNotifications = false; }
 };
+
+var BP_COUNTRIES = 'AF 93,AL 355,DZ 213,AS 1684,AD 376,AO 244,AI 1264,AG 1268,AR 54,AM 374,AW 297,AU 61,AT 43,AZ 994,BS 1242,BH 973,BD 880,BB 1246,BY 375,BE 32,BZ 501,BJ 229,BM 1441,BT 975,BO 591,BA 387,BW 267,BR 55,VG 1284,BN 673,BG 359,BF 226,BI 257,KH 855,CM 237,CA 1,CV 238,KY 1345,CF 236,TD 235,CL 56,CN 86,CO 57,KM 269,CG 242,CD 243,CK 682,CR 506,CI 225,HR 385,CU 53,CW 599,CY 357,CZ 420,DK 45,DJ 253,DM 1767,DO 1809,EC 593,EG 20,SV 503,GQ 240,ER 291,EE 372,SZ 268,ET 251,FO 298,FJ 679,FI 358,FR 33,GF 594,PF 689,GA 241,GM 220,GE 995,DE 49,GH 233,GI 350,GR 30,GL 299,GD 1473,GP 590,GU 1671,GT 502,GG 44,GN 224,GW 245,GY 592,HT 509,HN 504,HK 852,HU 36,IS 354,IN 91,ID 62,IR 98,IQ 964,IE 353,IM 44,IL 972,IT 39,JM 1876,JP 81,JE 44,JO 962,KZ 7,KE 254,KI 686,XK 383,KW 965,KG 996,LA 856,LV 371,LB 961,LS 266,LR 231,LY 218,LI 423,LT 370,LU 352,MO 853,MG 261,MW 265,MY 60,MV 960,ML 223,MT 356,MH 692,MQ 596,MR 222,MU 230,YT 262,MX 52,FM 691,MD 373,MC 377,MN 976,ME 382,MS 1664,MA 212,MZ 258,MM 95,NA 264,NR 674,NP 977,NL 31,NC 687,NZ 64,NI 505,NE 227,NG 234,NU 683,KP 850,MK 389,MP 1670,NO 47,OM 968,PK 92,PW 680,PS 970,PA 507,PG 675,PY 595,PE 51,PH 63,PL 48,PT 351,PR 1787,QA 974,RE 262,RO 40,RU 7,RW 250,KN 1869,LC 1758,VC 1784,WS 685,SM 378,ST 239,SA 966,SN 221,RS 381,SC 248,SL 232,SG 65,SX 1721,SK 421,SI 386,SB 677,SO 252,ZA 27,KR 82,SS 211,ES 34,LK 94,SD 249,SR 597,SE 46,CH 41,SY 963,TW 886,TJ 992,TZ 255,TH 66,TL 670,TG 228,TO 676,TT 1868,TN 216,TR 90,TM 993,TC 1649,TV 688,UG 256,UA 380,AE 971,GB 44,US 1,UY 598,UZ 998,VU 678,VA 39,VE 58,VN 84,VI 1340,YE 967,ZM 260,ZW 263'.split(',').map(function (x) { var p = x.split(' '); return { iso: p[0], code: p[1] }; });
+var BP_TOP_COUNTRIES = ['CY', 'TR', 'MD', 'UA', 'RU', 'KZ', 'GE', 'AM', 'AZ', 'UZ', 'BY', 'IL', 'AE', 'DE', 'PL'];
+function bpCountryName(iso) { try { return new Intl.DisplayNames(['ru'], { type: 'region' }).of(iso) || iso; } catch (e) { return iso; } }
+function bpFlag(iso) { return iso.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }); }
+var _bpCountryCache = null;
+function bpCountryList() {
+  if (_bpCountryCache) return _bpCountryCache;
+  var all = BP_COUNTRIES.map(function (c) { return { iso: c.iso, code: c.code, name: bpCountryName(c.iso), flag: bpFlag(c.iso) }; });
+  var top = BP_TOP_COUNTRIES.map(function (iso) { return all.find(function (c) { return c.iso === iso; }); }).filter(Boolean);
+  var rest = all.filter(function (c) { return BP_TOP_COUNTRIES.indexOf(c.iso) < 0; }).sort(function (a, b) { return a.name.localeCompare(b.name, 'ru'); });
+  _bpCountryCache = top.concat(rest);
+  return _bpCountryCache;
+}
+function bpDefaultCountry() {
+  try { var r = (navigator.language || '').split('-')[1]; if (r && BP_COUNTRIES.some(function (c) { return c.iso === r.toUpperCase(); })) return r.toUpperCase(); } catch (e) {}
+  return 'CY';
+}
+root.methods.signupCountryInfo = function () { var iso = this.signupCountry; return bpCountryList().find(function (c) { return c.iso === iso; }) || bpCountryList()[0]; };
+root.methods.filteredCountries = function () {
+  var q = (this.countryQuery || '').trim().toLocaleLowerCase('ru').replace(/^\+/, '');
+  if (!q) return bpCountryList();
+  return bpCountryList().filter(function (c) { return c.name.toLocaleLowerCase('ru').indexOf(q) >= 0 || c.code.indexOf(q) === 0 || c.iso.toLowerCase() === q; });
+};
+root.methods.openCountryPicker = function () { this.countryQuery = ''; this.$refs.countrySheet.showModal(); };
+root.methods.pickCountry = function (iso) { this.signupCountry = iso; this.$refs.countrySheet.close(); var el = document.getElementById('bp-signup-phone'); if (el) el.focus(); };
+root.methods.signupProvider = function (name) { this.signupAuthNotice = 'Вход через ' + name + ' заработает после подключения сервера. Пока можно продолжить по номеру телефона.'; };
+root.methods.signupPhoneSubmit = function () {
+  var digits = this.signupPhone.replace(/\D/g, '');
+  if (digits.length < 6) return;
+  this.signupPhoneFull = '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim();
+  try { localStorage.setItem('bpSignupPhone', this.signupPhoneFull); } catch (e) {}
+  this.signupAuthNotice = '';
+  this.signupNext();
+};
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
@@ -2622,7 +2718,8 @@ root.methods.signupNext = function() {
     this.signupStep = 3;
   } else if (this.signupStep === 3) { this.clientEntry=false; this.signupStep=4; }
   else if (this.signupStep === 4) { this.notificationNotice=''; this.signupStep=5; }
-  else if (this.signupStep === 5) this.signupStep=6;
+  else if (this.signupStep === 5) { this.signupAuthNotice=''; this.signupStep=6; }
+  else if (this.signupStep === 6) this.signupStep=7;
   this.signupScroll();
 };
 root.methods.openServiceCategory = function(category) {
