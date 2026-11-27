@@ -2977,8 +2977,9 @@ root.methods.signupPhoneSubmit = async function () {
   if (!this.signupFormOk()) return;
   var email = this.signupEmail.trim().toLowerCase();
   var accs = bpAccounts();
-  if (accs[email] && accs[email].cab) { this.signupAccountError = 'Эта почта уже зарегистрирована. Войдите через «У меня уже есть аккаунт».'; return; }
-  accs[email] = { h: await bpHash(email, this.signupPass), name: this.signupName, phone: '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim().replace(/^0+/, ''), plan: this.signupPlan, created: Date.now(), cab: this.signupBuildCab() };
+  var newHash = await bpHash(email, this.signupPass);
+  if (accs[email] && accs[email].cab && accs[email].h !== newHash) { this.signupAccountError = 'Эта почта уже зарегистрирована с другим паролем. Введите тот же пароль, чтобы начать заново, или войдите через «У меня уже есть аккаунт».'; return; }
+  accs[email] = { h: newHash, name: this.signupName, phone: '+' + this.signupCountryInfo().code + ' ' + this.signupPhone.trim().replace(/^0+/, ''), plan: this.signupPlan, created: Date.now(), cab: this.signupBuildCab() };
   if (!bpSaveAccounts(accs)) { this.signupAccountError = 'Не удалось сохранить аккаунт на устройстве.'; return; }
   try { localStorage.setItem(BP_REM_KEY, JSON.stringify({ email: email, h: accs[email].h })); } catch (e) {}
   this.signupPass = ''; this.signupAccountError = ''; this.user = { email: email };
