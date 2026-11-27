@@ -632,6 +632,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-profile-facts .bp-prof-row:last-child span,.bp-profile-facts .bp-prof-row:last-child b{display:inline}
 .bp-profile-facts .bp-prof-row:last-child span{margin-right:8px}
 @media(max-width:480px){.bp-prof .bp-profile-facts{padding:10px 12px;column-gap:12px}.bp-profile-facts .bp-prof-row{padding:5px 0}}
+.bp-network-item{position:relative;display:inline-flex}.bp-network-item>a{display:inline-flex;border-radius:13px}.bp-network-list{gap:16px;padding-bottom:4px}.bp-network-list .bp-network-pencil{position:absolute;right:-8px;bottom:-6px;display:grid;place-items:center;width:25px;height:25px;border:1px solid #dec6d3;background:#fff;color:#742749;box-shadow:0 1px 4px #52213a22}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1735,7 +1736,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div class="bp-prof-row"><span>Тариф</span><b>{{ v.profile.planShort }}</b></div>
 <div class="bp-prof-row"><span>Мои сферы</span><b>{{ v.profile.spheres }}</b></div></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Социальные сети</h2></div><div class="bp-network-list">
-<button v-for="s in v.profile.socials" :key="s.id" type="button" :class="'bp-soc-'+s.id" :aria-label="'Ссылка на '+s.label" :title="s.label" @click="s.open(); $refs.socialInput.value=s.value; $refs.socialDialog.showModal()"><i class="bp-soc-ic" aria-hidden="true"></i></button></div></section>
+<div v-for="s in v.profile.socials" :key="s.id" class="bp-network-item" :class="'bp-soc-'+s.id">
+<a v-if="s.link" :href="s.link" target="_blank" rel="noopener noreferrer" :aria-label="'Открыть '+s.label" :title="'Открыть '+s.label"><i class="bp-soc-ic" aria-hidden="true"></i></a>
+<button v-else type="button" :aria-label="'Добавить ссылку на '+s.label" :title="'Добавить ссылку на '+s.label" @click="s.open(); $refs.socialInput.value=s.value; $refs.socialDialog.showModal()"><i class="bp-soc-ic" aria-hidden="true"></i></button>
+<button v-if="s.link" type="button" class="bp-network-pencil" :aria-label="'Изменить ссылку на '+s.label" :title="'Изменить ссылку на '+s.label" @click="s.open(); $refs.socialInput.value=s.value; $refs.socialDialog.showModal()"><svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 16-1 5 5-1L20 8l-4-4zM13 7l4 4"/></svg></button></div></div></section>
 <dialog ref="socialDialog" class="bp-profile-dialog" aria-labelledby="bp-network-title"><form @submit.prevent="if(v.profile.social.save($refs.socialInput.value)) $refs.socialDialog.close();"><h2 id="bp-network-title">{{ v.profile.social.label }}</h2><label class="bp-pf-l">Ссылка на вашу страницу<input ref="socialInput" type="text" inputmode="url" placeholder="https://…" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
 <p role="alert" v-if="v.profile.socialError">{{ v.profile.socialError }}</p><a v-if="v.profile.social.link" :href="v.profile.social.link" target="_blank" rel="noopener">Открыть страницу ↗</a>
 <button type="submit" class="save">Сохранить ссылку</button><button v-if="v.profile.social.value" type="button" @click="if(v.profile.social.save('')) $refs.socialDialog.close();">Удалить ссылку</button><button type="button" @click="$refs.socialDialog.close()">Отмена</button></form></dialog>
