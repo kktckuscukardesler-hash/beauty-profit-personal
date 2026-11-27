@@ -126,12 +126,59 @@ html,body,#app{width:100%;min-width:0}
 
  .bp-home-link{cursor:pointer;text-decoration:none}.bp-home-link:focus-visible{outline:2px solid #8E2F56;outline-offset:4px;border-radius:6px}
 </style>
+<style>
+/* Beauty Profit first-run experience */
+.bp-welcome{box-sizing:border-box;min-height:100vh;min-height:100dvh;background:radial-gradient(ellipse at 12% 8%,#b76c8f 0,transparent 49%),radial-gradient(ellipse at 100% 15%,#8e2f56 0,transparent 55%),linear-gradient(160deg,#69314b,#30202e 60%,#211b25);color:#fff9fc;display:flex;flex-direction:column;align-items:center;padding:clamp(18px,4vh,38px) 22px max(22px,env(safe-area-inset-bottom));font-family:Lato,Arial,sans-serif}
+.bp-welcome *{box-sizing:border-box}.bp-welcome-inner{width:100%;max-width:420px;flex:1;display:flex;flex-direction:column;min-height:0}.bp-welcome-brand{display:flex;align-items:center;justify-content:center;gap:10px;color:#fff9fc;font-family:"Cormorant Garamond",Georgia,serif;font-size:34px;line-height:1;font-weight:600;letter-spacing:-.04em;margin:0 0 18px}.bp-welcome-brand svg{width:29px;height:29px;color:#f1c8da}.bp-welcome-main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:24px;touch-action:pan-y;min-height:0;padding:12px 0 24px}.bp-welcome-art{width:min(100%,340px);min-height:210px;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:16px;background:linear-gradient(155deg,#fff3fa30,#f8d9e514);border:1px solid #fff3fa38;border-radius:30px;box-shadow:0 18px 45px #23152245,inset 0 1px 0 #ffffff35}.bp-welcome-arthead{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;padding:1px 2px 7px}.bp-welcome-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#f8d4e54a;flex:none}.bp-welcome-icon svg{width:23px;height:23px}.bp-welcome-row{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#291d304f;border:1px solid #fff2fa27;border-radius:12px;padding:11px 12px;font-size:12px;line-height:1.25}.bp-welcome-row b{font-size:14px;white-space:nowrap}.bp-welcome-row.bp-highlight{background:#b96083;border-color:#f1c8da55}.bp-welcome-row small{display:block;color:#f4dce7;font-size:10px;margin-top:3px}.bp-welcome-bars{display:flex;align-items:flex-end;justify-content:center;gap:9px;height:48px;padding:3px 8px}.bp-welcome-bars i{display:block;background:linear-gradient(#f4c4d8,#ba6d94);width:22px;border-radius:5px 5px 2px 2px}.bp-welcome-copy{text-align:center;max-width:360px;min-height:126px;display:flex;flex-direction:column;justify-content:flex-start}.bp-welcome-copy h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(30px,8vw,40px);line-height:1.02;letter-spacing:-.025em;font-weight:600;margin:0 0 12px;color:#fff9fc}.bp-welcome-copy p{font-size:14px;line-height:1.55;color:#f3dfe8;margin:0}.bp-welcome-nav{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 16px}.bp-welcome-dot{padding:0;width:9px;height:9px;border:0;border-radius:20px;background:#a58b9a;cursor:pointer;position:relative}.bp-welcome-dot:before{content:"";position:absolute;inset:-10px}.bp-welcome-dot[aria-current=true]{width:24px;background:#f0bfd4}.bp-welcome-arrow{border:0;background:transparent;color:#f4dce7;cursor:pointer;padding:6px 12px;font-size:18px;line-height:1}.bp-welcome-actions{display:grid;gap:10px;width:100%}.bp-welcome-actions button{width:100%;font:700 15px Lato,Arial,sans-serif;min-height:49px;border:1px solid #f8d7e54a;border-radius:13px;cursor:pointer;color:#fff9fc;background:#ffffff16}.bp-welcome-actions .bp-primary{background:linear-gradient(110deg,#a33f68,#bc648a);box-shadow:0 6px 24px #2a162b33}.bp-welcome-actions .bp-quiet{background:transparent;border:0;font-size:12px;font-weight:400;min-height:30px;color:#f0d6e3}.bp-welcome button:focus-visible{outline:2px solid #f3c9de;outline-offset:4px}.bp-welcome-auth{width:min(100%,420px);margin:auto;text-align:center;color:#fff9fc}.bp-welcome-auth h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:40px;line-height:1;margin:20px 0 12px}.bp-welcome-auth p{font-size:15px;line-height:1.6;color:#f3dfe8;margin:0 0 24px}.bp-welcome-auth label{display:block;text-align:left;font-size:13px;margin:12px 0}.bp-welcome-auth input{display:block;width:100%;padding:13px;margin-top:5px;color:#fff9fc;background:#ffffff16;border:1px solid #f8d7e54a;border-radius:12px;font-size:15px;opacity:1}.bp-welcome-auth input::placeholder{color:#e8c6d6}.bp-welcome-auth .bp-welcome-actions{margin-top:20px}
+@media(min-width:761px){.bp-welcome-inner{max-width:460px}.bp-welcome-main{gap:30px}.bp-welcome-art{width:360px}.bp-welcome-copy{min-height:135px}.bp-welcome{padding-top:32px}}@media(max-height:680px){.bp-welcome{padding-top:14px;padding-bottom:14px}.bp-welcome-brand{font-size:29px;margin-bottom:6px}.bp-welcome-main{gap:13px;padding:8px 0 14px}.bp-welcome-art{min-height:174px;padding:11px;gap:6px}.bp-welcome-row{padding:8px 10px}.bp-welcome-copy{min-height:0}.bp-welcome-copy h1{font-size:29px;margin-bottom:8px}.bp-welcome-copy p{font-size:13px}.bp-welcome-nav{margin-bottom:9px}.bp-welcome-actions button{min-height:44px}.bp-welcome-actions{gap:7px}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
 
 <script type="text/x-template" id="tpl-root">
 <div>
+
+  <template v-if="view === 'welcome'">
+    <section class="bp-welcome"><div class="bp-welcome-inner">
+      <div class="bp-welcome-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg><span>Beauty Profit</span></div>
+      <div class="bp-welcome-main" @touchstart.passive="welcomeTouchStart" @touchend.passive="welcomeTouchEnd" @keydown.left.prevent="welcomeMove(-1)" @keydown.right.prevent="welcomeMove(1)" tabindex="0" aria-label="Возможности приложения">
+        <div class="bp-welcome-art" aria-hidden="true">
+          <template v-if="welcomeSlide === 0">
+            <div class="bp-welcome-arthead"><span class="bp-welcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg></span><span>Калькулятор процедуры</span></div>
+            <div class="bp-welcome-row"><span>Материалы</span><b>350 ₽</b></div>
+            <div class="bp-welcome-row"><span>Работа и расходы</span><b>950 ₽</b></div>
+            <div class="bp-welcome-row bp-highlight"><span>Рекомендуемая цена</span><b>1 700 ₽</b></div>
+          </template>
+          <template v-else-if="welcomeSlide === 1">
+            <div class="bp-welcome-arthead"><span class="bp-welcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 9h18m-7 5h4"/></svg></span><span>Ваши финансы</span></div>
+            <div class="bp-welcome-row"><span>Доход за месяц</span><b>85 000 ₽</b></div>
+            <div class="bp-welcome-row"><span>Расходы</span><b>25 000 ₽</b></div>
+            <div class="bp-welcome-row bp-highlight"><span>Прибыль</span><b>60 000 ₽</b></div>
+            <div class="bp-welcome-bars"><i style="height:30%"></i><i style="height:48%"></i><i style="height:44%"></i><i style="height:70%"></i><i style="height:82%"></i><i style="height:100%"></i></div>
+          </template>
+          <template v-else-if="welcomeSlide === 2">
+            <div class="bp-welcome-arthead"><span class="bp-welcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h2m4 0h2m-8 3h2"/></svg></span><span>Записи и расписание</span></div>
+            <div class="bp-welcome-row"><span><b>10:00 – 11:30</b><small>Маникюр · Елена</small></span><span>Запись</span></div>
+            <div class="bp-welcome-row bp-highlight"><span>Свободное окно</span><b>11:30 – 12:30</b></div>
+            <div class="bp-welcome-row"><span><b>12:30 – 13:30</b><small>Брови · Мария</small></span><span>Запись</span></div>
+          </template>
+          <template v-else>
+            <div class="bp-welcome-arthead"><span class="bp-welcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12a2 2 0 0 0 4 0"/></svg></span><span>Напоминания</span></div>
+            <div class="bp-welcome-row"><span><b>Мария</b><small>Завтра · 14:30</small></span><span>Запись</span></div>
+            <div class="bp-welcome-row bp-highlight"><span>Напомнить о записи</span><b>WhatsApp</b></div>
+            <div class="bp-welcome-row"><span>Повторный визит</span><b>Напомнить</b></div>
+          </template>
+        </div>
+        <div class="bp-welcome-copy" aria-live="polite"><h1>{{ welcomeSlides[welcomeSlide].title }}</h1><p>{{ welcomeSlides[welcomeSlide].desc }}</p></div>
+      </div>
+      <div class="bp-welcome-nav" aria-label="Выбор слайда"><button type="button" class="bp-welcome-arrow" @click="welcomeMove(-1)" aria-label="Предыдущий слайд">‹</button><button v-for="(slide,i) in welcomeSlides" :key="i" type="button" class="bp-welcome-dot" :aria-current="i===welcomeSlide" :aria-label="'Слайд '+(i+1)+': '+slide.title" @click="welcomeSlide=i"></button><button type="button" class="bp-welcome-arrow" @click="welcomeMove(1)" aria-label="Следующий слайд">›</button></div>
+      <div class="bp-welcome-actions"><button type="button" class="bp-primary" @click="welcomeAuth('signup')">Создать аккаунт</button><button type="button" @click="welcomeAuth('login')">У меня есть аккаунт</button><button type="button" class="bp-quiet" @click="toSite">О приложении</button></div>
+    </div></section>
+  </template>
+  <template v-if="view === 'welcomeAuth'">
+    <section class="bp-welcome"><div class="bp-welcome-auth"><div class="bp-welcome-brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2m4 0h2m-8 4h2m4 0h2"/></svg><span>Beauty Profit</span></div><h1>{{ auth.mode === 'signup' ? 'Создать аккаунт' : 'Вход в аккаунт' }}</h1><p>Это личная демоверсия. Регистрация и вход пока не подключены. Для просмотра не нужно вводить настоящие данные.</p><label v-if="auth.mode === 'signup'">Ваше имя<input disabled placeholder="Имя"></label><label>Электронная почта<input disabled placeholder="name@example.com"></label><label>Пароль<input disabled type="password" placeholder="••••••••"></label><div class="bp-welcome-actions"><button type="button" class="bp-primary" @click="enterWelcomeDemo">Посмотреть демоверсию кабинета</button><button type="button" @click="view='welcome'">Назад</button></div></div></section>
+  </template>
   <template v-if="view === 'setup'">
     <div style="max-width:640px;margin:60px auto;padding:24px;background:#FFFFFF;border-radius:20px;border:1px solid #EAE3E7">
       <h1 style="font-family:Lato,Arial,sans-serif;font-size:22px;margin:0 0 12px">Приложение ещё не подключено к базе</h1>
@@ -226,7 +273,7 @@ html,body,#app{width:100%;min-width:0}
     </div>
   </template>
 
-  <div style="background:#F3E6EC;color:#6B1F40;text-align:center;padding:8px 12px;font-size:12px;font-weight:600">Личная демоверсия · данные только на этом устройстве · без связи с общим сайтом</div>
+  <div v-if="view !== 'welcome' && view !== 'welcomeAuth'" style="background:#F3E6EC;color:#6B1F40;text-align:center;padding:8px 12px;font-size:12px;font-weight:600">Личная демоверсия · данные только на этом устройстве · без связи с общим сайтом</div>
   <template v-if="view === 'app'">
     <bpc-app :key="'a' + appKey" :chosen="chosen" :plan="planId" :saved="saved" :fresh="false" :on-back="toSite" :on-logout="logout" :on-state="onAppState" :email="user ? user.email : ''" :plan-note="planNote"></bpc-app>
     <div v-if="saveMsg" role="status" style="position:fixed;right:14px;bottom:14px;z-index:40;background:#30272D;color:#FAF9F8;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;opacity:.9">{{ saveMsg }}</div>
@@ -1633,6 +1680,15 @@ var root = {
     return {
       configured: configured,
       view: 'loading',
+      welcomeSlide: 0,
+      welcomeX: 0,
+      welcomeY: 0,
+      welcomeSlides: [
+        {title:'Умный калькулятор для мастера',desc:'Рассчитывайте себестоимость услуг, расход материалов и рекомендуемую цену. Знайте, сколько стоит ваша работа.'},
+        {title:'Финансы под контролем',desc:'Следите за доходами, расходами и прибылью. Понимайте, сколько зарабатываете и какие услуги выгоднее.'},
+        {title:'Полный контроль над графиком',desc:'Ведите записи клиентов, планируйте рабочий день и проверяйте расписание в одном месте.'},
+        {title:'Не забывайте о клиентах',desc:'Следите за предстоящими и повторными визитами. Отправляйте готовые напоминания через WhatsApp.'}
+      ],
       user: null,
       cab: null,
       pendingPlan: null,
@@ -1798,17 +1854,23 @@ function saveDemo(cab) { try { localStorage.setItem(demoKey, JSON.stringify(cab)
 root.mounted = function() {
   this.user = { email: 'Демо-кабинет' };
   this.cab = loadDemo() || {plan:'premium',spheres:['nails','lashes','brows','cosmo','depil','pmu','hair'],data:{}};
-  this.view = 'app';
+  this.view = 'welcome';
+  try { if(localStorage.getItem('beauty-profit-personal-demo-entered')==='1') this.view='app'; } catch(e) {}
 };
+root.methods.welcomeMove = function(delta) { this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
+root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.welcomeX=e.changedTouches[0].clientX;this.welcomeY=e.changedTouches[0].clientY;} };
+root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;var dx=e.changedTouches[0].clientX-this.welcomeX,dy=e.changedTouches[0].clientY-this.welcomeY;if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.25)this.welcomeMove(dx<0?1:-1); };
+root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view='welcomeAuth';window.scrollTo(0,0); };
+root.methods.enterWelcomeDemo = function(){try{localStorage.setItem('beauty-profit-personal-demo-entered','1');}catch(e){}this.view='app';this.$nextTick(function(){window.scrollTo(0,0);});};
 root.computed.planNote = function() { return ' · личная демоверсия'; };
-root.methods.goCabinet = function() { this.view = 'app'; };
+root.methods.goCabinet = function() { this.enterWelcomeDemo(); };
 root.methods.onPlan = function() { return true; };
 root.methods.onDone = function(plan,spheres) {
   this.cab = {plan:plan || 'premium',spheres:spheres,data:(this.cab && this.cab.data) || {}};
   saveDemo(this.cab); this.appKey++; this.view='app';
 };
 root.methods.toSite = function() { if(this.cab) saveDemo(this.cab); this.view='landing'; this.mainKey++; this.$nextTick(function(){window.scrollTo(0,0);}); };
-root.methods.logout = function() { this.toSite(); };
+root.methods.logout = function() { if(this.cab)saveDemo(this.cab);try{localStorage.removeItem('beauty-profit-personal-demo-entered');}catch(e){}this.welcomeSlide=0;this.view='welcome';this.$nextTick(function(){window.scrollTo(0,0);}); };
 root.methods.onAppState = function(state) {
   var self=this;
   var timer=null;
