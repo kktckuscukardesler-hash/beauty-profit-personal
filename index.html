@@ -279,6 +279,28 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 @keyframes bp-sheet-rise{from{opacity:0;transform:translateY(12px)}}
 @media(prefers-reduced-motion:reduce){.bp-time-sheet[open]{animation:none}}
 </style>
+<style>
+.bp-card-editor .bp-discount{position:fixed;inset:0;margin:auto;padding:0;border:0;width:min(440px,100%);max-width:100%;height:min(660px,100dvh);max-height:100dvh;background:#fff9f7;color:#392933;border-radius:24px;overflow:auto}
+.bp-discount[open]{display:flex;flex-direction:column}
+.bp-discount::backdrop{background:#21152088;backdrop-filter:blur(3px)}
+.bp-discount header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:12px;border-bottom:1px solid #e9dce2}
+.bp-discount button{cursor:pointer;border:0;font:inherit;min-height:44px;color:#752e50;background:transparent}
+.bp-discount header button:first-child{justify-self:start;font-size:24px}
+.bp-discount header button:last-child{justify-self:end;font-weight:700}
+.bp-discount button:disabled{opacity:.45}
+.bp-discount-body{flex:1;min-height:110px;display:grid;align-content:center;justify-items:center;gap:8px;text-align:center}
+.bp-discount-body output{font-size:clamp(28px,9vw,52px);line-height:1.15;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.bp-discount-controls{padding:12px 16px max(16px,env(safe-area-inset-bottom));background:#f5e9ef;border-radius:20px 20px 0 0}
+.bp-discount-mode{display:block;margin-left:auto}
+.bp-discount-presets,.bp-discount-pad{display:grid;gap:5px}
+.bp-discount-presets{grid-template-columns:repeat(5,1fr)}
+.bp-discount-presets button{background:white;border-radius:10px;font-weight:700}
+.bp-discount-presets button[aria-pressed=true]{background:#853759;color:white}
+.bp-discount-pad{grid-template-columns:repeat(3,1fr);margin-top:12px}
+.bp-discount-pad button{font-size:24px;font-weight:700;border-radius:12px;color:#3d2936}
+.bp-discount-pad button:active{background:#e4cad7}
+@media(max-width:599px){.bp-card-editor .bp-discount{width:100%;height:100dvh;border-radius:0}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -349,7 +371,16 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 <input v-model.trim="currencyQuery" type="search" @keydown.enter.prevent aria-label="Поиск валюты" placeholder="Валюта, код или страна">
 <div class="bp-currency-list"><button type="button" v-for="entry in currencyMatches" :key="entry[0]" :aria-pressed="card.currency===entry[0]" @click="card.currency=entry[0]; $refs.currencySheet.close()"><span>{{entry[1]}}</span><b>{{entry[0]}}</b></button><p v-if="!currencyMatches.length">Валюта не найдена</p></div></dialog>
 <label class="bp-check"><input type="checkbox" v-model="card.from">Цена от</label>
-<details><summary>Добавить скидку</summary><label>Скидка, %<input type="number" inputmode="decimal" min="0" max="100" step="0.01" v-model="card.discount"></label></details>
+<button class="bp-signup-category" type="button" aria-haspopup="dialog" @click="openDiscount">{{ Number(card.discount) ? 'Скидка' : 'Добавить скидку' }} <span>{{ Number(card.discount) ? card.discount + (card.discountMode === 'amount' ? ' ' + card.currency : '%') : '+' }}</span></button>
+<p v-if="Number(card.discount) && card.price">Цена со скидкой · {{ discountTotal(card.discount, card.discountMode) }} {{card.currency}}</p>
+<dialog ref="discountSheet" class="bp-discount" aria-labelledby="bp-discount-title" @keydown="discountKeyboard">
+<header><button type="button" aria-label="Назад" @click="$refs.discountSheet.close()">←</button><h2 id="bp-discount-title">Скидка</h2><button type="button" :disabled="!discountValid" @click="applyDiscount">Готово</button></header>
+<div class="bp-discount-body"><output aria-live="polite">{{ discountDraft.replace('.', ',') }}{{ discountMode === 'amount' ? ' ' + card.currency : '%' }}</output>
+<p v-if="!discountValid" role="alert">Скидка превышает цену услуги</p>
+</div>
+<div class="bp-discount-controls"><button class="bp-discount-mode" type="button" @click="switchDiscountMode">{{discountMode === 'amount' ? 'В процентах' : 'От цены'}}</button>
+<div class="bp-discount-presets"><button type="button" v-for="n in [5,10,20,30,50]" :aria-pressed="discountMode==='percent' && Number(discountDraft)===n" @click="discountMode='percent'; discountDraft=String(n); discountReplace=true">{{n}}%</button></div>
+<div class="bp-discount-pad"><button v-for="key in ['1','2','3','4','5','6','7','8','9',',','0','⌫']" type="button" :aria-label="key==='⌫' ? 'Удалить цифру' : key" @click="discountKey(key)">{{key}}</button></div></div></dialog>
 <h2>Настройки услуги</h2><label class="bp-check"><input type="checkbox" v-model="card.online">Доступна для онлайн-записи</label>
 <details><summary>Фото и описание услуги</summary><label>Описание<textarea rows="3" v-model="card.description"></textarea></label><label>Фото<input type="file" accept="image/*" @change="cardPhoto"></label><img v-if="card.photo" :src="card.photo" alt="Фото услуги"><button v-if="card.photo" type="button" @click="card.photo=''">Убрать фото</button></details>
 <p v-if="cardError" role="alert">{{cardError}}</p>
@@ -2055,6 +2086,7 @@ var root = {
       configured: configured,
       view: 'loading',
       welcomeSlide: 0,
+      discountMode:'percent', discountDraft:'0', discountReplace:true,
       serviceEdit:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
       currencyQuery:'',
       serviceCategory: '',
@@ -2253,6 +2285,9 @@ var root = {
     };
   },
   computed: {
+    discountValid: function() {
+      return this.discountMode !== 'amount' || Number(this.discountDraft) <= Number(String(this.card.price).replace(',', '.'));
+    },
     currencyMatches: function () {
       const query = this.currencyQuery.toLocaleLowerCase("ru");
       return serviceCurrencies.filter(entry => entry.join(" ").toLocaleLowerCase("ru").includes(query));
@@ -2451,7 +2486,53 @@ root.methods.editCard = function(service) {
   this.photoBusy = false;
   this.signupScroll();
 };
+root.methods.openDiscount = function() {
+  this.discountDraft = String(this.card.discount || 0);
+  this.discountMode = this.card.discountMode || 'percent';
+  this.discountReplace = true;
+  this.$refs.discountSheet.showModal();
+};
+root.methods.discountKey = function(key) {
+  let value = this.discountReplace ? '0' : this.discountDraft;
+  if (key === '⌫') value = value.slice(0,-1) || '0';
+  else if (key === ',') { if (!value.includes('.')) value += '.'; }
+  else value = value === '0' ? key : value + key;
+  if (!/^\d{1,12}(\.\d{0,2})?$/.test(value) || (this.discountMode === 'percent' && Number(value)>100)) return;
+  this.discountDraft = value;
+  this.discountReplace = false;
+};
+root.methods.discountKeyboard = function(event) {
+  if (event.ctrlKey || event.altKey || event.metaKey) return;
+  const key = event.key;
+  if (!/^[0-9.,]$/.test(key) && key !== 'Backspace' && key !== 'Delete') return;
+  event.preventDefault();
+  this.discountKey(key === '.' ? ',' : key.length > 1 ? '⌫' : key);
+};
+root.methods.switchDiscountMode = function() {
+  const price = Number(String(this.card.price).replace(',', '.'));
+  const amount = Number(this.discountDraft);
+  const toAmount = this.discountMode === 'percent';
+  this.discountDraft = String(Number((toAmount ? price * amount / 100 : price ? Math.min(100, amount * 100 / price) : 0).toFixed(2)) || 0);
+  this.discountMode = toAmount ? 'amount' : 'percent';
+  this.discountReplace = true;
+};
+root.methods.applyDiscount = function() {
+  if (!this.discountValid) return;
+  this.card.discount = Number(this.discountDraft) || '';
+  this.card.discountMode = this.discountMode;
+  this.cardError = '';
+  this.$refs.discountSheet.close();
+};
+root.methods.discountTotal = function(discount,mode) {
+  const price = Number(String(this.card.price).replace(',', '.'));
+  const total = mode === 'amount' ? price - discount : price * (1-discount/100);
+  return Math.max(0,total).toLocaleString('ru-RU',{maximumFractionDigits:2});
+};
 root.methods.finishCard = function(selected) {
+  if (selected && this.card.discountMode === 'amount' && this.card.discount > Number(String(this.card.price).replace(',', '.'))) {
+    this.cardError = 'Скидка превышает цену услуги';
+    return;
+  }
   const service = this.serviceEdit;
   service.selected = selected;
   service.details = selected ? Object.assign({}, this.card, {price:this.card.price.replace(',', '.')}) : null;
