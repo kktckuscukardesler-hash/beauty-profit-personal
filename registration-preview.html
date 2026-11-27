@@ -328,6 +328,18 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-switch input:focus-visible+.bp-switch-track{outline:2px solid #6c3051;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.bp-switch-track::after{transition:none}}
 </style>
+<style>
+.bp-client-intro{margin:auto;text-align:center;padding:32px 0}
+section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
+.bp-client-art{position:relative;width:218px;height:104px;margin:0 auto;color:#fff}
+.bp-client-art i,.bp-client-art b{position:absolute;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#79495f;font:700 16px Nunito,sans-serif}
+.bp-client-art b{width:58px;height:58px;left:80px;top:22px;background:#f4d5e3;color:#803956}
+.bp-client-art i:nth-child(1){left:0;top:36px;background:#436759}.bp-client-art i:nth-child(2){left:34px;top:5px}.bp-client-art i:nth-child(3){left:38px;top:57px;background:#396877}.bp-client-art i:nth-child(5){left:145px;top:12px;background:#85594c}.bp-client-art i:nth-child(6){left:146px;top:59px;background:#575984}.bp-client-art i:nth-child(7){right:0;top:37px}
+.bp-client-step .bp-signup-bottom{margin-top:0}.bp-client-step .bp-client-fields~.bp-signup-bottom{margin-top:auto}
+.bp-client-skip{display:block;width:100%;min-height:46px;border:0;background:transparent;color:#ffe0ee;font:700 15px Nunito,sans-serif}
+.bp-client-fields{display:grid;gap:14px;margin-bottom:16px;color:white}
+.bp-client-fields label{display:block}.bp-client-fields input{margin-top:6px;color:#30272d!important;-webkit-text-fill-color:#30272d;background:white!important}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -379,8 +391,8 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
     <section class="bp-intro bp-signup"><div class="bp-signup-inner">
       <header class="bp-signup-top">
         <button class="bp-signup-back" type="button" @click="signupBack" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
-        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,3)+' из 3'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span></div>
-        <span class="bp-signup-count">{{ Math.min(signupStep,3) }} / 3</span>
+        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,4)+' из 4'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span></div>
+        <span class="bp-signup-count">{{ Math.min(signupStep,4) }} / 4</span>
       </header>
       <Transition name="bp-slide-next" mode="out-in">
         <div :key="signupStep" class="bp-signup-content">
@@ -455,6 +467,25 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
               <button type="submit" :disabled="!serviceDraft.trim()">Добавить</button>
             </form>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupNext">{{ serviceOptions.some(s => s.selected && signupSelected.includes(s.category)) ? 'Продолжить' : 'Выбрать услуги позже' }}</button></div>
+          </div>
+          <div v-else-if="signupStep===4" class="bp-signup-form bp-client-step">
+            <template v-if="!clientEntry">
+              <div class="bp-client-intro">
+                <div class="bp-client-art" aria-hidden="true"><i>К</i><i>Е</i><i>Л</i><b><svg viewBox="0 0 32 32" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="14" cy="10" r="4"/><path d="M5 26v-2a9 9 0 0 1 18 0v2zM22 6a4 4 0 0 1 0 8m3 4a7 7 0 0 1 4 7"/></svg></b><i>А</i><i>П</i><i>З</i></div>
+                <h1>Добавьте своих клиентов</h1><p>Вы сможете записывать клиентов на сеансы и находить их контакты в личном кабинете.</p>
+              </div>
+              <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="clientEntry=true">Добавить моих клиентов</button><button type="button" class="bp-client-skip" @click="signupNext">Пропустить</button></div>
+            </template>
+            <template v-else>
+              <h1>Мои клиенты</h1>
+              <form class="bp-client-fields" @submit.prevent="saveSignupClient">
+                <label>Имя клиента<input v-model.trim="clientName" required></label>
+                <label>Телефон <small>(по желанию)</small><input v-model.trim="clientPhone" type="tel"></label>
+                <button type="submit" class="bp-signup-primary" :disabled="!clientName">Добавить клиента</button>
+              </form>
+              <p role="status">{{clientNotice}}</p>
+              <div class="bp-signup-bottom"><button class="bp-signup-primary" type="button" @click="signupNext">Продолжить</button></div>
+            </template>
           </div>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
@@ -2296,6 +2327,7 @@ var root = {
     "Японский маникюр"
   ]
 }).flatMap(([category, names]) => names.map(name => ({ category, name, selected: false }))),
+      clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
       signupName: '',
       signupSelected: [],
@@ -2495,13 +2527,30 @@ root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.
 root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;var dx=e.changedTouches[0].clientX-this.welcomeX,dy=e.changedTouches[0].clientY-this.welcomeY;if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.25)this.welcomeMove(dx<0?1:-1); };
 root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view=mode==='signup'?'signupSteps':'welcomeAuth';if(mode==='signup')this.signupStep=1;window.scrollTo(0,0); };
 root.methods.signupScroll = function(){this.$nextTick(function(){window.scrollTo(0,0);});};
-root.methods.signupBack = function(){if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
+root.methods.saveSignupClient = function() {
+  const name = this.clientName.trim();
+  if (!name) return;
+  const cab = loadDemo() || this.cab;
+  const data = cab.data || {};
+  const clients = data.clients || [];
+  let seq = Number(data.seq) || 10;
+  while (clients.some(client => client.id === 'c' + seq)) seq++;
+  const client = {id:'c' + seq, name, phone:this.clientPhone.trim(), note:''};
+  const next = Object.assign({}, cab, {data:Object.assign({}, data, {clients:clients.concat(client), seq:seq+1})});
+  if (!saveDemo(next)) { this.clientNotice = 'Не удалось сохранить клиента на устройстве.'; return; }
+  this.cab = next;
+  this.clientName = '';
+  this.clientPhone = '';
+  this.clientNotice = 'Клиент добавлен: ' + name;
+};
+root.methods.signupBack = function(){if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
     this.openServiceCategory(this.signupSelected.includes(this.serviceCategory) ? this.serviceCategory : this.orderedSignupCategories[0]);
     this.signupStep = 3;
-  } else if (this.signupStep === 3) this.signupStep = 4;
+  } else if (this.signupStep === 3) { this.clientEntry=false; this.signupStep=4; }
+  else if (this.signupStep === 4) this.signupStep=5;
   this.signupScroll();
 };
 root.methods.openServiceCategory = function(category) {
