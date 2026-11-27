@@ -307,6 +307,10 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-media header{position:sticky;top:0;z-index:1;display:grid;align-items:center;grid-template-columns:44px 1fr 44px;padding:8px;background:#fff9f7;border-bottom:1px solid #e9dce2;text-align:center}
 .bp-media header button,.bp-media-thumb button{border:0;border-radius:50%;width:44px;height:44px;color:#782e52;background:#f3e5eb;font-size:24px;cursor:pointer}
 .bp-media-content{padding:20px}
+.bp-media-done{position:sticky;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:#fff9f7;border-top:1px solid #e9dce2}
+.bp-media-done .bp-signup-primary{width:100%;margin-top:0}
+.bp-media[open]{display:flex;flex-direction:column}
+.bp-media[open] .bp-media-content{flex:1 0 auto}
 .bp-media textarea{min-height:145px;resize:vertical}
 .bp-media-heading{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px}
 .bp-media-heading h3{margin:0;font-size:16px}
@@ -441,7 +445,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button class="bp-media-add" type="button" aria-label="Добавить фотографии" :disabled="photoBusy" @click="$refs.mediaInput.click()">{{ photoBusy ? '…' : '+' }}</button>
 <input ref="mediaInput" hidden type="file" accept="image/*" multiple @change="cardPhoto">
 </div><p v-if="mediaError" role="alert">{{mediaError}}</p>
-</div></dialog>
+</div>
+<div class="bp-media-done"><button type="button" class="bp-signup-primary" :disabled="photoBusy" @click="$refs.mediaSheet.close()">{{ photoBusy ? 'Загружаем фото…' : 'Готово' }}</button></div>
+</dialog>
 <p v-if="cardError" role="alert">{{cardError}}</p>
 <button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
 <button v-if="serviceEdit.selected" type="button" class="bp-signup-category" @click="finishCard(false)">Убрать из выбранных</button></form>
