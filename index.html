@@ -345,6 +345,20 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 #bp-signup-phone:-webkit-autofill,#bp-signup-phone:-webkit-autofill:hover,#bp-signup-phone:-webkit-autofill:focus,#bp-signup-name:-webkit-autofill,#bp-signup-name:-webkit-autofill:hover,#bp-signup-name:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px #47333f inset!important;box-shadow:0 0 0 1000px #47333f inset!important;-webkit-text-fill-color:#fff8fb!important;caret-color:#fff8fb;transition:background-color 99999s ease-out 0s}
 #bp-signup-phone:autofill,#bp-signup-name:autofill{background:#47333f!important;color:#fff8fb!important}
 .bp-phone-row input#bp-signup-phone{caret-color:#fff8fb}
+.bp-plan-list{display:flex;flex-direction:column;gap:12px}
+.bp-plan-card{display:flex;flex-direction:column;gap:6px;width:100%;text-align:left;padding:16px;border-radius:16px;border:1.5px solid #ffffff22;background:#ffffff12;color:#fff8fb;font-family:Nunito,Arial,sans-serif;cursor:pointer;transition:border-color .15s,background .15s}
+.bp-plan-card.selected{border-color:#e9abc6;background:#a94d764a;box-shadow:0 0 0 2px #e9abc630}
+.bp-plan-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bp-plan-name{font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bp-plan-badge{font-style:normal;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:#f4d5e3;color:#7d2d50}
+.bp-plan-radio{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #e6a9c3;display:grid;place-items:center}
+.bp-plan-card.selected .bp-plan-radio::after{content:"";width:11px;height:11px;border-radius:50%;background:#f4c2d8}
+.bp-plan-price b{font-size:28px;font-weight:800;letter-spacing:-.02em}
+.bp-plan-price small{font-size:13px;color:#e2c3d2}
+.bp-plan-sub{font-size:13px;color:#e2c3d2}
+.bp-plan-feats{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.bp-plan-feat{display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.35;color:#f6e6ee}
+.bp-plan-feat svg{flex:none;width:18px;height:18px;color:#efb4cf;margin-top:1px}
 .bp-media-done{position:sticky;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:#fff9f7;border-top:1px solid #e9dce2}
 .bp-media-done .bp-signup-primary{width:100%;margin-top:0}
 .bp-media[open]{display:flex;flex-direction:column}
@@ -442,8 +456,8 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
     <section class="bp-intro bp-signup"><div class="bp-signup-inner">
       <header class="bp-signup-top">
         <button class="bp-signup-back" type="button" @click="signupBack" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
-        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,6)+' из 6'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span><span :class="{active:signupStep>=5}"></span><span :class="{active:signupStep>=6}"></span></div>
-        <span class="bp-signup-count">{{ Math.min(signupStep,6) }} / 6</span>
+        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,7)+' из 7'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span><span :class="{active:signupStep>=3}"></span><span :class="{active:signupStep>=4}"></span><span :class="{active:signupStep>=5}"></span><span :class="{active:signupStep>=6}"></span><span :class="{active:signupStep>=7}"></span></div>
+        <span class="bp-signup-count">{{ Math.min(signupStep,7) }} / 7</span>
       </header>
       <Transition name="bp-slide-next" mode="out-in">
         <div :key="signupStep" class="bp-signup-content">
@@ -585,12 +599,26 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               </ul>
             </dialog>
           </form>
+          <div v-else-if="signupStep===7" class="bp-signup-form bp-plan-step">
+            <h1>Выберите тариф</h1>
+            <p>Калькулятор бесплатный всегда. Тариф можно сменить в любой момент.</p>
+            <div class="bp-plan-list" role="radiogroup" aria-label="Тарифы">
+              <button v-for="pl in signupPlans" :key="pl.id" type="button" role="radio" :aria-checked="signupPlan===pl.id" class="bp-plan-card" :class="{selected: signupPlan===pl.id}" @click="signupPlan=pl.id">
+                <span class="bp-plan-head"><span class="bp-plan-name">{{ pl.name }} <em v-if="pl.popular" class="bp-plan-badge">Популярный</em></span><span class="bp-plan-radio" aria-hidden="true"></span></span>
+                <span class="bp-plan-price"><b>{{ pl.price }}</b> <small>{{ pl.period }}</small></span>
+                <span class="bp-plan-sub">{{ pl.sub }}</span>
+                <span class="bp-plan-feats"><span v-for="ft in pl.features" :key="ft" class="bp-plan-feat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ ft }}</span></span>
+              </button>
+            </div>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupNext">{{ signupPlanInfo().cta }}</button></div>
+          </div>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
             <p v-if="signupPhoneFull" class="bp-signup-help">Телефон: {{ signupPhoneFull }}</p>
+            <p class="bp-signup-help">Тариф: {{ signupPlanInfo().name }} — {{ signupPlanInfo().price }} {{ signupPlanInfo().period }}</p>
             <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
             <div class="bp-signup-list"><div v-for="category in orderedSignupCategories" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name + (s.details ? ' · ' + [durationText(s.details.minutes), (s.details.from ? 'от ' : '') + s.details.price + ' ' + s.details.currency].filter(Boolean).join(' · ') : '')).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
-            <p class="bp-signup-note">Демонстрация регистрации: номер сохранён на этом устройстве, аккаунт на сервере пока не создаётся.</p>
+            <p class="bp-signup-note">Демонстрация регистрации: номер и тариф сохранены на этом устройстве. Оплата и аккаунт на сервере пока не подключены.</p>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupBack">Изменить выбор</button></div>
           </div>
         </div>
@@ -2415,7 +2443,12 @@ var root = {
       askingNotifications:false, notificationNotice:'',
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
-      signupCountry: bpDefaultCountry(), signupPhone: '', signupPhoneFull: '', signupAuthNotice: '', countryQuery: '',
+      signupPlan: 'master', signupPlans: [
+        { id: 'start', name: 'Старт', price: '$0', period: '/ навсегда', sub: 'Калькулятор цены — бесплатно всегда', cta: 'Начать бесплатно', features: ['Калькулятор себестоимости и цены', 'Мои материалы и мои услуги', '7 дней CRM в подарок: клиенты, записи, статистика'] },
+        { id: 'master', name: 'Мастер', price: '$4,99', period: '/ месяц', sub: 'Для частного мастера', popular: true, cta: 'Выбрать «Мастер»', features: ['До 2 сфер на выбор', 'Клиенты, записи, напоминания', 'Статистика: выручка, материалы, расходы, прибыль', 'Склад: материалы списываются сами'] },
+        { id: 'salon', name: 'Салон Pro', price: '$19,99', period: '/ месяц', sub: 'Для салона и команды', cta: 'Выбрать «Салон Pro»', features: ['Все сферы без ограничений', 'Всё из тарифа «Мастер»', 'Скоро: кабинет администратора и доступ для каждого мастера'] }
+      ],
+            signupCountry: bpDefaultCountry(), signupPhone: '', signupPhoneFull: '', signupAuthNotice: '', countryQuery: '',
       signupName: '',
       signupSelected: [],
       signupCategories: ['Ногтевой сервис','Брови','Ресницы','Депиляция','Парикмахерские услуги','Макияж','Массаж','Косметология','Подология','Перманентный макияж','Услуги барбера'],
@@ -2715,6 +2748,8 @@ root.methods.signupPhoneSubmit = function () {
   this.signupNext();
 };
 
+
+root.methods.signupPlanInfo = function () { var id = this.signupPlan; return this.signupPlans.find(function (p) { return p.id === id; }) || this.signupPlans[0]; };
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
   else if (this.signupStep === 2 && this.signupSelected.length) {
@@ -2724,6 +2759,7 @@ root.methods.signupNext = function() {
   else if (this.signupStep === 4) { this.notificationNotice=''; this.signupStep=5; }
   else if (this.signupStep === 5) { this.signupAuthNotice=''; this.signupStep=6; }
   else if (this.signupStep === 6) this.signupStep=7;
+  else if (this.signupStep === 7) { try { localStorage.setItem('bpSignupPlan', this.signupPlan); } catch (e) {} this.signupStep=8; }
   this.signupScroll();
 };
 root.methods.openServiceCategory = function(category) {
