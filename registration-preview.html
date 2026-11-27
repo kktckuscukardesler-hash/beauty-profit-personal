@@ -647,7 +647,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
             <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
             <div class="bp-signup-list"><div v-for="category in orderedSignupCategories" :key="category" class="bp-signup-category selected"><span>{{ category }}<small class="bp-service-summary">{{ servicesFor(category).filter(s => s.selected).map(s => s.name + (s.details ? ' · ' + [durationText(s.details.minutes), (s.details.from ? 'от ' : '') + s.details.price + ' ' + s.details.currency].filter(Boolean).join(' · ') : '')).join(', ') }}</small></span><span class="bp-signup-symbol">✓</span></div></div>
             <p class="bp-signup-note">Аккаунт сохранён на этом устройстве: в следующий раз войдите по почте и паролю через «У меня есть аккаунт». Оплата и сервер пока не подключены.</p>
-            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="enterWelcomeDemo">Перейти в кабинет</button><button type="button" class="bp-client-skip" @click="signupBack">Изменить выбор</button></div>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupFinish">Перейти в кабинет</button><button type="button" class="bp-client-skip" @click="signupBack">Изменить выбор</button></div>
           </div>
         </div>
       </Transition>
@@ -1840,7 +1840,7 @@ var tiles = NICHES.map(function (x) {
     self.setState({ picked: next });
   } };
 });
-var planNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium' };
+var planNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium', start: 'Старт', master: 'Мастер', salon: 'Салон Pro' };
 var hints = { trial: 'Отметьте все сферы, в которых работаете, — без ограничений.',
   plus: 'В тариф Plus входят до 2 сфер. Выбрано: ' + count + ' из 2.',
   premium: 'Отметьте все сферы, в которых работаете, — без ограничений.' };
@@ -1884,7 +1884,7 @@ return { accent: accent, niches: niches, n: n, plans: plans,
 class AppLogic extends DCLogic {
 lib() {
 if (this._lib) { return this._lib; }
-var BPC_N = [
+var BPC_N = window.BPC_PRESETS = [
 { id: 'nails', label: 'Ногтевой сервис', remind: 21,
   services: [['Маникюр без покрытия', 1], ['Маникюр + гель-лак', 2], ['Маникюр + укрепление + гель-лак', 2.5], ['Наращивание', 3], ['Коррекция наращивания', 2.5], ['Педикюр + гель-лак', 2]],
   mats: [['База', 'мл', 15, [0, .3, .4, .2, .2, .2]], ['Цветной гель-лак', 'мл', 10, [0, .3, .3, .3, .3, .2]], ['Топ', 'мл', 15, [0, .2, .2, .2, .2, .15]], ['Дегидратор', 'мл', 15, [0, .05, .05, .1, .1, .05]], ['Праймер / бондер', 'мл', 15, [0, .05, .05, .1, .1, .05]], ['Гель для укрепления / моделирования', 'г', 30, [0, 0, .8, 2.5, 1.5, 0]], ['Нижние формы', 'шт', 500, [0, 0, 0, 10, 0, 0]], ['Обезжириватель / клинсер', 'мл', 500, [0, 5, 5, 6, 6, 4]], ['Ремувер для кутикулы', 'мл', 100, [.5, .5, .5, .5, .5, 1]], ['Масло для кутикулы', 'мл', 30, .3], ['Крем для рук / ног', 'мл', 250, [1.5, 1.5, 1.5, 1.5, 1.5, 2]], ['Антисептик для рук и кожи', 'мл', 500, [3, 3, 3, 3, 3, 5]], ['Пилки / сменные файлы', 'шт', 50, [1, 1, 1, 2, 1, 1]], ['Бафы', 'шт', 50, 1], ['Безворсовые салфетки', 'шт', 1000, [5, 15, 15, 20, 15, 15]], ['Перчатки', 'пара', 50, 1], ['Маски', 'шт', 50, 1], ['Одноразовое полотенце', 'шт', 100, [1, 1, 1, 1, 1, 2]], ['Крафт-пакет для стерилизации', 'шт', 100, [1, 1, 1, 1, 1, 2]], ['Фрезы (1 фреза ≈ на 150 клиентов)', 'шт', 1, [.007, .007, .01, .015, .015, .007]], ['Сменные файлы для педикюрного диска', 'шт', 50, [0, 0, 0, 0, 0, 2]]] },
@@ -2013,7 +2013,7 @@ var curSvc = svcList.filter(function (x) { return x.id === st.svcId; })[0] || sv
 var key = active.id + '|' + (curSvc ? curSvc.id : '0');
 var up = function (patch) { self.setState(patch); };
 var setField = function (group, field) { return function (e) { var o = {}; Object.keys(st[group]).forEach(function (k) { o[k] = st[group][k]; }); o[field] = e.target.value; var p = {}; p[group] = o; up(p); }; };
-var planNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium' };
+var planNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium', start: 'Старт', master: 'Мастер', salon: 'Салон Pro' };
 
 var spheres = niches.map(function (x) { var on = x.id === active.id; return { label: x.label, on: on, off: !on, pick: function () { var l = self.servicesOf(x.id); up({ sphere: x.id, svcId: l.length ? l[0].id : '0', delAsk: false }); } }; });
 var tabDefs = [['dash', 'Обзор'], ['svcs', 'Мои услуги'], ['calc', 'Калькулятор'], ['appts', 'Запись клиентов'], ['income', 'Доходы'], ['remind', 'Напоминания']];
@@ -2804,8 +2804,49 @@ root.methods.demoLogin = async function () {
     var acc = bpAccounts()[email];
     if (!acc || acc.h !== await bpHash(email, this.auth.pass)) { this.auth.err = 'Неверная почта или пароль.'; return; }
     this.user = { email: email }; this.auth.pass = '';
+    if (acc.cab) { this.cab = acc.cab; saveDemo(this.cab); this.appKey++; }
     this.enterWelcomeDemo();
   } finally { this.auth.busy = false; }
+};
+
+var BP_CAT_TO_NICHE = { 'Ногтевой сервис': 'nails', 'Подология': 'nails', 'Ресницы': 'lashes', 'Брови': 'brows', 'Косметология': 'cosmo', 'Депиляция': 'depil', 'Перманентный макияж': 'pmu', 'Парикмахерские услуги': 'hair', 'Услуги барбера': 'hair' };
+root.methods.signupBuildCab = function () {
+  var self = this, spheres = [], svcs = {}, prices = {}, times = {};
+  var presets = {};
+  try { if (!window.BPC_PRESETS && typeof AppLogic !== 'undefined') AppLogic.prototype.lib.call({}); } catch (e) {}
+  try { (window.BPC_PRESETS || []).forEach(function (n) { presets[n.id] = n.services; }); } catch (e) {}
+  this.orderedSignupCategories.forEach(function (cat) {
+    var id = BP_CAT_TO_NICHE[cat]; if (!id) return;
+    if (spheres.indexOf(id) < 0) spheres.push(id);
+    var chosen = self.servicesFor(cat).filter(function (s) { return s.selected; });
+    if (!chosen.length) return;
+    var list = svcs[id] || (svcs[id] = []);
+    chosen.forEach(function (s) {
+      if (list.some(function (x) { return x.name.toLowerCase() === s.name.toLowerCase(); })) return;
+      var pre = presets[id] || [], idx = null;
+      pre.forEach(function (p, i) { if (idx == null && p[0].toLowerCase() === s.name.toLowerCase()) idx = i; });
+      var mins = s.details && Number(s.details.minutes);
+      var sid = 'u' + list.length;
+      list.push({ id: sid, name: s.name, time: mins ? Math.round(mins / 60 * 100) / 100 : (idx != null ? pre[idx][1] : 1), idx: idx });
+      if (s.details && String(s.details.price).trim()) prices[id + '|' + sid] = String(s.details.price).replace(',', '.');
+    });
+  });
+  if (!spheres.length) spheres = ['nails'];
+  var plan = { start: 'start', master: 'master', salon: 'salon' }[this.signupPlan] || 'master';
+  var data = JSON.parse(JSON.stringify((this.cab && this.cab.data) || {}));
+  data.svcs = svcs; data.prices = Object.assign({}, prices); data.sphere = spheres[0]; data.svcId = svcs[spheres[0]] ? svcs[spheres[0]][0].id : undefined;
+  delete data.svcId;
+  var firstCur = null;
+  this.serviceOptions.forEach(function (o) { if (!firstCur && o.selected && o.details && o.details.currency) firstCur = o.details.currency; });
+  if (firstCur) { var sym = ({RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł'})[firstCur] || firstCur; data.set = Object.assign({ cur: '₽', expenses: '20000', hours: '120', tax: '4', markup: '50' }, data.set || {}, { cur: sym }); }
+  return { plan: plan, spheres: spheres, data: data };
+};
+root.methods.signupFinish = function () {
+  this.cab = this.signupBuildCab();
+  saveDemo(this.cab);
+  try { var a = bpAccounts(); if (this.user && a[this.user.email]) { a[this.user.email].cab = this.cab; bpSaveAccounts(a); } } catch (e) {}
+  this.appKey++;
+  this.enterWelcomeDemo();
 };
 root.methods.signupNext = function() {
   if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
