@@ -611,6 +611,17 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
   .bp-side nav .bp-nav-short{display:block;white-space:nowrap}
   .bpc-cabinet main{padding-bottom:calc(var(--mobile-nav-height) + 12px)!important}
 }
+
+.bp-profile-hero.bpd-card{display:flex;flex-wrap:wrap;align-items:center;padding:clamp(20px,4vw,36px);border:1px solid #e8cdd9;background:radial-gradient(ellipse at 95% 15%,#eac4d7 0%,transparent 58%),linear-gradient(120deg,#fffaf9,#f6e3ec);border-radius:24px}
+.bp-profile-hero .bp-prof-main{flex:1 1 110px}.bp-profile-hero .bp-prof-main h2{font:600 clamp(24px,4vw,35px)/1.1 "Cormorant Garamond",Georgia,serif!important;overflow-wrap:anywhere}
+.bp-photo-button,.bp-photo-preview{width:76px;height:76px;border-radius:50%;object-fit:cover}
+.bp-photo-button{position:relative;background:#8e375e;color:white;border:3px solid white;box-shadow:0 4px 14px #71254624;font:32px Georgia,serif;padding:0;cursor:pointer}
+.bp-photo-button img{width:100%;height:100%;border-radius:50%;object-fit:cover}.bp-photo-button i{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:white;color:#812b53;font:700 18px/22px sans-serif}
+.bp-prof-stats>div{border-radius:14px;padding:12px 4px;background:#fbf3f7}
+.bp-network-list{display:flex;gap:12px;flex-wrap:wrap}.bp-network-list button{padding:0;background:transparent;border:0;cursor:pointer;border-radius:13px}.bp-network-list .bp-soc-ic{width:46px;height:46px;border-radius:13px;background-size:24px}
+.bp-soc-tt .bp-soc-ic{background-color:#171418;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M14 3v13a4 4 0 1 1-4-4M14 3c0 4 3 6 7 6'/%3E%3C/svg%3E")}
+.bp-profile-dialog{box-sizing:border-box;width:min(360px,90vw);max-height:88dvh;border:1px solid #ead4de;border-radius:20px;padding:24px;box-shadow:0 16px 60px #451a3733;color:#382833}
+.bp-profile-dialog::backdrop{background:#32162460}.bp-profile-dialog form{display:grid;gap:12px}.bp-profile-dialog h2{margin:0}.bp-profile-dialog button{border:1px solid #e4d3db;background:white;color:#782c50;border-radius:12px;min-height:42px;font:inherit;cursor:pointer}.bp-profile-dialog .save{background:#803051;color:white}.bp-profile-dialog a{color:#782c50}.bp-profile-dialog p{color:#933751;margin:0}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1697,21 +1708,27 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <label class="bp-pf-l">Новый пароль<input :value="v.profile.edit.form.newPass" @input="v.profile.edit.set('newPass', $event)" :type="v.profile.edit.form.showPass ? 'text' : 'password'" autocomplete="new-password" placeholder="Оставьте пустым, если не меняете"></label></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Мои сферы</h2></div><div class="bp-pf-chips"><button v-for="n in v.profile.edit.niches" :key="n.id" type="button" class="bp-pf-chip" :class="{on: n.on}" :aria-pressed="n.on" @click="v.profile.edit.toggleSphere(n.id)">{{ n.on ? '✓ ' : '+ ' }}{{ n.label }}</button></div><p v-if="v.profile.edit.tooMany" class="bp-pf-warn">В тарифе «Мастер» можно до 2 сфер.</p></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Тариф</h2></div><div class="bp-pf-plans"><button v-for="p in v.profile.edit.plans" :key="p.id" type="button" class="bp-pf-plan" :class="{on: p.on}" :aria-pressed="p.on" @click="v.profile.edit.setPlan(p.id)"><b>{{ p.label }}</b><small>{{ p.price }}</small></button></div><p class="bp-pf-note">Оплата пока не подключена — тариф просто меняется в кабинете.</p></section>
-<section class="bpd-card"><div class="bpd-card-head"><h2>Социальные сети</h2></div>
-<label class="bp-pf-l bp-pf-soc bp-soc-ig"><span><i class="bp-soc-ic"></i>Instagram</span><input :value="v.profile.edit.form.ig" @input="v.profile.edit.set('ig', $event)" placeholder="@ваш_ник или ссылка" autocapitalize="off" spellcheck="false"></label>
-<label class="bp-pf-l bp-pf-soc bp-soc-fb"><span><i class="bp-soc-ic"></i>Facebook</span><input :value="v.profile.edit.form.fb" @input="v.profile.edit.set('fb', $event)" placeholder="ник или ссылка на страницу" autocapitalize="off" spellcheck="false"></label>
-<label class="bp-pf-l bp-pf-soc bp-soc-tg"><span><i class="bp-soc-ic"></i>Telegram</span><input :value="v.profile.edit.form.tg" @input="v.profile.edit.set('tg', $event)" placeholder="@ваш_ник" autocapitalize="off" spellcheck="false"></label></section>
+
 <p v-if="v.profile.edit.form.err" class="bp-pf-err" role="alert">{{ v.profile.edit.form.err }}</p>
 <div class="bp-prof-actions"><button type="button" @click="v.profile.edit.cancel">Отмена</button><button type="button" class="save" :disabled="v.profile.edit.form.busy" @click="v.profile.edit.save">{{ v.profile.edit.form.busy ? 'Сохраняем…' : 'Сохранить' }}</button></div>
 </div></template><template v-else><div class="bp-prof">
-<section class="bpd-card bp-prof-card"><span class="bpd-avatar bp-prof-av">{{ v.profile.initial }}</span><div class="bp-prof-main"><h2>{{ v.profile.name }}</h2><p>{{ v.profile.plan }}</p></div><button type="button" class="bp-prof-edit-btn" @click="v.profile.edit.start">Редактировать</button></section>
+<section class="bpd-card bp-prof-card bp-profile-hero">
+<button type="button" class="bp-photo-button" :aria-label="v.profile.photo?'Изменить фото профиля':'Добавить фото профиля'" @click="$refs.photoDialog.showModal()"><img v-if="v.profile.photo" :src="v.profile.photo" alt=""><span v-else>{{ v.profile.initial }}</span><i aria-hidden="true">+</i></button>
+<div class="bp-prof-main"><h2>{{ v.profile.name }}</h2><p>{{ v.profile.plan }}</p></div><button type="button" class="bp-prof-edit-btn" @click="v.profile.edit.start">Редактировать</button></section>
+<dialog class="bp-profile-dialog" ref="photoDialog" aria-label="Фото профиля"><form method="dialog"><h2>Фото профиля</h2><input ref="profileFile" type="file" accept="image/*" hidden @change="v.profile.changePhoto($event)"><img v-if="v.profile.photo" class="bp-photo-preview" :src="v.profile.photo" alt="Фото профиля">
+<button type="button" class="save" :disabled="v.profile.photoBusy" @click="$refs.profileFile.click()">{{ v.profile.photoBusy?'Сохраняем…':v.profile.photo?'Заменить фото':'Выбрать фото' }}</button>
+<button type="button" v-if="v.profile.photo" :disabled="v.profile.photoBusy" @click="v.profile.removePhoto">Удалить фото</button><p role="alert" v-if="v.profile.mediaError">{{ v.profile.mediaError }}</p><button>Закрыть</button></form></dialog>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Мои данные</h2></div>
 <div class="bp-prof-row"><span>Имя</span><b>{{ v.profile.name }}</b></div>
 <div class="bp-prof-row"><span>Почта для входа</span><b>{{ v.profile.email || '—' }}</b></div>
 <div class="bp-prof-row"><span>Телефон</span><b>{{ v.profile.phone || '—' }}</b></div>
 <div class="bp-prof-row"><span>Тариф</span><b>{{ v.profile.planShort }}</b></div>
 <div class="bp-prof-row"><span>Мои сферы</span><b>{{ v.profile.spheres }}</b></div></section>
-<section class="bpd-card"><div class="bpd-card-head"><h2>Социальные сети</h2><button type="button" class="bp-text-btn" @click="v.profile.edit.start">Подключить</button></div><div class="bp-soc-list"><template v-for="s in v.profile.socials" :key="s.id"><a v-if="s.connected" class="bp-soc on" :class="'bp-soc-' + s.id" :href="s.link" target="_blank" rel="noopener"><i class="bp-soc-ic"></i><span><b>{{ s.label }}</b><small>{{ s.value }}</small></span></a><button v-else type="button" class="bp-soc" :class="'bp-soc-' + s.id" @click="v.profile.edit.start"><i class="bp-soc-ic"></i><span><b>{{ s.label }}</b><small>Не подключено</small></span></button></template></div></section>
+<section class="bpd-card"><div class="bpd-card-head"><h2>Социальные сети</h2></div><div class="bp-network-list">
+<button v-for="s in v.profile.socials" :key="s.id" type="button" :class="'bp-soc-'+s.id" :aria-label="'Ссылка на '+s.label" :title="s.label" @click="s.open(); $refs.socialInput.value=s.value; $refs.socialDialog.showModal()"><i class="bp-soc-ic" aria-hidden="true"></i></button></div></section>
+<dialog ref="socialDialog" class="bp-profile-dialog" aria-labelledby="bp-network-title"><form @submit.prevent="if(v.profile.social.save($refs.socialInput.value)) $refs.socialDialog.close();"><h2 id="bp-network-title">{{ v.profile.social.label }}</h2><label class="bp-pf-l">Ссылка на вашу страницу<input ref="socialInput" type="text" inputmode="url" placeholder="https://…" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+<p role="alert" v-if="v.profile.socialError">{{ v.profile.socialError }}</p><a v-if="v.profile.social.link" :href="v.profile.social.link" target="_blank" rel="noopener">Открыть страницу ↗</a>
+<button type="submit" class="save">Сохранить ссылку</button><button v-if="v.profile.social.value" type="button" @click="if(v.profile.social.save('')) $refs.socialDialog.close();">Удалить ссылку</button><button type="button" @click="$refs.socialDialog.close()">Отмена</button></form></dialog>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Коротко</h2></div><div class="bp-prof-stats"><div><strong>{{ v.profile.clients }}</strong><span>клиентов</span></div><div><strong>{{ v.profile.services }}</strong><span>услуг</span></div><div><strong>{{ v.profile.appts }}</strong><span>записей</span></div></div></section>
 <div class="bp-prof-actions"><button type="button" @click="v.profile.toRemind">Напоминания</button><button type="button" @click="v.profile.toStats">Статистика</button><button v-if="v.hasLogout" type="button" class="out" @click="v.logout">Выйти</button></div>
 </div></template></template>
@@ -2277,7 +2294,8 @@ var planNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium', sta
 
 var spheres = niches.map(function (x) { var on = x.id === active.id; return { id: x.id, label: x.label, on: on, off: !on, pick: function () { var l = self.servicesOf(x.id); up({ sphere: x.id, svcId: l.length ? l[0].id : '0', delAsk: false }); } }; });
 
-var profAcc = {}; try { profAcc = bpAccounts()[this.props.email] || {}; } catch (e) {}
+var savedProfile = bpAccounts()[this.props.email];
+var profAcc = savedProfile || {};
 var profPlanNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium', start: 'Старт', master: 'Мастер', salon: 'Салон Pro' };
 var profile = {
   name: profAcc.name || 'Мастер', initial: String(profAcc.name || 'М').slice(0, 1).toUpperCase(), email: (this.props.email || '').indexOf('@') > 0 ? this.props.email : '', phone: profAcc.phone || '',
@@ -2289,13 +2307,58 @@ var profile = {
 var pf = st.pf || null;
 var pfSet = function (k, val) { var o = {}; Object.keys(pf || {}).forEach(function (x) { o[x] = pf[x]; }); o.err = ''; o[k] = val; up({ pf: o }); };
 var allNiches = self.lib().BPC_N.map(function (n) { return { id: n.id, label: n.label }; });
-var profSocial = profAcc.social || {};
-var socLink = function (kind, v) { v = String(v || '').trim(); if (!v) { return ''; } if (/^https?:\/\//i.test(v)) { return v; } v = v.replace(/^@/, ''); return kind === 'ig' ? 'https://instagram.com/' + v : (kind === 'fb' ? 'https://facebook.com/' + v : 'https://t.me/' + v); };
-var socials = [['ig', 'Instagram'], ['fb', 'Facebook'], ['tg', 'Telegram']].map(function (s) { var val = profSocial[s[0]] || ''; return { id: s[0], label: s[1], value: val, link: socLink(s[0], val), connected: !!val }; });
+var guestMediaKey = 'beauty-profit-guest-profile-media';
+function readGuestMedia() {
+  try { return JSON.parse(localStorage.getItem(guestMediaKey)) || {}; } catch (e) { return {}; }
+}
+var media = st.profileMedia || savedProfile || readGuestMedia();
+function saveMedia(field, value, network) {
+  var accounts = bpAccounts(), account = accounts[self.props.email], target = account || readGuestMedia();
+  if (network) target.social = Object.assign({}, target.social, { [network]: value });
+  else target[field] = value;
+  if (account) {
+    if (!bpSaveAccounts(accounts)) throw Error('storage');
+  } else localStorage.setItem(guestMediaKey, JSON.stringify(target));
+  up({ profileMedia: { photo:target.photo || '', social:target.social || {} }, mediaError:'' });
+}
+var profSocial = media.social || {};
+var networks = [['ig','Instagram','instagram.com'],['fb','Facebook','facebook.com'],['tg','Telegram','t.me'],['tt','TikTok','tiktok.com']];
+var socials = networks.map(function (network) {
+  var id=network[0], host=network[2], value=profSocial[id] || '';
+  function normalize(raw) {
+    var text = raw.trim();
+    if (!text) return '';
+    if (/^@?[\w.\-]+$/.test(text) && !text.endsWith(host)) text = host + '/' + (id==='tt'?'@':'') + text.replace(/^@/,'');
+    var url = new URL(/^https?:\/\//i.test(text) ? text : 'https://' + text);
+    var domain=url.hostname.toLowerCase();
+    if (!(domain===host || domain.endsWith('.'+host)) || url.username || url.password || url.pathname==='/') throw Error('url');
+    url.protocol='https:';
+    return url.href;
+  }
+  var link=''; try { link=normalize(value); } catch(e) {}
+  return {id:id,label:network[1],value:value,link:link,open:function(){up({socialId:id, socialError:''});},
+    save:function(raw){var url; try {url=normalize(raw);} catch(e){up({socialError:'Укажите ссылку на страницу в '+network[1]+'.'});return false;}
+      try {saveMedia('social',url,id);return true;} catch(e){up({socialError:'Не удалось сохранить ссылку на устройстве.'});return false;}
+    }
+  };
+});
+profile.social = socials.find(function(n){return n.id===st.socialId;}) || socials[0];
+profile.socialError = st.socialError || '';
+profile.photo = media.photo || '';
+profile.mediaError = st.mediaError || '';
+profile.photoBusy = !!st.photoBusy;
+profile.changePhoto = async function(event){
+  var file=event.target.files[0];event.target.value='';if (!file || self.state.photoBusy) return;
+  up({photoBusy:true, mediaError:''});
+  try { var photo=await encodeServicePhoto(file); saveMedia('photo',photo); }
+  catch(e){up({mediaError:'Не удалось сохранить фото. Выберите другое изображение или освободите место на устройстве.'});}
+  finally {up({photoBusy:false});}
+};
+profile.removePhoto = function(){try {saveMedia('photo','');}catch(e){up({mediaError:'Не удалось удалить фото.'});}};
 var editApi = {
   editing: !!pf,
   form: pf || {},
-  start: function () { up({ pf: { name: profAcc.name || '', phone: profAcc.phone || '', email: (self.props.email || '').indexOf('@') > 0 ? self.props.email : '', curPass: '', newPass: '', ig: profSocial.ig || '', fb: profSocial.fb || '', tg: profSocial.tg || '', spheres: niches.map(function (x) { return x.id; }), plan: ({ start: 1, master: 1, salon: 1 })[self.props.plan] ? self.props.plan : 'master', err: '', busy: false, showPass: false } }); },
+  start: function () { up({ pf: { name: profAcc.name || '', phone: profAcc.phone || '', email: (self.props.email || '').indexOf('@') > 0 ? self.props.email : '', curPass: '', newPass: '',  spheres: niches.map(function (x) { return x.id; }), plan: ({ start: 1, master: 1, salon: 1 })[self.props.plan] ? self.props.plan : 'master', err: '', busy: false, showPass: false } }); },
   cancel: function () { up({ pf: null }); },
   set: function (k, e) { pfSet(k, e && e.target ? e.target.value : e); },
   togglePass: function () { pfSet('showPass', !pf.showPass); },
@@ -3114,7 +3177,6 @@ window.BP_PROFILE_SAVE = async function (d) {
   if (pass) { acc.h = await bpHash(email, pass); }
   acc.name = String(d.name || '').trim() || acc.name || '';
   acc.phone = String(d.phone || '').trim();
-  acc.social = { ig: String(d.ig || '').trim(), fb: String(d.fb || '').trim(), tg: String(d.tg || '').trim() };
   acc.plan = d.plan;
   var cab = vm.cab || { data: {} };
   if (d.spheres && d.spheres.length) { cab.spheres = d.spheres.slice(); cab.data = cab.data || {}; cab.data.svcs = cab.data.svcs || {}; cab.spheres.forEach(function (id) { if (!cab.data.svcs[id]) { cab.data.svcs[id] = []; } }); }
