@@ -1660,10 +1660,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <template v-if="v.tabProfile"><template v-if="v.profile.edit.editing"><div class="bp-prof bp-prof-edit">
 <section class="bpd-card"><div class="bpd-card-head"><h2>Мои данные</h2></div>
 <label class="bp-pf-l">Имя<input :value="v.profile.edit.form.name" @input="v.profile.edit.set('name', $event)" maxlength="80" autocomplete="name"></label>
-<label class="bp-pf-l">Телефон<input :value="v.profile.edit.form.phone" @input="v.profile.edit.set('phone', $event)" type="tel" inputmode="tel" placeholder="+90 548 000 0000" maxlength="30"></label>
-<label class="bp-pf-l">Почта для входа<input :value="v.profile.edit.form.email" @input="v.profile.edit.set('email', $event)" type="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="120"></label></section>
+<label class="bp-pf-l">Телефон<input :value="v.profile.edit.form.phone" @input="v.profile.edit.set('phone', $event)" type="tel" inputmode="tel" placeholder="+90 548 000 0000" maxlength="30"></label></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Пароль</h2><button type="button" class="bp-text-btn" @click="v.profile.edit.togglePass">{{ v.profile.edit.form.showPass ? 'Скрыть' : 'Показать' }}</button></div>
-<label class="bp-pf-l">Текущий пароль<input :value="v.profile.edit.form.curPass" @input="v.profile.edit.set('curPass', $event)" :type="v.profile.edit.form.showPass ? 'text' : 'password'" autocomplete="current-password" placeholder="Нужен, чтобы сменить пароль или почту"></label>
+<label class="bp-pf-l">Текущий пароль<input :value="v.profile.edit.form.curPass" @input="v.profile.edit.set('curPass', $event)" :type="v.profile.edit.form.showPass ? 'text' : 'password'" autocomplete="current-password" placeholder="Нужен, только если меняете пароль"></label>
 <label class="bp-pf-l">Новый пароль<input :value="v.profile.edit.form.newPass" @input="v.profile.edit.set('newPass', $event)" :type="v.profile.edit.form.showPass ? 'text' : 'password'" autocomplete="new-password" placeholder="Оставьте пустым, если не меняете"></label></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Мои сферы</h2></div><div class="bp-pf-chips"><button v-for="n in v.profile.edit.niches" :key="n.id" type="button" class="bp-pf-chip" :class="{on: n.on}" :aria-pressed="n.on" @click="v.profile.edit.toggleSphere(n.id)">{{ n.on ? '✓ ' : '+ ' }}{{ n.label }}</button></div><p v-if="v.profile.edit.tooMany" class="bp-pf-warn">В тарифе «Мастер» можно до 2 сфер.</p></section>
 <section class="bpd-card"><div class="bpd-card-head"><h2>Тариф</h2></div><div class="bp-pf-plans"><button v-for="p in v.profile.edit.plans" :key="p.id" type="button" class="bp-pf-plan" :class="{on: p.on}" :aria-pressed="p.on" @click="v.profile.edit.setPlan(p.id)"><b>{{ p.label }}</b><small>{{ p.price }}</small></button></div><p class="bp-pf-note">Оплата пока не подключена — тариф просто меняется в кабинете.</p></section>
@@ -3035,6 +3034,7 @@ var BP_SESSION_KEY = 'beauty-profit-personal-session';
 var _bpMountedOrig = root.mounted;
 root.mounted = function () {
   _bpMountedOrig.call(this);
+  this.bpResolveUser();
   var self = this;
   try {
     var st = JSON.parse(sessionStorage.getItem(BP_SESSION_KEY) || 'null');
@@ -3057,9 +3057,10 @@ window.BP_PROFILE_SAVE = async function (d) {
   var vm = window.BPC_APP; if (!vm) { return { err: 'Не удалось сохранить.' }; }
   var accs = bpAccounts();
   var old = vm.user && vm.user.email && vm.user.email.indexOf('@') > 0 ? vm.user.email : '';
+  if (!old || !accs[old]) { var rem0 = bpRemembered(); if (rem0 && accs[rem0.email]) { old = rem0.email; } else { var ks = Object.keys(accs); if (ks.length === 1) { old = ks[0]; } } }
   var acc = old && accs[old] ? accs[old] : null;
-  var email = String(d.email || '').trim().toLowerCase();
-  if (!bpEmailOk(email)) { return { err: 'Проверьте почту для входа.' }; }
+  if (!acc) { return { err: 'Войдите в аккаунт через «Выйти» → «У меня есть аккаунт», чтобы сохранять изменения.' }; }
+  var email = old;
   if (email !== old && accs[email]) { return { err: 'Эта почта уже занята другим аккаунтом.' }; }
   if (d.newPass && d.newPass.length < 6) { return { err: 'Новый пароль — не короче 6 символов.' }; }
   if (!acc) {
@@ -3086,6 +3087,7 @@ window.BP_PROFILE_SAVE = async function (d) {
   window.BP_NEXT_TAB = 'profile'; vm.appKey++;
   return { ok: true };
 };
+root.methods.bpResolveUser = function () { try { if (!(this.user && this.user.email && this.user.email.indexOf('@') > 0)) { var r = bpRemembered(); if (r && bpAccounts()[r.email]) { this.user = { email: r.email }; } } } catch (e) {} };
 root.methods.welcomeMove = function(delta) { this.welcomeDirection=delta>0?'bp-slide-next':'bp-slide-prev'; this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
 root.methods.welcomeSelect = function(i) { if(i===this.welcomeSlide)return;this.welcomeDirection=i>this.welcomeSlide?'bp-slide-next':'bp-slide-prev';this.welcomeSlide=i; };
 root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.welcomeX=e.changedTouches[0].clientX;this.welcomeY=e.changedTouches[0].clientY;} };
