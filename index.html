@@ -169,6 +169,36 @@ section.bp-intro .bp-welcome-brand svg.bp-official-logo{width:142px!important;he
 section.bp-intro .bp-welcome-art{border-radius:24px;background:#ffffff1c;box-shadow:0 10px 24px #23152228}
 @media(max-height:680px){section.bp-intro .bp-welcome-brand svg.bp-official-logo{width:108px!important;height:67px!important}section.bp-intro .bp-welcome-copy h1{font-size:25px!important}section.bp-intro .bp-welcome-copy p{font-size:13px!important}}
 </style>
+<style>
+section.bp-intro.bp-signup{background:linear-gradient(160deg,#583448 0%,#332433 45%,#251e29 100%);padding:18px 20px max(18px,env(safe-area-inset-bottom));min-height:100vh;min-height:100dvh;align-items:center}
+.bp-signup-inner{width:100%;max-width:440px;display:flex;flex:1;flex-direction:column;min-width:0}
+.bp-signup-top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:12px;margin-bottom:26px;min-height:44px}
+.bp-signup-back{display:grid;place-items:center;background:none;border:0;color:#f2c8da;width:44px;height:44px;cursor:pointer;padding:10px;border-radius:12px}
+.bp-signup-back svg{width:24px;height:24px}
+.bp-signup-progress{display:flex;align-items:center;justify-content:center;gap:6px}
+.bp-signup-progress span{height:5px;width:42px;border-radius:10px;background:#a17c914f;transition:background .2s}
+.bp-signup-progress span.active{background:#e6a9c3}
+.bp-signup-count{font-size:12px;color:#e8c9d8;text-align:right}
+.bp-signup-content,.bp-signup-form{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0}
+section.bp-signup .bp-signup-form h1{font-family:Nunito,Arial,sans-serif!important;font-size:clamp(25px,6.5vw,30px)!important;font-weight:700!important;line-height:1.2!important;letter-spacing:-.025em!important;color:#fff8fb!important;margin:0 0 22px;text-align:left;overflow-wrap:anywhere}
+section.bp-signup .bp-signup-form p{font-family:Nunito,Arial,sans-serif!important;color:#ead4df!important;font-size:14px!important;line-height:1.5;margin:0 0 18px}
+.bp-signup-form input{font:500 16px Nunito,Arial,sans-serif;color:#fff8fb;background:#ffffff14;border:1px solid #ffffff25;border-radius:13px;min-height:54px;width:100%;padding:14px 15px;outline:none}
+.bp-signup-form input::placeholder{color:#d7bdcc}
+.bp-signup-form input:focus{border-color:#efb0cf;box-shadow:0 0 0 2px #efb0cf35}
+.bp-signup-list{display:flex;flex-direction:column;gap:10px}
+.bp-signup-category{width:100%;min-height:53px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;color:#fff8fb;background:#ffffff15;border:1px solid #ffffff1d;border-radius:12px;font:600 15px Nunito,Arial,sans-serif;overflow-wrap:anywhere}
+button.bp-signup-category{cursor:pointer}
+.bp-signup-category.selected{border-color:#e9abc6;background:#a94d764a}
+.bp-signup-symbol{flex:none;color:#efb4cf;font-size:22px;line-height:1}
+.bp-signup-custom{justify-content:flex-start;color:#f4c9dd}
+.bp-signup-add{display:flex;flex-direction:column;gap:8px}
+.bp-signup-add button,.bp-signup-primary{border:0;min-height:50px;background:linear-gradient(110deg,#a03c65,#bc6287);color:#fff8fb;border-radius:12px;font:700 15px Nunito,Arial,sans-serif;cursor:pointer;padding:12px 18px}
+.bp-signup-primary:disabled,.bp-signup-add button:disabled{opacity:.45;cursor:default}
+.bp-signup-bottom{position:sticky;bottom:0;margin-top:auto;padding:18px 0 4px;background:linear-gradient(transparent,#251e29 20%);z-index:1}
+.bp-signup-primary{width:100%}
+.bp-signup-note{margin-top:20px!important}
+.bp-signup-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -213,6 +243,43 @@ section.bp-intro .bp-welcome-art{border-radius:24px;background:#ffffff1c;box-sha
       </div>
       <div class="bp-welcome-nav" aria-label="Выбор слайда"><button type="button" class="bp-welcome-arrow" @click="welcomeMove(-1)" aria-label="Предыдущий слайд">‹</button><button v-for="(slide,i) in welcomeSlides" :key="i" type="button" class="bp-welcome-dot" :aria-current="i===welcomeSlide" :aria-label="'Слайд '+(i+1)+': '+slide.title" @click="welcomeSelect(i)"></button><button type="button" class="bp-welcome-arrow" @click="welcomeMove(1)" aria-label="Следующий слайд">›</button></div>
       <div class="bp-welcome-actions"><button type="button" class="bp-primary" @click="welcomeAuth('signup')">Создать аккаунт</button><button type="button" @click="welcomeAuth('login')">У меня есть аккаунт</button><button type="button" class="bp-quiet" @click="toSite">О приложении</button></div>
+    </div></section>
+  </template>
+
+  <template v-if="view === 'signupSteps'">
+    <section class="bp-intro bp-signup"><div class="bp-signup-inner">
+      <header class="bp-signup-top">
+        <button class="bp-signup-back" type="button" @click="signupBack" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
+        <div class="bp-signup-progress" :aria-label="'Шаг '+Math.min(signupStep,2)+' из 2'"><span :class="{active:signupStep>=1}"></span><span :class="{active:signupStep>=2}"></span></div>
+        <span class="bp-signup-count">{{ Math.min(signupStep,2) }} / 2</span>
+      </header>
+      <Transition name="bp-slide-next" mode="out-in">
+        <div :key="signupStep" class="bp-signup-content">
+          <form v-if="signupStep===1" class="bp-signup-form" @submit.prevent="signupNext">
+            <h1>Как вас зовут?</h1>
+            <label class="bp-signup-visually-hidden" for="bp-signup-name">Ваше имя</label>
+            <input id="bp-signup-name" v-model.trim="signupName" autocomplete="given-name" enterkeyhint="next" placeholder="Ваше имя" maxlength="80">
+            <div class="bp-signup-bottom"><button type="submit" class="bp-signup-primary" :disabled="!signupName.trim()">Продолжить</button></div>
+          </form>
+          <div v-else-if="signupStep===2" class="bp-signup-form">
+            <h1>{{ signupName }}, выберите одну или несколько специализаций</h1>
+            <p class="bp-signup-help">Выберите всё, чем вы занимаетесь.</p>
+            <div class="bp-signup-list">
+              <button v-for="category in signupCategories" :key="category" type="button" class="bp-signup-category" :class="{selected:signupSelected.includes(category)}" :aria-pressed="signupSelected.includes(category)" @click="signupToggle(category)"><span>{{ category }}</span><span class="bp-signup-symbol" aria-hidden="true">{{ signupSelected.includes(category) ? '✓' : '+' }}</span></button>
+              <button type="button" class="bp-signup-category bp-signup-custom" @click="signupAdding=!signupAdding"><span class="bp-signup-symbol" aria-hidden="true">+</span><span>Добавить свою категорию</span></button>
+              <form v-if="signupAdding" class="bp-signup-add" @submit.prevent="signupAdd"><label class="bp-signup-visually-hidden" for="bp-signup-custom">Название категории</label><input id="bp-signup-custom" v-model.trim="signupCustom" maxlength="60" placeholder="Название категории" enterkeyhint="done"><button type="submit" :disabled="!signupCustom.trim()">Добавить</button></form>
+            </div>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" :disabled="!signupSelected.length" @click="signupNext">Продолжить<span v-if="signupSelected.length"> · {{ signupSelected.length }}</span></button></div>
+          </div>
+          <div v-else class="bp-signup-form">
+            <h1>Отлично, {{ signupName }}!</h1>
+            <p class="bp-signup-help">Вы выбрали следующие специализации:</p>
+            <div class="bp-signup-list"><div v-for="category in signupSelected" :key="category" class="bp-signup-category selected"><span>{{ category }}</span><span class="bp-signup-symbol">✓</span></div></div>
+            <p class="bp-signup-note">Демонстрация регистрации: следующие шаги пока не настроены. Аккаунт ещё не создан.</p>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupBack">Изменить выбор</button></div>
+          </div>
+        </div>
+      </Transition>
     </div></section>
   </template>
   <template v-if="view === 'welcomeAuth'">
@@ -312,7 +379,7 @@ section.bp-intro .bp-welcome-art{border-radius:24px;background:#ffffff1c;box-sha
     </div>
   </template>
 
-  <div v-if="view !== 'welcome' && view !== 'welcomeAuth'" style="background:#F3E6EC;color:#6B1F40;text-align:center;padding:8px 12px;font-size:12px;font-weight:600">Личная демоверсия · данные только на этом устройстве · без связи с общим сайтом</div>
+  <div v-if="view !== 'welcome' && view !== 'welcomeAuth' && view !== 'signupSteps'" style="background:#F3E6EC;color:#6B1F40;text-align:center;padding:8px 12px;font-size:12px;font-weight:600">Личная демоверсия · данные только на этом устройстве · без связи с общим сайтом</div>
   <template v-if="view === 'app'">
     <bpc-app :key="'a' + appKey" :chosen="chosen" :plan="planId" :saved="saved" :fresh="false" :on-back="toSite" :on-logout="logout" :on-state="onAppState" :email="user ? user.email : ''" :plan-note="planNote"></bpc-app>
     <div v-if="saveMsg" role="status" style="position:fixed;right:14px;bottom:14px;z-index:40;background:#30272D;color:#FAF9F8;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;opacity:.9">{{ saveMsg }}</div>
@@ -1720,6 +1787,12 @@ var root = {
       configured: configured,
       view: 'loading',
       welcomeSlide: 0,
+      signupStep: 1,
+      signupName: '',
+      signupSelected: [],
+      signupCategories: ['Маникюр','Педикюр','Брови','Ресницы','Депиляция','Парикмахерские услуги','Макияж','Массаж','Косметология','Подология','Перманентный макияж','Услуги барбера','Ногтевой сервис'],
+      signupAdding: false,
+      signupCustom: '',
       welcomeDirection: "bp-slide-next",
       welcomeX: 0,
       welcomeY: 0,
@@ -1901,7 +1974,12 @@ root.methods.welcomeMove = function(delta) { this.welcomeDirection=delta>0?'bp-s
 root.methods.welcomeSelect = function(i) { if(i===this.welcomeSlide)return;this.welcomeDirection=i>this.welcomeSlide?'bp-slide-next':'bp-slide-prev';this.welcomeSlide=i; };
 root.methods.welcomeTouchStart = function(e) { if(e.changedTouches.length){this.welcomeX=e.changedTouches[0].clientX;this.welcomeY=e.changedTouches[0].clientY;} };
 root.methods.welcomeTouchEnd = function(e) { if(!e.changedTouches.length)return;var dx=e.changedTouches[0].clientX-this.welcomeX,dy=e.changedTouches[0].clientY-this.welcomeY;if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.25)this.welcomeMove(dx<0?1:-1); };
-root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view='welcomeAuth';window.scrollTo(0,0); };
+root.methods.welcomeAuth = function(mode) { this.auth.mode=mode;this.view=mode==='signup'?'signupSteps':'welcomeAuth';if(mode==='signup')this.signupStep=1;window.scrollTo(0,0); };
+root.methods.signupScroll = function(){this.$nextTick(function(){window.scrollTo(0,0);});};
+root.methods.signupBack = function(){if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
+root.methods.signupNext = function(){if(this.signupStep===1 && this.signupName.trim()){this.signupStep=2;}else if(this.signupStep===2 && this.signupSelected.length){this.signupStep=3;}this.signupScroll();};
+root.methods.signupToggle = function(category){var i=this.signupSelected.indexOf(category);if(i>=0)this.signupSelected.splice(i,1);else this.signupSelected.push(category);};
+root.methods.signupAdd = function(){var name=this.signupCustom.trim();if(!name)return;var existing=this.signupCategories.find(function(c){return c.toLocaleLowerCase()===name.toLocaleLowerCase();});if(!existing){this.signupCategories.push(name);existing=name;}if(!this.signupSelected.includes(existing))this.signupSelected.push(existing);this.signupCustom='';this.signupAdding=false;};
 root.methods.enterWelcomeDemo = function(){try{localStorage.setItem('beauty-profit-personal-demo-entered','1');}catch(e){}this.view='app';this.$nextTick(function(){window.scrollTo(0,0);});};
 root.computed.planNote = function() { return ' · личная демоверсия'; };
 root.methods.goCabinet = function() { this.enterWelcomeDemo(); };
