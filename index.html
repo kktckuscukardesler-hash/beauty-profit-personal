@@ -376,6 +376,9 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bpc-cabinet .bp-brand-name,.bpc-cabinet .bp-brand-name *,.bpc-cabinet .bp-header-brand span,.bpc-cabinet .bp-header-brand em,.bpc-cabinet .bp-side-footer b{font-family:"Cormorant Garamond",Georgia,serif!important}
 .bpc-cabinet .bp-top-title,.bpc-cabinet h1,.bpc-cabinet h2,.bpc-cabinet h3{font-weight:700!important;letter-spacing:-.015em}
 .bpc-cabinet .bp-quote h2{font-size:clamp(20px,4.5vw,26px)!important}
+@media (min-width:761px){
+  .bp-welcome-inner,.bp-signup-inner,.bp-welcome-auth{zoom:1.3}
+}
 .bp-login-pass{position:relative;display:block}
 .bp-login-pass input{width:100%;padding-right:52px!important}
 .bp-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:44px;display:grid;place-items:center;border:0;background:none;color:#7d4a62;cursor:pointer;padding:0}
@@ -2684,6 +2687,27 @@ root.mounted = function() {
   this.cab = loadDemo() || {plan:'premium',spheres:['nails','lashes','brows','cosmo','depil','pmu','hair'],data:{}};
   this.view = 'welcome';
   try { var preview = new URLSearchParams(window.location.search).get('welcome') === '1'; if(!preview && localStorage.getItem('beauty-profit-personal-demo-entered')==='1') this.view='app'; } catch(e) {}
+};
+// Восстановление после перезагрузки (например, переключение «Версия для ПК»)
+var BP_SESSION_KEY = 'beauty-profit-personal-session';
+var _bpMountedOrig = root.mounted;
+root.mounted = function () {
+  _bpMountedOrig.call(this);
+  var self = this;
+  try {
+    var st = JSON.parse(sessionStorage.getItem(BP_SESSION_KEY) || 'null');
+    if (st && ['signupSteps', 'welcomeAuth', 'app', 'welcome'].indexOf(st.view) >= 0) {
+      ['signupStep', 'signupName', 'signupSelected', 'signupCategories', 'serviceCategory', 'signupPhone', 'signupPhoneFull', 'signupCountry', 'signupEmail', 'signupPlan', 'welcomeSlide'].forEach(function (k) { if (st[k] !== undefined) self[k] = st[k]; });
+      if (Array.isArray(st.serviceOptions) && st.serviceOptions.length) self.serviceOptions = st.serviceOptions;
+      if (st.authMode) self.auth.mode = st.authMode;
+      if (st.userEmail) self.user = { email: st.userEmail };
+      if (st.view === 'app') { self.cab = loadDemo() || self.cab; self.appKey++; }
+      self.view = st.view;
+    }
+  } catch (e) {}
+  this.$watch(function () {
+    return JSON.stringify({ view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
+  }, function (json) { try { sessionStorage.setItem(BP_SESSION_KEY, json); } catch (e) {} });
 };
 root.methods.welcomeMove = function(delta) { this.welcomeDirection=delta>0?'bp-slide-next':'bp-slide-prev'; this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
 root.methods.welcomeSelect = function(i) { if(i===this.welcomeSlide)return;this.welcomeDirection=i>this.welcomeSlide?'bp-slide-next':'bp-slide-prev';this.welcomeSlide=i; };
