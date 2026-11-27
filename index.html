@@ -679,13 +679,26 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <p v-if="cardError" role="alert">{{cardError}}</p>
 <button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
 <button v-if="serviceEdit.selected" type="button" class="bp-signup-category" @click="finishCard(false)">Убрать из выбранных</button></form>
-          <form v-else-if="signupStep===1" class="bp-signup-form" @submit.prevent="signupNext">
+          <div v-else-if="signupStep===1" class="bp-signup-form bp-plan-step">
+            <h1>Выберите тариф</h1>
+            <p>Калькулятор бесплатный всегда. Тариф можно сменить в любой момент.</p>
+            <div class="bp-plan-list" role="radiogroup" aria-label="Тарифы">
+              <button v-for="pl in signupPlans" :key="pl.id" type="button" role="radio" :aria-checked="signupPlan===pl.id" class="bp-plan-card" :class="{selected: signupPlan===pl.id}" @click="signupPlan=pl.id">
+                <span class="bp-plan-head"><span class="bp-plan-name">{{ pl.name }} <em v-if="pl.popular" class="bp-plan-badge">Популярный</em></span><span class="bp-plan-radio" aria-hidden="true"></span></span>
+                <span class="bp-plan-price"><b>{{ pl.price }}</b> <small>{{ pl.period }}</small></span>
+                <span class="bp-plan-sub">{{ pl.sub }}</span>
+                <span class="bp-plan-feats"><span v-for="ft in pl.features" :key="ft" class="bp-plan-feat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ ft }}</span></span>
+              </button>
+            </div>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupNext">{{ signupPlanInfo().cta }}</button></div>
+          </div>
+          <form v-else-if="signupStep===2" class="bp-signup-form" @submit.prevent="signupNext">
             <h1>Как вас зовут?</h1>
             <label class="bp-signup-visually-hidden" for="bp-signup-name">Ваше имя</label>
             <input id="bp-signup-name" v-model.trim="signupName" autocomplete="given-name" enterkeyhint="next" placeholder="Ваше имя" maxlength="80">
             <div class="bp-signup-bottom"><button type="submit" class="bp-signup-primary" :disabled="!signupName.trim()">Продолжить</button></div>
           </form>
-          <div v-else-if="signupStep===2" class="bp-signup-form">
+          <div v-else-if="signupStep===3" class="bp-signup-form">
             <h1>{{ signupName }}, выберите одну или несколько специализаций</h1>
             <p class="bp-signup-help">Выберите всё, чем вы занимаетесь.</p>
             <div class="bp-signup-list">
@@ -693,9 +706,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <button type="button" class="bp-signup-category bp-signup-custom" @click="signupAdding=!signupAdding"><span class="bp-signup-symbol" aria-hidden="true">+</span><span>Добавить свою категорию</span></button>
               <form v-if="signupAdding" class="bp-signup-add" @submit.prevent="signupAdd"><label class="bp-signup-visually-hidden" for="bp-signup-custom">Название категории</label><input id="bp-signup-custom" v-model.trim="signupCustom" maxlength="60" placeholder="Название категории" enterkeyhint="done"><button type="submit" :disabled="!signupCustom.trim()">Добавить</button></form>
             </div>
-            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" :disabled="!signupSelected.length" @click="signupNext">Продолжить<span v-if="signupSelected.length"> · {{ signupSelected.length }}</span></button></div>
+            <div v-if="signupPlanTooSmall()" class="bp-plan-warn" role="alert">В тарифе «Мастер» можно выбрать до двух сфер. Оставьте две сферы или смените тариф.<button type="button" @click="signupStep=1;signupScroll()">Изменить тариф</button></div>
+            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" :disabled="!signupSelected.length || signupPlanTooSmall()" @click="signupNext">Продолжить<span v-if="signupSelected.length"> · {{ signupSelected.length }}</span></button></div>
           </div>
-          <div v-else-if="signupStep===3" class="bp-signup-form">
+          <div v-else-if="signupStep===4" class="bp-signup-form">
             <h1>Выберите услуги</h1>
             <div class="bp-service-tabs" role="group" aria-label="Специализации">
               <button v-for="category in orderedSignupCategories" :key="category" type="button" :aria-pressed="category === serviceCategory" @click="openServiceCategory(category)">{{ category }}</button>
@@ -711,7 +725,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
             </form>
             <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" @click="signupNext">{{ serviceOptions.some(s => s.selected && signupSelected.includes(s.category)) ? 'Продолжить' : 'Выбрать услуги позже' }}</button></div>
           </div>
-          <div v-else-if="signupStep===4" class="bp-signup-form bp-client-step">
+          <div v-else-if="signupStep===5" class="bp-signup-form bp-client-step">
             <template v-if="!clientEntry">
               <div class="bp-client-intro">
                 <div class="bp-client-art" aria-hidden="true"><i>К</i><i>Е</i><i>Л</i><b><svg viewBox="0 0 32 32" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="14" cy="10" r="4"/><path d="M5 26v-2a9 9 0 0 1 18 0v2zM22 6a4 4 0 0 1 0 8m3 4a7 7 0 0 1 4 7"/></svg></b><i>А</i><i>П</i><i>З</i></div>
@@ -739,7 +753,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <div class="bp-signup-bottom"><button class="bp-signup-primary" type="button" @click="confirmClients">{{clientChoices.some(c => c.selected) ? 'Добавить выбранных · ' + clientChoices.filter(c => c.selected).length : 'Пропустить'}}</button></div>
             </template>
           </div>
-          <div v-else-if="signupStep===5" class="bp-signup-form bp-client-step">
+          <div v-else-if="signupStep===6" class="bp-signup-form bp-client-step">
             <div class="bp-client-intro">
               <div class="bp-reminder-preview" aria-label="Пример уведомления"><span aria-hidden="true">BP</span><div><strong>Beauty Profit</strong><br>Напомните клиенту о записи сегодня в 14:30</div></div>
               <h1>Не пропустите напоминания</h1>
@@ -751,7 +765,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               <button class="bp-client-skip" type="button" @click="signupNext">Настроить позже</button>
             </div>
           </div>
-          <form v-else-if="signupStep===6" class="bp-signup-form bp-phone-step" @submit.prevent="signupPhoneSubmit">
+          <form v-else-if="signupStep===7" class="bp-signup-form bp-phone-step" @submit.prevent="signupPhoneSubmit">
             <h1>Зарегистрируйтесь, чтобы не потерять данные</h1>
             <p>Укажите телефон, почту и пароль, чтобы не потерять доступ к своей странице.</p>
             <div class="bp-phone-row">
@@ -784,20 +798,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
               </ul>
             </dialog>
           </form>
-          <div v-else-if="signupStep===7" class="bp-signup-form bp-plan-step">
-            <h1>Выберите тариф</h1>
-            <p>Калькулятор бесплатный всегда. Тариф можно сменить в любой момент.</p>
-            <div v-if="signupPlanTooSmall()" class="bp-plan-warn" role="alert">В тарифе «Мастер» можно до 2 сфер, а вы выбрали {{ signupSelected.length }}. Выберите «Салон Pro» или оставьте 2 сферы.<button type="button" @click="signupStep=2;signupScroll()">Изменить сферы</button></div>
-            <div class="bp-plan-list" role="radiogroup" aria-label="Тарифы">
-              <button v-for="pl in signupPlans" :key="pl.id" type="button" role="radio" :aria-checked="signupPlan===pl.id" class="bp-plan-card" :class="{selected: signupPlan===pl.id}" @click="signupPlan=pl.id">
-                <span class="bp-plan-head"><span class="bp-plan-name">{{ pl.name }} <em v-if="pl.popular" class="bp-plan-badge">Популярный</em></span><span class="bp-plan-radio" aria-hidden="true"></span></span>
-                <span class="bp-plan-price"><b>{{ pl.price }}</b> <small>{{ pl.period }}</small></span>
-                <span class="bp-plan-sub">{{ pl.sub }}</span>
-                <span class="bp-plan-feats"><span v-for="ft in pl.features" :key="ft" class="bp-plan-feat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ ft }}</span></span>
-              </button>
-            </div>
-            <div class="bp-signup-bottom"><button type="button" class="bp-signup-primary" :disabled="signupPlanTooSmall()" @click="signupNext">{{ signupPlanInfo().cta }}</button></div>
-          </div>
           <div v-else class="bp-signup-form">
             <h1>Отлично, {{ signupName }}!</h1>
             <p v-if="user && user.email && user.email.indexOf('@')>0" class="bp-signup-help">Почта для входа: {{ user.email }}</p>
@@ -3044,11 +3044,12 @@ root.mounted = function () {
       if (st.authMode) self.auth.mode = st.authMode;
       if (st.userEmail) self.user = { email: st.userEmail };
       if (st.view === 'app') { self.cab = loadDemo() || self.cab; self.appKey++; }
+      if (st.view === 'signupSteps' && !st.planFirst && self.signupStep < 8) self.signupStep = 1;
       self.view = st.view;
     }
   } catch (e) {}
   this.$watch(function () {
-    return JSON.stringify({ view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, signupClientList: self.signupClientList, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
+    return JSON.stringify({ planFirst: true, view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, signupClientList: self.signupClientList, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
   }, function (json) { try { sessionStorage.setItem(BP_SESSION_KEY, json); } catch (e) {} });
 };
 
@@ -3132,7 +3133,7 @@ root.methods.confirmClients = function() {
   this.signupClientList = clients;
   this.signupNext();
 };
-root.methods.signupBack = function(){if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
+root.methods.signupBack = function(){if(this.signupStep===5 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
 root.methods.requestSignupNotifications = async function() {
   if (this.askingNotifications) return;
   const api = window.Notification;
@@ -3143,7 +3144,7 @@ root.methods.requestSignupNotifications = async function() {
   this.askingNotifications = true;
   try {
     const permission = api.permission === 'default' ? await api.requestPermission() : api.permission;
-    if (this.signupStep !== 5) return;
+    if (this.signupStep !== 6) return;
     if (permission === 'granted') this.signupNext();
     else this.notificationNotice = permission === 'denied'
       ? 'Уведомления выключены. Включить их можно в настройках сайта.'
@@ -3269,15 +3270,18 @@ root.methods.signupFinish = function () {
   this.enterWelcomeDemo();
 };
 root.methods.signupNext = function() {
-  if (this.signupStep === 1 && this.signupName.trim()) this.signupStep = 2;
-  else if (this.signupStep === 2 && this.signupSelected.length) {
+  if (this.signupStep === 3) {
+    if (!this.signupSelected.length || this.signupPlanTooSmall()) return;
     this.openServiceCategory(this.signupSelected.includes(this.serviceCategory) ? this.serviceCategory : this.orderedSignupCategories[0]);
-    this.signupStep = 3;
-  } else if (this.signupStep === 3) { this.clientEntry=false; this.signupStep=4; }
-  else if (this.signupStep === 4) { this.notificationNotice=''; this.signupStep=5; }
-  else if (this.signupStep === 5) { this.signupAuthNotice=''; this.signupStep=6; }
-  else if (this.signupStep === 6) this.signupStep=7;
-  else if (this.signupStep === 7) { if (this.signupPlanTooSmall()) return; try { localStorage.setItem('bpSignupPlan', this.signupPlan); var a = bpAccounts(); if (this.user && a[this.user.email]) { a[this.user.email].plan = this.signupPlan; if (a[this.user.email].cab) a[this.user.email].cab.plan = this.signupPlan; bpSaveAccounts(a); } } catch (e) {} this.signupStep=8; }
+  }
+  if (this.signupStep === 2 && !this.signupName.trim()) return;
+  if (this.signupStep === 4) this.clientEntry = false;
+  if (this.signupStep === 5) this.notificationNotice = '';
+  if (this.signupStep === 6) this.signupAuthNotice = '';
+  if (this.signupStep === 7) {
+    try { localStorage.setItem('bpSignupPlan', this.signupPlan); } catch (e) {}
+  }
+  if (this.signupStep < 8) this.signupStep++;
   this.signupScroll();
 };
 root.methods.openServiceCategory = function(category) {
