@@ -582,6 +582,16 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </style><style>
 .bp-reminder-preview{display:flex;align-items:center;gap:12px;text-align:left;margin:0 auto 32px;max-width:310px;border:1px solid #ffffff30;background:#ffffff15;padding:14px;border-radius:18px;color:#fff4fa;font-size:14px}
 .bp-reminder-preview>span{display:grid;place-items:center;flex:0 0 40px;height:40px;border-radius:50%;background:#f4d5e3;color:#803956;font-weight:700}
+
+.bp-sphere-picker{position:relative;flex:none;max-width:100%}
+.bp-sphere-picker summary{display:flex;align-items:center;gap:10px;min-height:42px;padding:0 16px;border:1px solid #e2bfd0;border-radius:12px;background:#fbf1f6;color:#6b1f40;font-weight:700;cursor:pointer;list-style:none}
+.bp-sphere-picker summary::-webkit-details-marker{display:none}
+.bp-sphere-picker summary::after{content:"";width:7px;height:7px;border-right:2px solid;border-bottom:2px solid;transform:translateY(-2px) rotate(45deg)}
+.bp-sphere-picker[open] summary::after{transform:translateY(2px) rotate(225deg)}
+.bp-sphere-options{position:absolute;z-index:20;top:calc(100% + 5px);left:0;box-sizing:border-box;width:min(19rem,80vw);max-height:50vh;overflow:auto;padding:5px;border:1px solid #e2bfd0;border-radius:14px;background:white;box-shadow:0 8px 26px #53263726}
+.bp-sphere-options button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;padding:8px 12px;border:0;border-radius:9px;background:white;color:#30272d;text-align:left;font:inherit;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+.bp-sphere-options button[aria-pressed=true],.bp-sphere-options button:hover{background:#fbf1f6;color:#6b1f40}
+@media(max-width:760px){.bpc-cabinet .bp-top-actions{width:auto;flex-wrap:wrap!important}}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1229,17 +1239,17 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </template>
 </nav><div class="bp-side-footer"><a class="bp-home-link" href="#" @click.prevent="v.goDash" style="color:inherit"><b>Beauty Profit</b></a>Ваш бизнес. Ваши правила.</div></aside>
-<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><div class="bp-spheres" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #F9F2F5; border: 1px solid #F3E6EC; border-radius: 999px; padding: 6px 6px 6px 16px">
-<span style="font-size: 14px; font-weight: 700; color: #6B1F40">Мои сферы:</span>
-<template v-for="(sp, $index) in v.spheres">
-<template v-if="sp.on">
-<button type="button" aria-pressed="true" @click="sp.pick" style="font-family: Lato, Arial, sans-serif; font-size: 16px; font-weight: 700; min-height: 46px; padding: 10px 20px; border-radius: 999px; border: 1px solid #8E2F56; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">{{ sp.label }}</button>
-</template>
-<template v-if="sp.off">
-<button type="button" aria-pressed="false" @click="sp.pick" style="font-family: Lato, Arial, sans-serif; font-size: 16px; font-weight: 700; min-height: 46px; padding: 10px 20px; border-radius: 999px; border: 1px solid #E0D6DC; background: #FFFFFF; color: #30272D; cursor: pointer">{{ sp.label }}</button>
-</template>
-</template>
-</div><div class="bp-top-actions"><span style="background: #F3E6EC; color: #6B1F40; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 999px">Тариф {{ v.planName }}{{ v.planNote }}</span>
+<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details class="bp-sphere-picker" ref="spherePicker"
+  @keydown.esc.prevent="$refs.spherePicker.open=false; $refs.sphereTrigger.focus()"
+  @focusout="$event.currentTarget.open = $event.currentTarget.open ? $event.currentTarget.contains($event.relatedTarget) : false">
+  <summary ref="sphereTrigger">Мои сферы</summary>
+  <div class="bp-sphere-options" role="group" aria-label="Выбранные сферы">
+    <button v-for="sp in v.spheres" :key="sp.id" type="button" :aria-pressed="sp.on"
+      @click="sp.pick(); $refs.spherePicker.open=false; $refs.sphereTrigger.focus()">
+      <span>{{ sp.label }}</span><span v-if="sp.on" aria-hidden="true">✓</span>
+    </button>
+  </div>
+</details><div class="bp-top-actions"><span style="background: #F3E6EC; color: #6B1F40; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 999px">Тариф {{ v.planName }}{{ v.planNote }}</span>
 <template v-if="v.hasLogout">
 <button type="button" @click="v.logout" :title="v.userEmail" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 12px; border-radius: 999px; border: 1px solid #E0D6DC; background: #FFFFFF; color: #554A50; cursor: pointer">Выйти</button>
 </template>
@@ -2138,6 +2148,14 @@ var BPC_MO = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'ию�
 var bpcLabel = function (k) { var d = bpcParse(k); return BPC_WD[d.getDay()] + ', ' + d.getDate() + ' ' + BPC_MO[d.getMonth()]; };
 
 
+var extraIds = ['Подология', 'Услуги барбера', 'Макияж', 'Массаж'].map(function (label) { return 'category:' + encodeURIComponent(label); });
+var props = this.props || {};
+var savedIds = Object.keys((props.saved && props.saved.svcs) || {});
+new Set(extraIds.concat(props.chosen || [], savedIds)).forEach(function (id) {
+  if (typeof id === 'string' && id.startsWith('category:')) {
+    BPC_N.push({ id: id, label: decodeURIComponent(id.slice(9)), remind: 21, services: [], mats: [] });
+  }
+});
 this._lib = { BPC_CAT: BPC_CAT, BPC_N: BPC_N, bpcNum: bpcNum, bpcKey: bpcKey, bpcAdd: bpcAdd, bpcParse: bpcParse, bpcLabel: bpcLabel };
 return this._lib;
 }
@@ -2237,7 +2255,7 @@ var up = function (patch) { self.setState(patch); };
 var setField = function (group, field) { return function (e) { var o = {}; Object.keys(st[group]).forEach(function (k) { o[k] = st[group][k]; }); o[field] = e.target.value; var p = {}; p[group] = o; up(p); }; };
 var planNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium', start: 'Старт', master: 'Мастер', salon: 'Салон Pro' };
 
-var spheres = niches.map(function (x) { var on = x.id === active.id; return { label: x.label, on: on, off: !on, pick: function () { var l = self.servicesOf(x.id); up({ sphere: x.id, svcId: l.length ? l[0].id : '0', delAsk: false }); } }; });
+var spheres = niches.map(function (x) { var on = x.id === active.id; return { id: x.id, label: x.label, on: on, off: !on, pick: function () { var l = self.servicesOf(x.id); up({ sphere: x.id, svcId: l.length ? l[0].id : '0', delAsk: false }); } }; });
 
 var profAcc = {}; try { profAcc = bpAccounts()[this.props.email] || {}; } catch (e) {}
 var profPlanNames = { trial: 'Пробный', plus: 'Plus', premium: 'Premium', start: 'Старт', master: 'Мастер', salon: 'Салон Pro' };
@@ -3230,14 +3248,14 @@ root.methods.demoLogin = async function () {
   } finally { this.auth.busy = false; }
 };
 
-var BP_CAT_TO_NICHE = { 'Ногтевой сервис': 'nails', 'Подология': 'nails', 'Ресницы': 'lashes', 'Брови': 'brows', 'Косметология': 'cosmo', 'Депиляция': 'depil', 'Перманентный макияж': 'pmu', 'Парикмахерские услуги': 'hair', 'Услуги барбера': 'hair' };
+var BP_CAT_TO_NICHE = { 'Ногтевой сервис': 'nails', 'Ресницы': 'lashes', 'Брови': 'brows', 'Косметология': 'cosmo', 'Депиляция': 'depil', 'Перманентный макияж': 'pmu', 'Парикмахерские услуги': 'hair' };
 root.methods.signupBuildCab = function () {
   var self = this, spheres = [], svcs = {}, prices = {}, times = {}, noMats = {};
   var presets = {};
   try { if (!window.BPC_PRESETS && typeof AppLogic !== 'undefined') AppLogic.prototype.lib.call({}); } catch (e) {}
   try { (window.BPC_PRESETS || []).forEach(function (n) { presets[n.id] = n.services; }); } catch (e) {}
   this.orderedSignupCategories.forEach(function (cat) {
-    var id = BP_CAT_TO_NICHE[cat]; if (!id) return;
+    var id = Object.hasOwn(BP_CAT_TO_NICHE, cat) ? BP_CAT_TO_NICHE[cat] : 'category:' + encodeURIComponent(cat);
     if (spheres.indexOf(id) < 0) spheres.push(id);
     var chosen = self.servicesFor(cat).filter(function (s) { return s.selected; });
     var list = svcs[id] || (svcs[id] = []);
