@@ -245,6 +245,40 @@ button.bp-signup-category{cursor:pointer}
 .bp-time-actions{display:flex;justify-content:space-between;margin-bottom:18px}
 .bp-time-actions button{font:inherit;border:0;color:#ffd5e6;background:none;padding:10px}
 </style>
+<style>
+section.bp-signup .bp-card-editor{background:#fffbf8;border-radius:24px;padding:clamp(16px,4vw,28px);color:#382b34;box-shadow:0 12px 44px #1c101b26;gap:14px}
+section.bp-signup .bp-card-editor h1{color:#30232c!important;margin:0!important}
+section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
+.bp-card-editor h2{font-size:18px;line-height:1.25}
+.bp-card-editor details,.bp-card-editor button.bp-signup-category{background:#f5ecef;color:#44323e;border-color:#e4d7dc}
+.bp-card-editor .bp-check,.bp-card-editor summary{min-height:44px;align-content:center}
+.bp-card-editor details{padding:4px 12px}
+.bp-card-editor details[open]{padding-bottom:12px}
+.bp-card-editor .bp-check input{padding:0}
+.bp-card-editor .bp-currency-field{display:grid;gap:5px}
+.bp-card-editor .bp-currency-field button,.bp-card-editor input:not([type=checkbox]):not([type=radio]),.bp-card-editor textarea{border:1px solid #d7c6ce;border-radius:12px;color:#382b34;background:white;font:inherit;min-height:46px}
+.bp-card-editor .bp-time-sheet{box-sizing:border-box;width:min(100%,440px);max-width:100%;max-height:84dvh;overflow:auto;background:#fffbf8;color:#382b34;padding:24px 20px max(20px,env(safe-area-inset-bottom));border-radius:24px 24px 0 0;box-shadow:0 -8px 48px #27152733}
+.bp-time-sheet[open]{animation:bp-sheet-rise .2s ease-out}
+.bp-time-sheet::backdrop{background:#21152088;backdrop-filter:blur(3px)}
+.bp-time-sheet header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.bp-sheet-close{background:#f4e9ed;color:#634557;border:0;border-radius:50%;width:44px;height:44px;font-size:24px}
+.bp-time-sheet fieldset{margin:0;padding:8px;border:1px solid #e1d3d9;border-radius:16px;min-width:0}
+.bp-time-sheet legend{padding:0 6px;font-size:14px}
+.bp-wheel,.bp-currency-list{overflow-y:auto;overscroll-behavior:contain}
+.bp-wheel{height:150px}
+.bp-wheel label{position:relative;cursor:pointer}
+.bp-card-editor .bp-wheel input[type=radio]{position:absolute;opacity:0;width:1px;min-height:0;height:1px;padding:0}
+.bp-wheel span{padding:10px;text-align:center;font-size:19px;border-radius:10px;font-variant-numeric:tabular-nums}
+.bp-wheel :checked+span,.bp-currency-list [aria-pressed=true]{background:#f1dce6;color:#742d51;font-weight:700}
+.bp-wheel input:focus-visible+span{outline:2px solid #923d65;outline-offset:-2px}
+.bp-time-sheet .bp-signup-primary{margin-top:16px}
+.bp-currency-list{margin-top:10px;max-height:min(48dvh,360px)}
+.bp-currency-list button{display:flex;align-items:center;justify-content:space-between;gap:10px;background:transparent;border:0;border-bottom:1px solid #ebdfe4;color:inherit;width:100%;min-height:46px;padding:8px 12px;text-align:left;font:inherit}
+.bp-currency-list b{font-size:13px}
+@media(min-width:600px){.bp-card-editor .bp-time-sheet{inset:0;margin:auto;border-radius:24px}}
+@keyframes bp-sheet-rise{from{opacity:0;transform:translateY(12px)}}
+@media(prefers-reduced-motion:reduce){.bp-time-sheet[open]{animation:none}}
+</style>
 </head>
 <body>
 <div id="app" v-cloak></div>
@@ -305,9 +339,15 @@ button.bp-signup-category{cursor:pointer}
 <h1>{{ serviceEdit.selected ? 'Настройки услуги' : 'Новая услуга' }}</h1>
 <p>{{ serviceEdit.category }}</p><h2>{{ serviceEdit.name }}</h2>
 <button type="button" class="bp-signup-category" @click="showTime">Продолжительность <span>{{ card.minutes ? durationText(card.minutes) : 'Нет' }} ›</span></button>
-<dialog ref="timeSheet" class="bp-time-sheet" aria-label="Продолжительность"><div class="bp-time-actions"><button type="button" @click="$refs.timeSheet.close()">Отмена</button><button type="button" @click="card.minutes = hours*60 + mins; $refs.timeSheet.close()">Готово</button></div>
-<div class="bp-pair"><label>Часы<select v-model.number="hours"><option v-for="h in 24" :value="h-1">{{h-1}}</option></select></label><label>Минуты<select v-model.number="mins"><option v-for="m in 60" :value="m-1">{{m-1}}</option></select></label></div></dialog>
-<div class="bp-pair"><label>Цена<input v-model.trim="card.price" inputmode="decimal" pattern="[0-9]+([.,][0-9]{1,2})?" required placeholder="0,00"></label><label>Валюта<select v-model="card.currency"><option v-for="code in currencies">{{code}}</option></select></label></div>
+<dialog ref="timeSheet" class="bp-time-sheet" aria-labelledby="bp-duration-title">
+<header><h2 id="bp-duration-title">Продолжительность</h2><button class="bp-sheet-close" type="button" aria-label="Закрыть" @click="$refs.timeSheet.close()">×</button></header>
+<div class="bp-pair"><fieldset v-for="unit in ['hours','mins']" :key="unit"><legend>{{unit==='hours' ? 'Часы' : 'Минуты'}}</legend><div class="bp-wheel">
+<label v-for="i in (unit==='hours'?24:60)" :key="i"><input type="radio" :name="unit" :value="i-1" :checked="(unit==='hours'?hours:mins)===i-1" @change="unit==='hours' ? hours=i-1 : mins=i-1"><span>{{String(i-1).padStart(2,'0')}}</span></label>
+</div></fieldset></div>
+<button type="button" class="bp-signup-primary" @click="card.minutes = hours*60 + mins; $refs.timeSheet.close()">Готово</button></dialog>
+<div class="bp-pair"><label>Цена<input v-model.trim="card.price" inputmode="decimal" pattern="[0-9]+([.,][0-9]{1,2})?" required placeholder="0,00"></label><div class="bp-currency-field"><span>Валюта</span><button type="button" aria-haspopup="dialog" @click="currencyQuery=''; $refs.currencySheet.showModal()">{{card.currency}} ⌄</button></div></div><dialog ref="currencySheet" class="bp-time-sheet" aria-labelledby="bp-currency-title"><header><h2 id="bp-currency-title">Валюта услуги</h2><button type="button" class="bp-sheet-close" aria-label="Закрыть" @click="$refs.currencySheet.close()">×</button></header>
+<input v-model.trim="currencyQuery" type="search" @keydown.enter.prevent aria-label="Поиск валюты" placeholder="Валюта, код или страна">
+<div class="bp-currency-list"><button type="button" v-for="entry in currencyMatches" :key="entry[0]" :aria-pressed="card.currency===entry[0]" @click="card.currency=entry[0]; $refs.currencySheet.close()"><span>{{entry[1]}}</span><b>{{entry[0]}}</b></button><p v-if="!currencyMatches.length">Валюта не найдена</p></div></dialog>
 <label class="bp-check"><input type="checkbox" v-model="card.from">Цена от</label>
 <details><summary>Добавить скидку</summary><label>Скидка, %<input type="number" inputmode="decimal" min="0" max="100" step="0.01" v-model="card.discount"></label></details>
 <h2>Настройки услуги</h2><label class="bp-check"><input type="checkbox" v-model="card.online">Доступна для онлайн-записи</label>
@@ -836,7 +876,7 @@ button.bp-signup-category{cursor:pointer}
 <h2 style="margin: 0; font-size: 18px; font-weight: 700">Ваши настройки</h2>
 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700">Валюта
 <select :value="v.set.cur" @change="v.on.cur" style="min-height: 44px; border-radius: 10px; border: 1px solid #D8CDD3; padding: 0 10px; font-size: 15px; background: #FFFDF8">
-<template v-for="(c, $index) in v.currencies"><option :value="c.v">{{ c.v }}</option></template>
+<template v-for="(c, $index) in v.currencies"><option :value="c.v">{{ c.label }}</option></template>
 </select>
 </label>
 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700"><span>Расходы в месяц, {{ v.set.cur }}</span>
@@ -1310,6 +1350,158 @@ button.bp-signup-category{cursor:pointer}
 var Vue = window.Vue;
 var cfg = window.BPC_CONFIG || {};
 
+const serviceCurrencies = [
+  [
+    "TRY",
+    "Турецкая лира",
+    "Турция Северный Кипр"
+  ],
+  [
+    "EUR",
+    "Евро",
+    "Австрия Андорра Бельгия Болгария Ватикан Германия Греция Ирландия Испания Италия Кипр Косово Латвия Литва Люксембург Мальта Монако Нидерланды Голландия Португалия Сан-Марино Словакия Словения Финляндия Франция Хорватия Черногория Эстония"
+  ],
+  [
+    "GBP",
+    "Фунт стерлингов",
+    "Великобритания Англия Шотландия Уэльс Северная Ирландия Джерси Гернси Остров Мэн"
+  ],
+  [
+    "MDL",
+    "Молдавский лей",
+    "Молдова Молдавия"
+  ],
+  [
+    "RON",
+    "Румынский лей",
+    "Румыния"
+  ],
+  [
+    "USD",
+    "Доллар США",
+    "США Америка"
+  ],
+  [
+    "RUB",
+    "Российский рубль",
+    "Россия"
+  ],
+  [
+    "ALL",
+    "Албанский лек",
+    "Албания"
+  ],
+  [
+    "AMD",
+    "Армянский драм",
+    "Армения"
+  ],
+  [
+    "AZN",
+    "Азербайджанский манат",
+    "Азербайджан"
+  ],
+  [
+    "BAM",
+    "Конвертируемая марка",
+    "Босния и Герцеговина"
+  ],
+  [
+    "BYN",
+    "Белорусский рубль",
+    "Беларусь Белоруссия"
+  ],
+  [
+    "CHF",
+    "Швейцарский франк",
+    "Швейцария Лихтенштейн"
+  ],
+  [
+    "CZK",
+    "Чешская крона",
+    "Чехия"
+  ],
+  [
+    "DKK",
+    "Датская крона",
+    "Дания Фарерские острова Гренландия"
+  ],
+  [
+    "GEL",
+    "Грузинский лари",
+    "Грузия"
+  ],
+  [
+    "GIP",
+    "Гибралтарский фунт",
+    "Гибралтар"
+  ],
+  [
+    "HUF",
+    "Венгерский форинт",
+    "Венгрия"
+  ],
+  [
+    "ISK",
+    "Исландская крона",
+    "Исландия"
+  ],
+  [
+    "KGS",
+    "Кыргызский сом",
+    "Кыргызстан Киргизия"
+  ],
+  [
+    "KZT",
+    "Казахстанский тенге",
+    "Казахстан"
+  ],
+  [
+    "MKD",
+    "Македонский денар",
+    "Северная Македония"
+  ],
+  [
+    "NOK",
+    "Норвежская крона",
+    "Норвегия Шпицберген"
+  ],
+  [
+    "PLN",
+    "Польский злотый",
+    "Польша"
+  ],
+  [
+    "RSD",
+    "Сербский динар",
+    "Сербия"
+  ],
+  [
+    "SEK",
+    "Шведская крона",
+    "Швеция"
+  ],
+  [
+    "TJS",
+    "Таджикский сомони",
+    "Таджикистан"
+  ],
+  [
+    "TMT",
+    "Туркменский манат",
+    "Туркменистан Туркмения"
+  ],
+  [
+    "UAH",
+    "Украинская гривна",
+    "Украина"
+  ],
+  [
+    "UZS",
+    "Узбекский сум",
+    "Узбекистан"
+  ]
+];
 function DCLogic(p) { this.props = p || {}; this.state = {}; }
 DCLogic.prototype.setState = function (o) { Object.assign(this.state, o); };
 
@@ -1786,7 +1978,7 @@ return {
   planName: planNames[this.props.plan] || 'Premium', spheres: spheres, tabs: tabs,
   tabDash: st.tab === 'dash', dashboard: dashboard, pageLabel: (tabDefs.find(function(t){return t[0]===st.tab;}) || tabDefs[0])[1], tabCalc: st.tab === 'calc', tabClients: st.tab === 'appts', tabSvcs: st.tab === 'svcs', tabAppts: st.tab === 'appts', tabIncome: st.tab === 'income', tabRemind: st.tab === 'remind',
   units: ['мл', 'г', 'шт', 'пара', 'м', 'упаковка'].map(function (v) { return { v: v }; }),
-  currencies: ['₽', '₴', '₸', '₺', '$', '€', 'BYN', 'zł'].map(function (v) { return { v: v }; }), set: st.set, hourCost: money(r.hour),
+  currencies: serviceCurrencies.map(([code, name]) => ({v: ({RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł'})[code] || code, label: name + ' (' + code + ')'})), set: st.set, hourCost: money(r.hour),
   libShow: !!st.libShow, libBtn: 'Мои материалы', libGroups: libGroups, libApi: libApi, libQ: st.libQ, libNew: st.libNew, addOpen: !!st.addOpen, addCatV: st.addCat, addNameV: st.addName || '', addUnitV: st.addUnit || 'шт', addIsPack: st.addUnit === 'упаковка', addPerV: st.addPer || '', addErr: !!st.addErr, libCatOpts: libCats.map(function (c) { return { v: c }; }), libStat: libFilled + ' из ' + libTotal,
   catOpen: st.catOpen, catGroups: catGroups, catCount: catCount, catHas: catCount > 0, catNone: catCount === 0, catQ: st.catQ, catAdd: catAdd,
   catClose: function () { up({ catOpen: false, catPicked: {}, catQ: '' }); },
@@ -1864,7 +2056,7 @@ var root = {
       view: 'loading',
       welcomeSlide: 0,
       serviceEdit:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
-      currencies:['TRY','GBP','EUR','USD','RUB'],
+      currencyQuery:'',
       serviceCategory: '',
       serviceDraft: '',
       addingService: false,
@@ -2061,6 +2253,10 @@ var root = {
     };
   },
   computed: {
+    currencyMatches: function () {
+      const query = this.currencyQuery.toLocaleLowerCase("ru");
+      return serviceCurrencies.filter(entry => entry.join(" ").toLocaleLowerCase("ru").includes(query));
+    },
     chosen: function () { return this.cab && this.cab.spheres && this.cab.spheres.length ? this.cab.spheres : null; },
     planId: function () { return this.cab ? this.cab.plan : 'trial'; },
     saved: function () { return this.cab && this.cab.data && Object.keys(this.cab.data).length ? JSON.parse(JSON.stringify(this.cab.data)) : null; },
@@ -2246,6 +2442,7 @@ root.methods.showTime = function() {
   this.hours = Math.floor(this.card.minutes/60);
   this.mins = this.card.minutes%60;
   this.$refs.timeSheet.showModal();
+  this.$nextTick(() => this.$refs.timeSheet.querySelectorAll('input:checked').forEach(input => input.parentElement.scrollIntoView({block:'nearest'})));
 };
 root.methods.editCard = function(service) {
   this.serviceEdit = service;
