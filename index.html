@@ -840,7 +840,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 
   <div v-if="view !== 'welcome' && view !== 'welcomeAuth' && view !== 'signupSteps'" style="background:#F3E6EC;color:#6B1F40;text-align:center;padding:8px 12px;font-size:12px;font-weight:600">Личная демоверсия · данные только на этом устройстве · без связи с общим сайтом</div>
   <template v-if="view === 'app'">
-    <bpc-app :key="'a' + appKey" :chosen="chosen" :plan="planId" :saved="saved" :fresh="false" :on-back="toSite" :on-logout="logout" :on-state="onAppState" :email="user ? user.email : ''" :plan-note="planNote"></bpc-app>
+    <bpc-app :key="'a' + appKey" :chosen="chosen" :plan="planId" :saved="saved" :fresh="!!(cab && cab.fresh)" :on-back="toSite" :on-logout="logout" :on-state="onAppState" :email="user ? user.email : ''" :plan-note="planNote"></bpc-app>
     <div v-if="saveMsg" role="status" style="position:fixed;right:14px;bottom:14px;z-index:40;background:#30272D;color:#FAF9F8;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;opacity:.9">{{ saveMsg }}</div>
   </template>
 </div>
@@ -1188,7 +1188,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div class="bpd-head"><div><h1>Здравствуйте{{ v.dashboard.who ? ', ' + v.dashboard.who : '' }}!</h1><p>С возвращением. Вот как идут дела.</p></div><div class="bpd-user"><span class="bpd-avatar">{{ v.dashboard.whoInitial }}</span><span><b>{{ v.dashboard.who || 'Мастер' }}</b><small>{{ v.planName }}</small></span></div></div>
 <div class="bpd-grid">
 <section class="bpd-card bpd-fin"><div class="bpd-card-head"><h2>Финансовая аналитика</h2><div class="bpd-seg"><button type="button" :class="{on: v.dashboard.range===7}" @click="v.dashboard.setWeek">Неделя</button><button type="button" :class="{on: v.dashboard.range===30}" @click="v.dashboard.setMonth">Месяц</button></div></div>
-<div class="bpd-legend"><span><i style="background:#8E2F56"></i>Доход</span><span><i style="background:#E6A9C3"></i>Расходы</span><span class="bpd-max">макс. {{ v.dashboard.chartMax }}</span></div>
+<div class="bpd-legend"><span><i style="background:#8E2F56"></i>Доход</span><span><i style="background:#E6A9C3"></i>Расходы</span><span v-if="v.dashboard.tInc !== v.dashboard.tProfit || v.dashboard.chartMax.indexOf('1 ') !== 0" class="bpd-max">макс. {{ v.dashboard.chartMax }}</span></div>
 <svg class="bpd-chart" viewBox="0 0 400 150" preserveAspectRatio="none" role="img" aria-label="Доходы и расходы по дням"><defs><linearGradient id="bpdInc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C25B86" stop-opacity=".35"/><stop offset="1" stop-color="#C25B86" stop-opacity="0"/></linearGradient></defs><line v-for="y in v.dashboard.gridY" :key="y" x1="10" x2="390" :y1="y" :y2="y" stroke="#EFE4EA" stroke-dasharray="3 5"/><path :d="v.dashboard.incArea" fill="url(#bpdInc)"/><path :d="v.dashboard.cstLine" fill="none" stroke="#E6A9C3" stroke-width="2" stroke-linecap="round"/><path :d="v.dashboard.incLine" fill="none" stroke="#8E2F56" stroke-width="2.4" stroke-linecap="round"/></svg>
 <div class="bpd-xaxis"><span v-for="(l,i) in v.dashboard.xLabels" :key="i">{{ l }}</span></div></section>
 <div class="bpd-money">
@@ -1215,7 +1215,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-else class="bpd-donut-wrap"><svg class="bpd-donut" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="#F3E6EC" stroke-width="12"/><circle v-for="s in v.dashboard.donut" :key="s.name" cx="50" cy="50" r="40" fill="none" :stroke="s.color" stroke-width="12" :stroke-dasharray="s.dash" :stroke-dashoffset="s.offset" transform="rotate(-90 50 50)"/><text x="50" y="48" text-anchor="middle" class="bpd-donut-n">{{ v.dashboard.donut[0] ? v.dashboard.donut[0].pct : '' }}</text><text x="50" y="60" text-anchor="middle" class="bpd-donut-s">{{ v.dashboard.donutCount }} визитов</text></svg>
 <ul class="bpd-dlist"><li v-for="s in v.dashboard.donut" :key="'l'+s.name"><i :style="{background: s.color}"></i><span>{{ s.name }}</span><b>{{ s.pct }}</b></li></ul></div></section>
 <section class="bpd-card bpd-sched"><div class="bpd-card-head"><h2>Записи на 10 дней</h2><span class="bpd-muted">по услугам</span></div>
-<div class="bpd-sched-scroll"><table><thead><tr><th>Услуга</th><th v-for="d in v.dashboard.schedDays" :key="d">{{ d }}</th></tr></thead><tbody><tr v-for="r in v.dashboard.sched" :key="r.name"><td>{{ r.name }}</td><td v-for="(c,i) in r.cells" :key="i"><span class="bpd-dot" :class="{on: c}" :style="c ? {background: r.color} : {}">{{ c ? '✓' : '' }}</span></td></tr></tbody></table></div></section>
+<div v-if="!v.dashboard.sched.length" class="bp-empty">Добавьте услуги в «Мои услуги» — здесь появится расписание по ним.</div><div v-else class="bpd-sched-scroll"><table><thead><tr><th>Услуга</th><th v-for="d in v.dashboard.schedDays" :key="d">{{ d }}</th></tr></thead><tbody><tr v-for="r in v.dashboard.sched" :key="r.name"><td>{{ r.name }}</td><td v-for="(c,i) in r.cells" :key="i"><span class="bpd-dot" :class="{on: c}" :style="c ? {background: r.color} : {}">{{ c ? '✓' : '' }}</span></td></tr></tbody></table></div></section>
 </div>
 <div class="bpd-actions"><button type="button" @click="v.dashboard.openAppts">+ Новая запись</button><button type="button" @click="v.dashboard.openClients">+ Новый клиент</button><button type="button" @click="v.dashboard.openCalc">Рассчитать услугу</button></div>
 </div></template>
@@ -2089,7 +2089,7 @@ var n = this.niche(id);
 var sv = this.state.svcs && this.state.svcs[id];
 return sv ? sv : n.services.map(function (s, i) { return { id: String(i), name: s[0], time: s[1], idx: i }; });
 }
-svcOf(key) { var p = key.split('|'); var n = this.niche(p[0]); var f = this.servicesOf(n.id).filter(function (x) { return x.id === p[1]; })[0]; if (!f && /^[0-9]+$/.test(p[1]) && n.services[+p[1]]) { f = { id: p[1], name: n.services[+p[1]][0], time: n.services[+p[1]][1], idx: +p[1] }; } return f ? { niche: n, idx: f.idx, name: f.name, time: f.time } : { niche: n, idx: null, name: 'Удалённая услуга', time: 0 }; }
+svcOf(key) { var p = key.split('|'); var n = this.niche(p[0]); var f = this.servicesOf(n.id).filter(function (x) { return x.id === p[1]; })[0]; if (!f && !(this.state.svcs && this.state.svcs[n.id]) && /^[0-9]+$/.test(p[1]) && n.services[+p[1]]) { f = { id: p[1], name: n.services[+p[1]][0], time: n.services[+p[1]][1], idx: +p[1] }; } return f ? { niche: n, idx: f.idx, name: f.name, time: f.time } : { niche: n, idx: null, name: 'Удалённая услуга', time: 0 }; }
 matsFor(key) {
 var L = this.lib(); var BPC_N = L.BPC_N, bpcNum = L.bpcNum, bpcKey = L.bpcKey, bpcAdd = L.bpcAdd, bpcParse = L.bpcParse, bpcLabel = L.bpcLabel;
 if (this.state.mats[key]) { return this.state.mats[key]; }
@@ -2655,6 +2655,7 @@ var root = {
       askingNotifications:false, notificationNotice:'',
       clientEntry:false, clientName:'', clientPhone:'', clientNotice:'',
       signupStep: 1,
+      signupClientList: [],
       loginShowPass: false, loginRemember: true, BP_REMEMBER_MASK: BP_REMEMBER_MASK,
       signupEmail: '', signupPass: '', signupShowPass: false, signupAccountError: '',
       signupPlan: 'master', signupPlans: [
@@ -2868,7 +2869,7 @@ root.mounted = function () {
   try {
     var st = JSON.parse(sessionStorage.getItem(BP_SESSION_KEY) || 'null');
     if (st && ['signupSteps', 'welcomeAuth', 'app', 'welcome'].indexOf(st.view) >= 0) {
-      ['signupStep', 'signupName', 'signupSelected', 'signupCategories', 'serviceCategory', 'signupPhone', 'signupPhoneFull', 'signupCountry', 'signupEmail', 'signupPlan', 'welcomeSlide'].forEach(function (k) { if (st[k] !== undefined) self[k] = st[k]; });
+      ['signupStep', 'signupName', 'signupSelected', 'signupCategories', 'serviceCategory', 'signupPhone', 'signupPhoneFull', 'signupCountry', 'signupEmail', 'signupPlan', 'welcomeSlide', 'signupClientList'].forEach(function (k) { if (st[k] !== undefined) self[k] = st[k]; });
       if (Array.isArray(st.serviceOptions) && st.serviceOptions.length) self.serviceOptions = st.serviceOptions;
       if (st.authMode) self.auth.mode = st.authMode;
       if (st.userEmail) self.user = { email: st.userEmail };
@@ -2877,7 +2878,7 @@ root.mounted = function () {
     }
   } catch (e) {}
   this.$watch(function () {
-    return JSON.stringify({ view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
+    return JSON.stringify({ view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, signupClientList: self.signupClientList, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
   }, function (json) { try { sessionStorage.setItem(BP_SESSION_KEY, json); } catch (e) {} });
 };
 root.methods.welcomeMove = function(delta) { this.welcomeDirection=delta>0?'bp-slide-next':'bp-slide-prev'; this.welcomeSlide=(this.welcomeSlide+delta+this.welcomeSlides.length)%this.welcomeSlides.length; };
@@ -2914,18 +2915,15 @@ root.methods.saveSignupClient = function() {
 root.methods.confirmClients = function() {
   const selected = this.clientChoices.filter(c => c.selected);
   if (!selected.length) { this.signupNext(); return; }
-  const cab = loadDemo() || this.cab;
-  const data = cab.data || {};
-  const clients = (data.clients || []).slice();
-  let seq = Number(data.seq) || 10;
+  const clients = (this.signupClientList || []).slice();
+  let seq = 10;
   for (const contact of selected) {
     if (clients.some(c => this.sameContact(c,contact))) continue;
     while (clients.some(c => c.id === 'c'+seq)) seq++;
     clients.push({id:'c'+seq++, name:contact.name, phone:contact.phone, note:''});
   }
-  const next = Object.assign({},cab,{data:Object.assign({},data,{clients,seq})});
-  if (!saveDemo(next)) { this.clientNotice='Не удалось сохранить клиентов на устройстве.'; return; }
-  this.cab = next; this.signupNext();
+  this.signupClientList = clients;
+  this.signupNext();
 };
 root.methods.signupBack = function(){if(this.signupStep===4 && this.clientEntry){this.clientEntry=false;this.signupScroll();return;}if(this.serviceEdit){this.serviceEdit=null;this.signupScroll();return;}if(this.signupStep>1){this.signupStep--;this.signupAdding=false;}else{this.view='welcome';}this.signupScroll();};
 root.methods.requestSignupNotifications = async function() {
@@ -3024,7 +3022,7 @@ root.methods.demoLogin = async function () {
 
 var BP_CAT_TO_NICHE = { 'Ногтевой сервис': 'nails', 'Подология': 'nails', 'Ресницы': 'lashes', 'Брови': 'brows', 'Косметология': 'cosmo', 'Депиляция': 'depil', 'Перманентный макияж': 'pmu', 'Парикмахерские услуги': 'hair', 'Услуги барбера': 'hair' };
 root.methods.signupBuildCab = function () {
-  var self = this, spheres = [], svcs = {}, prices = {}, times = {};
+  var self = this, spheres = [], svcs = {}, prices = {}, times = {}, noMats = {};
   var presets = {};
   try { if (!window.BPC_PRESETS && typeof AppLogic !== 'undefined') AppLogic.prototype.lib.call({}); } catch (e) {}
   try { (window.BPC_PRESETS || []).forEach(function (n) { presets[n.id] = n.services; }); } catch (e) {}
@@ -3032,8 +3030,8 @@ root.methods.signupBuildCab = function () {
     var id = BP_CAT_TO_NICHE[cat]; if (!id) return;
     if (spheres.indexOf(id) < 0) spheres.push(id);
     var chosen = self.servicesFor(cat).filter(function (s) { return s.selected; });
-    if (!chosen.length) return;
     var list = svcs[id] || (svcs[id] = []);
+    if (!chosen.length) return;
     chosen.forEach(function (s) {
       if (list.some(function (x) { return x.name.toLowerCase() === s.name.toLowerCase(); })) return;
       var pre = presets[id] || [], idx = null;
@@ -3042,17 +3040,18 @@ root.methods.signupBuildCab = function () {
       var sid = 'u' + list.length;
       list.push({ id: sid, name: s.name, time: mins ? Math.round(mins / 60 * 100) / 100 : (idx != null ? pre[idx][1] : 1), idx: idx });
       if (s.details && String(s.details.price).trim()) prices[id + '|' + sid] = String(s.details.price).replace(',', '.');
+      noMats[id + '|' + sid] = [];
     });
   });
   if (!spheres.length) spheres = ['nails'];
   var plan = { start: 'start', master: 'master', salon: 'salon' }[this.signupPlan] || 'master';
-  var data = JSON.parse(JSON.stringify((this.cab && this.cab.data) || {}));
-  data.svcs = svcs; data.prices = Object.assign({}, prices); data.sphere = spheres[0]; data.svcId = svcs[spheres[0]] ? svcs[spheres[0]][0].id : undefined;
-  delete data.svcId;
+  var cl = (this.signupClientList || []).slice();
+  var data = { clients: cl, appts: [], mats: noMats, times: {}, lib: {}, libCustom: {}, seq: 10 + cl.length + 1 };
+  data.svcs = svcs; data.prices = Object.assign({}, prices); data.sphere = spheres[0];
   var firstCur = null;
   this.serviceOptions.forEach(function (o) { if (!firstCur && o.selected && o.details && o.details.currency) firstCur = o.details.currency; });
   if (firstCur) { var sym = ({RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł'})[firstCur] || firstCur; data.set = Object.assign({ cur: '₽', expenses: '20000', hours: '120', tax: '4', markup: '50' }, data.set || {}, { cur: sym }); }
-  return { plan: plan, spheres: spheres, data: data };
+  return { plan: plan, spheres: spheres, data: data, fresh: true };
 };
 root.methods.signupFinish = function () {
   this.cab = this.signupBuildCab();
