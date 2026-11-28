@@ -464,6 +464,12 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-soc-fb .bp-soc-ic{background-color:#1877f2;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v8h4v-8h3l1-4h-4V8z'/%3E%3C/svg%3E")}
 .bp-soc-tg .bp-soc-ic{background-color:#229ed9;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M21 4 2.5 11.2c-.9.4-.9 1.6.1 1.9l4.6 1.4 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.7 3.4c.7.5 1.6.1 1.8-.7L23 5.3C23.2 4.3 22 3.6 21 4zM9.5 14.3l8.6-7.6-10.4 6.4'/%3E%3C/svg%3E")}
 @media (max-width:600px){.bp-soc-list{grid-template-columns:1fr}.bp-pf-plans{grid-template-columns:1fr}}
+
+.bp-cab-card-overlay{position:fixed;inset:0;z-index:1100;overflow:auto}
+.bp-cab-card-overlay .bp-signup{min-height:100%}
+.bp-pick-ownform{display:flex;gap:8px}
+.bp-pick-ownform input{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px dashed #C25B86;padding:0 14px;font-size:15px;color:#30232c;background:#fff}
+.bp-pick-ownform button{min-height:48px;border:0;border-radius:12px;padding:0 18px;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;font-weight:800;cursor:pointer}.bp-pick-ownform button:disabled{opacity:.45}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -992,6 +998,48 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
   <div v-if="view !== 'welcome' && view !== 'welcomeAuth' && view !== 'signupSteps'" style="background:#F3E6EC;color:#6B1F40;text-align:center;padding:8px 12px;font-size:12px;font-weight:600">Личная демоверсия · данные только на этом устройстве · без связи с общим сайтом</div>
   <template v-if="view === 'app'">
     <bpc-app :key="'a' + appKey" :chosen="chosen" :plan="planId" :saved="saved" :fresh="!!(cab && cab.fresh)" :on-back="toSite" :on-logout="logout" :on-state="onAppState" :email="user ? user.email : ''" :plan-note="planNote"></bpc-app>
+    <div v-if="serviceEdit && cabCardCb" class="bp-cab-card-overlay"><section class="bp-intro bp-signup"><div class="bp-signup-inner"><header class="bp-signup-top"><button class="bp-signup-back" type="button" @click="closeCabinetCard" aria-label="Назад">←</button></header><div class="bp-signup-content"><form v-if="serviceEdit" class="bp-signup-form bp-card-editor" @submit.prevent="finishCard(true)">
+<h1>{{ serviceEdit.selected ? 'Настройки услуги' : 'Новая услуга' }}</h1>
+<p>{{ serviceEdit.category }}</p><h2>{{ serviceEdit.name }}</h2>
+<button type="button" class="bp-signup-category" @click="showTime">Продолжительность <span>{{ card.minutes ? durationText(card.minutes) : 'Нет' }} ›</span></button>
+<dialog ref="timeSheet" class="bp-time-sheet" aria-labelledby="bp-duration-title">
+<header><h2 id="bp-duration-title">Продолжительность</h2><button class="bp-sheet-close" type="button" aria-label="Закрыть" @click="$refs.timeSheet.close()">×</button></header>
+<div class="bp-pair"><fieldset v-for="unit in ['hours','mins']" :key="unit"><legend>{{unit==='hours' ? 'Часы' : 'Минуты'}}</legend><div class="bp-wheel">
+<label v-for="i in (unit==='hours'?24:60)" :key="i"><input type="radio" :name="unit" :value="i-1" :checked="(unit==='hours'?hours:mins)===i-1" @change="unit==='hours' ? hours=i-1 : mins=i-1"><span>{{String(i-1).padStart(2,'0')}}</span></label>
+</div></fieldset></div>
+<button type="button" class="bp-signup-primary" @click="card.minutes = hours*60 + mins; $refs.timeSheet.close()">Готово</button></dialog>
+<div class="bp-pair"><label>Цена<input v-model.trim="card.price" inputmode="decimal" pattern="[0-9]+([.,][0-9]{1,2})?" required placeholder="0,00"></label><div class="bp-currency-field"><span>Валюта</span><button type="button" aria-haspopup="dialog" @click="currencyQuery=''; $refs.currencySheet.showModal()">{{card.currency}} ⌄</button></div></div><dialog ref="currencySheet" class="bp-time-sheet" aria-labelledby="bp-currency-title"><header><h2 id="bp-currency-title">Валюта услуги</h2><button type="button" class="bp-sheet-close" aria-label="Закрыть" @click="$refs.currencySheet.close()">×</button></header>
+<input v-model.trim="currencyQuery" type="search" @keydown.enter.prevent aria-label="Поиск валюты" placeholder="Валюта, код или страна">
+<div class="bp-currency-list"><button type="button" v-for="entry in currencyMatches" :key="entry[0]" :aria-pressed="card.currency===entry[0]" @click="card.currency=entry[0]; $refs.currencySheet.close()"><span>{{entry[1]}}</span><b>{{entry[0]}}</b></button><p v-if="!currencyMatches.length">Валюта не найдена</p></div></dialog>
+<label class="bp-switch"><span>Цена от</span><input type="checkbox" role="switch" v-model="card.from"><span class="bp-switch-track" aria-hidden="true"></span></label>
+<button class="bp-signup-category" type="button" aria-haspopup="dialog" @click="openDiscount">{{ Number(card.discount) ? 'Скидка' : 'Добавить скидку' }} <span>{{ Number(card.discount) ? card.discount + (card.discountMode === 'amount' ? ' ' + card.currency : '%') : '+' }}</span></button>
+<p v-if="Number(card.discount) && card.price">Цена со скидкой · {{ discountTotal(card.discount, card.discountMode) }} {{card.currency}}</p>
+<dialog ref="discountSheet" class="bp-discount" aria-labelledby="bp-discount-title" @keydown="discountKeyboard">
+<header><button type="button" aria-label="Назад" @click="$refs.discountSheet.close()">←</button><h2 id="bp-discount-title">Скидка</h2><button type="button" :disabled="!discountValid" @click="applyDiscount">Готово</button></header>
+<div class="bp-discount-body"><output aria-live="polite">{{ discountDraft.replace('.', ',') }}{{ discountMode === 'amount' ? ' ' + card.currency : '%' }}</output>
+<p v-if="!discountValid" role="alert">Скидка превышает цену услуги</p>
+</div>
+<div class="bp-discount-controls"><button class="bp-discount-mode" type="button" @click="switchDiscountMode">{{discountMode === 'amount' ? 'В процентах' : 'От цены'}}</button>
+<div class="bp-discount-presets"><button type="button" v-for="n in [5,10,20,30,50]" :aria-pressed="discountMode==='percent' && Number(discountDraft)===n" @click="discountMode='percent'; discountDraft=String(n); discountReplace=true">{{n}}%</button></div>
+<div class="bp-discount-pad"><button v-for="key in ['1','2','3','4','5','6','7','8','9',',','0','⌫']" type="button" :aria-label="key==='⌫' ? 'Удалить цифру' : key" @click="discountKey(key)">{{key}}</button></div></div></dialog>
+<h2>Настройки услуги</h2><label class="bp-switch"><span>Доступна для онлайн-записи</span><input type="checkbox" role="switch" v-model="card.online"><span class="bp-switch-track" aria-hidden="true"></span></label>
+<button type="button" class="bp-signup-category" aria-haspopup="dialog" @click="$refs.mediaSheet.showModal()">Фото и описание услуги <span aria-hidden="true">›</span></button>
+<dialog ref="mediaSheet" class="bp-media" aria-labelledby="bp-media-title">
+<header><button type="button" aria-label="Закрыть" @click="$refs.mediaSheet.close()">×</button><h2 id="bp-media-title">Фото и описание услуги</h2></header>
+<div class="bp-media-content">
+<textarea v-model="card.description" rows="5" aria-label="Описание услуги" placeholder="Описание услуги"></textarea>
+<div class="bp-media-heading"><h3>Фотографии</h3></div>
+<div class="bp-media-grid">
+<div class="bp-media-thumb" v-for="(photo,index) in card.photos" :key="index"><img :src="photo" :alt="'Фото услуги '+(index+1)"><button type="button" :aria-label="'Удалить фото '+(index+1)" @click="card.photos.splice(index,1)">×</button></div>
+<button class="bp-media-add" type="button" aria-label="Добавить фотографии" :disabled="photoBusy" @click="$refs.mediaInput.click()">{{ photoBusy ? '…' : '+' }}</button>
+<input ref="mediaInput" hidden type="file" accept="image/*" multiple @change="cardPhoto">
+</div><p v-if="mediaError" role="alert">{{mediaError}}</p>
+</div>
+<div class="bp-media-done"><button type="button" class="bp-signup-primary" :disabled="photoBusy" @click="$refs.mediaSheet.close()">{{ photoBusy ? 'Загружаем фото…' : 'Готово' }}</button></div>
+</dialog>
+<p v-if="cardError" role="alert">{{cardError}}</p>
+<button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
+<button type="button" class="bp-signup-category" @click="closeCabinetCard">Отмена</button></form></div></div></section></div>
     <div v-if="saveMsg" role="status" style="position:fixed;right:14px;bottom:14px;z-index:40;background:#30272D;color:#FAF9F8;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;opacity:.9">{{ saveMsg }}</div>
   </template>
 </div>
@@ -1409,10 +1457,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </div>
 </template>
-<div v-if="v.pick.open" class="bp-pick-overlay" @click.self="v.pick.close"><div class="bp-pick" role="dialog" aria-label="Добавить услугу"><div class="bp-pick-head"><div><b>Добавить услугу — {{ v.sphereLabel }}</b><small>Отметьте услуги из списка или добавьте свою.</small></div><button type="button" class="bp-pick-x" aria-label="Закрыть" @click="v.pick.close">×</button></div><div class="bp-pick-body">
-<div v-for="g in v.pick.groups" :key="g.title" class="bp-pick-group"><div v-if="v.pick.groups.length > 1" class="bp-pick-title">{{ g.title }}</div><div class="bp-pick-list"><button v-for="it in g.items" :key="it.name" type="button" class="bp-pick-item" :class="{on: it.on, has: it.has}" :disabled="it.has" :aria-pressed="it.on" @click="it.toggle"><span>{{ it.name }}</span><i>{{ it.has ? 'уже есть' : (it.on ? '✓' : '+') }}</i></button></div></div>
+<div v-if="v.pick.open" class="bp-pick-overlay" @click.self="v.pick.close"><div class="bp-pick" role="dialog" aria-label="Добавить услугу"><div class="bp-pick-head"><div><b>Добавить услугу — {{ v.sphereLabel }}</b><small>Нажмите на услугу, чтобы настроить её и добавить.</small></div><button type="button" class="bp-pick-x" aria-label="Закрыть" @click="v.pick.close">×</button></div><div class="bp-pick-body">
+<div v-for="g in v.pick.groups" :key="g.title" class="bp-pick-group"><div v-if="v.pick.groups.length > 1" class="bp-pick-title">{{ g.title }}</div><div class="bp-pick-list"><button v-for="it in g.items" :key="it.name" type="button" class="bp-pick-item" :class="{on: it.on, has: it.has}" :disabled="it.has" :aria-pressed="it.on" @click="v.pick.openCard(it.name)"><span>{{ it.name }}</span><i>{{ it.has ? 'уже есть' : '+' }}</i></button></div></div>
 <div v-if="!v.pick.groups.length" class="bp-empty">Для этого вида деятельности готового списка нет — добавьте услугу вручную.</div>
-<button type="button" class="bp-pick-own" @click="v.pick.own">+ Своя услуга (ввести название)</button></div><div class="bp-pick-actions"><button type="button" class="bp-pick-cancel" @click="v.pick.close">Отмена</button><button type="button" class="bp-pick-add" :disabled="!v.pick.count" @click="v.pick.add">Добавить{{ v.pick.count ? ' (' + v.pick.count + ')' : '' }}</button></div></div></div>
+<form class="bp-pick-ownform" @submit.prevent="v.pick.ownGo"><input :value="v.pick.ownDraft" @input="v.pick.setOwn" maxlength="80" placeholder="Своя услуга — название"><button type="submit" :disabled="!v.pick.ownDraft.trim()">Далее</button></form></div><div class="bp-pick-actions"><button type="button" class="bp-pick-cancel" @click="v.pick.close">Закрыть</button></div></div></div>
 <template v-if="v.hasLow">
 <div style="background: #FDF1EF; border: 1px solid #F3C9C2; border-radius: 14px; padding: 10px 14px; margin-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
 <span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #9B2C20"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B2C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg><span>Заканчиваются материалы: {{ v.lowCount }}</span></span>
@@ -2614,6 +2662,23 @@ var pickGroups = pickCats.map(function (cat) {
   return { title: cat, items: items };
 }).filter(function (g) { return g.items.length; });
 var pickCount = Object.keys(pickSel).filter(function (k) { return pickSel[k] && !pickHave[k.toLowerCase()]; }).length;
+
+var addFromCard = function (n, det) {
+  var cur = self.state; var o = {}; Object.keys(cur.svcs || {}).forEach(function (k) { o[k] = cur.svcs[k]; });
+  var list = (self.servicesOf(active.id) || []).slice();
+  if (list.some(function (x) { return String(x.name).toLowerCase() === n.toLowerCase(); })) { return; }
+  var idx = null; active.services.forEach(function (p, i) { if (idx == null && p[0].toLowerCase() === n.toLowerCase()) { idx = i; } });
+  var seq = cur.seq || 100, id = 'n' + (seq++);
+  var mins = Number(det && det.minutes) || 0;
+  list.push({ id: id, name: n, time: mins ? Math.round(mins / 60 * 100) / 100 : (idx != null ? active.services[idx][1] : 1), idx: idx });
+  o[active.id] = list;
+  var mm = {}; Object.keys(cur.mats || {}).forEach(function (k) { mm[k] = cur.mats[k]; }); mm[active.id + '|' + id] = [];
+  var pr = {}; Object.keys(cur.prices || {}).forEach(function (k) { pr[k] = cur.prices[k]; }); if (det && String(det.price).trim()) { pr[active.id + '|' + id] = det.price; }
+  var patch = { svcs: o, mats: mm, prices: pr, seq: seq }; if (cur.tab === 'calc') { patch.svcId = id; }
+  self.setState(patch);
+};
+var curCode = ({ '₽': 'RUB', '₴': 'UAH', '₸': 'KZT', '₺': 'TRY', '$': 'USD', '€': 'EUR', 'zł': 'PLN' })[(st.set && st.set.cur) || ''] || 'TRY';
+var openCardFor = function (n) { up({ svcPick: false, svcPicked: {}, ownDraft: '' }); if (window.BP_OPEN_CARD) { window.BP_OPEN_CARD(n, active.label, curCode, function (det) { addFromCard(n, det); }); } };
 var pickApi = {
   open: function () { up({ svcPick: true, svcPicked: {} }); },
   close: function () { up({ svcPick: false, svcPicked: {} }); },
@@ -2792,7 +2857,7 @@ return {
   catClose: function () { up({ catOpen: false, catPicked: {}, catQ: '' }); },
   catSearch: function (e) { up({ catQ: e.target.value }); },
   catCustom: function () { var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = mats.concat([{ name: '', unit: 'шт', pack: '', hint: '1', price: '', use: '1' }]); up({ mats: mm, catOpen: false, catPicked: {}, catQ: '' }); },
-  svcCards: svcCards, sphereLabel: active.label, addSvcGo: function () { svcApi.add(); }, pick: { open: !!st.svcPick, groups: pickGroups, count: pickCount, show: pickApi.open, close: pickApi.close, add: pickApi.add, own: function () { up({ svcPick: false, svcPicked: {} }); svcApi.add(); } },
+  svcCards: svcCards, sphereLabel: active.label, addSvcGo: function () { svcApi.add(); }, pick: { openCard: openCardFor, ownDraft: st.ownDraft || '', setOwn: function (e) { up({ ownDraft: e.target.value }); }, ownGo: function () { var n = String(st.ownDraft || '').trim(); if (n) { openCardFor(n); } }, open: !!st.svcPick, groups: pickGroups, count: pickCount, show: pickApi.open, close: pickApi.close, add: pickApi.add, own: function () { up({ svcPick: false, svcPicked: {} }); svcApi.add(); } },
   svcPills: svcPills, svc: svcApi, svcName: curSvc ? curSvc.name : '', hasSvc: !!curSvc, noSvc: !curSvc, delAsk: !!st.delAsk && !!curSvc, notDelAsk: !st.delAsk && !!curSvc, svcTime: st.times[key] != null ? st.times[key] : String(r.time), matRows: matRows,
   res: { mats: money(r.mats), over: money(r.over), cost: money(r.cost), min: money(r.min), rec: money(r.rec), myPrice: myPrice,
     profit: mp > 0 ? money(profit) : '—', perHour: mp > 0 && r.time > 0 ? money(profit / r.time) : '—', status: status, statusBg: sBg, statusColor: sCol },
@@ -2902,7 +2967,7 @@ var root = {
       view: 'loading',
       welcomeSlide: 0,
       discountMode:'percent', discountDraft:'0', discountReplace:true,
-      mediaError:'', serviceEdit:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
+      mediaError:'', serviceEdit:null, cabCardCb:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
       currencyQuery:'',
       serviceCategory: '',
       serviceDraft: '',
@@ -3538,6 +3603,13 @@ root.methods.showTime = function() {
   this.$refs.timeSheet.showModal();
   this.$nextTick(() => this.$refs.timeSheet.querySelectorAll('input:checked').forEach(input => input.parentElement.scrollIntoView({block:'nearest'})));
 };
+
+root.methods.closeCabinetCard = function () { this.serviceEdit = null; this.cabCardCb = null; this.card = null; };
+window.BP_OPEN_CARD = function (name, category, cur, cb) {
+  var vm = window.BPC_APP; if (!vm) { return; }
+  vm.cabCardCb = cb;
+  vm.editCard({ name: name, category: category, selected: false, details: { currency: cur || 'TRY' } });
+};
 root.methods.editCard = function(service) {
   this.serviceEdit = service;
   this.card = Object.assign({minutes:0, price:'', currency:'TRY', online:true, discount:'', from:false, photo:'', description:''}, service.details);
@@ -3590,6 +3662,13 @@ root.methods.discountTotal = function(discount,mode) {
   return Math.max(0,total).toLocaleString('ru-RU',{maximumFractionDigits:2});
 };
 root.methods.finishCard = function(selected) {
+  if (this.cabCardCb && selected) {
+    if (this.card.discountMode === 'amount' && this.card.discount > Number(String(this.card.price).replace(',', '.'))) { this.cardError = 'Скидка превышает цену услуги'; return; }
+    var det = Object.assign({}, this.card, {photo:this.card.photos[0] || '', price:String(this.card.price).replace(',', '.')});
+    var cb = this.cabCardCb; this.cabCardCb = null; this.serviceEdit = null; this.card = null;
+    try { cb(det); } catch (e) {}
+    return;
+  }
   if (selected && this.card.discountMode === 'amount' && this.card.discount > Number(String(this.card.price).replace(',', '.'))) {
     this.cardError = 'Скидка превышает цену услуги';
     return;
