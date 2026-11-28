@@ -532,6 +532,21 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-mc-tip{margin:4px 0 0;font-size:12px;font-style:italic;color:#9a8290}
 .bp-mc-res{background:#F3FAF4!important;border-color:#D7EEDC!important}.bp-mc-res .bp-mc-row b{text-align:right;color:#1C6B30;font-size:15px}.bp-mc-res .bp-mc-row b.big{font-size:19px}
 @media (max-width:600px){.bp-mc{padding-left:0}}
+
+.bp-lc{display:flex;flex-direction:column;gap:10px;margin:2px 0 12px 36px;padding:12px;border-radius:14px;background:#FCF8FA;border:1px solid #F0E4EA}
+.bp-lc-seg{display:inline-flex;align-self:flex-start;background:#F3E6EC;border-radius:10px;padding:3px}
+.bp-lc-seg button{border:0;background:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:800;color:#8a6f7c;cursor:pointer}
+.bp-lc-seg button.on{background:#fff;color:#8E2F56;box-shadow:0 1px 4px #8e2f5626}
+.bp-lc-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:14px;color:#4d3a45;font-weight:600}
+.bp-lc-line input,.bp-lc-stock input{width:58px;height:38px;border-radius:10px;border:1px solid #D8CDD3;background:#fff;padding:0 8px;font-size:15px;color:#30272D;box-sizing:border-box}
+.bp-lc-line select{width:64px;height:38px;border-radius:10px;border:1px solid #D8CDD3;background:#fff;padding:0 6px;font-size:14px}
+.bp-lc-line input.auto{color:#9a8290;background:#FBF5F8}
+.bp-lc-auto{flex-basis:100%;font-size:11px;color:#9a8290;font-weight:600}
+.bp-lc-res{margin:0;font-size:14px;color:#1C6B30;font-weight:600}.bp-lc-res b{font-size:16px}
+.bp-lc-stock{display:flex;align-items:center;gap:8px;font-size:12px;color:#8a6f7c;font-weight:700;flex-wrap:wrap}
+.bp-lc-stock input{width:60px;height:32px;font-size:13px}
+.bp-lc-stock em{font-style:normal;padding:4px 8px;border-radius:999px;background:#EFF7EF;color:#1C6B30}.bp-lc-stock em.low{background:#FDF1EF;color:#9B2C20}
+@media (max-width:600px){.bp-lc{margin-left:0}}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1501,25 +1516,19 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 <template v-if="it.used">
 <div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p></div>
-<label class="bp-wear-tog"><input type="checkbox" :checked="it.wear" @change="it.setWear"><span>На износ — служит много клиентов (пинцет, камень, кисть)</span></label>
-<div v-if="it.wear" class="bp-wear-row"><label><span>Цена за 1 шт, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 400" :value="it.price" @input="it.onPrice"></label><label><span>Хватает примерно на … клиентов</span><input type="number" inputmode="numeric" placeholder="напр. 300" :value="it.life" @input="it.onLife"></label><p v-if="it.wearCost" class="bp-wear-sum">На 1 клиента: {{ it.wearCost }}</p></div>
-<div v-if="!it.wear" class="bp-mc">
-<section><h4>1. Информация о покупке</h4>
-<label class="bp-mc-row"><span>Что покупаете?</span><select :value="it.cont" @change="it.setCont"><option v-for="c in ['Упаковка','Флакон','Пакет','Баночка','Туба','Бутылка','Коробка','Штука']" :key="c" :value="c">{{ c }}</option></select></label>
-<label class="bp-mc-row"><span>Количество</span><input type="number" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack"></label>
-<label class="bp-mc-row"><span>Единица измерения</span><select :value="it.unit === 'упаковка' ? 'шт' : it.unit" @change="it.onUnit"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select></label>
-<label class="bp-mc-row"><span>Цена покупки, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 250" :value="it.price" @input="it.onPrice"></label>
-<label class="bp-mc-row"><span>Есть в запасе, шт</span><input type="number" inputmode="decimal" placeholder="напр. 2" :value="it.stock" @input="it.onStock"></label></section>
-<section><h4>2. Расход материала</h4><p class="bp-mc-q">Сколько «{{ it.shortName }}» используете на одного клиента?</p>
-<label class="bp-mc-row"><span>Количество</span><span class="bp-mc-pair"><input type="number" inputmode="decimal" placeholder="напр. 5" :value="it.use" @input="it.onUse"><b>{{ it.useUnit }}</b></span></label>
-<p class="bp-mc-tip">Укажите примерный расход. Его можно изменить в любое время.</p></section>
-<section class="bp-mc-res"><h4>3. Результат расчёта</h4>
-<div class="bp-mc-row"><span>Цена за 1 {{ it.useUnit }}</span><b>{{ it.unitPriceOnly || '—' }}</b></div>
-<div class="bp-mc-row"><span>Расход на клиента</span><b>{{ it.use ? it.use + ' ' + it.useUnit : '—' }}</b></div>
-<div class="bp-mc-row"><span>Себестоимость на 1 клиента</span><b class="big">{{ it.perClient || '—' }}</b></div>
-<div class="bp-mc-row"><span>Хватит примерно на</span><b>{{ it.clientsFit ? it.clientsFit + ' клиентов' : '—' }}</b></div></section>
-<template v-if="it.stockLow"><span style="font-size: 12px; font-weight: 700; color: #9B2C20; background: #FDF1EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
-<template v-if="it.stockOk"><span style="font-size: 12px; font-weight: 700; color: #1C6B30; background: #EFF7EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
+<div class="bp-lc">
+<div class="bp-lc-seg" role="radiogroup" aria-label="Тип материала"><button type="button" role="radio" :aria-checked="!it.wear" :class="{on: !it.wear}" @click="it.wear && it.setWear({target:{checked:false}})">Расходный</button><button type="button" role="radio" :aria-checked="it.wear" :class="{on: it.wear}" @click="!it.wear && it.setWear({target:{checked:true}})">Многоразовый</button></div>
+<template v-if="!it.wear">
+<div class="bp-lc-line"><span>Упаковок</span><input type="number" inputmode="decimal" placeholder="1" :value="it.stock" @input="it.onStock" aria-label="Сколько упаковок"><span>по</span><input type="number" inputmode="decimal" :placeholder="it.hint.replace('напр. ', '')" :value="it.pack" @input="it.onPack" aria-label="Сколько в 1 упаковке"><select :value="it.unit === 'упаковка' ? 'шт' : it.unit" @change="it.onUnit" aria-label="Единица"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select></div>
+<div class="bp-lc-line"><span>Цена 1 упаковки</span><input type="number" inputmode="decimal" placeholder="цена" :value="it.price" @input="it.onPrice" aria-label="Цена 1 упаковки"><span>{{ v.set.cur }}</span></div>
+<div class="bp-lc-line"><span>На 1 клиента</span><input type="number" inputmode="decimal" :class="{auto: it.useIsDefault}" :value="it.use.replace(',', '.')" @input="it.onUse" aria-label="Расход на клиента"><span>{{ it.useUnit }}</span><small v-if="it.useIsDefault" class="bp-lc-auto">обычно столько — можно изменить</small></div>
+<p v-if="it.perClient" class="bp-lc-res">≈ <b>{{ it.perClient }}</b> на клиента<template v-if="it.spent"> · потрачено {{ it.spent }}</template><template v-if="it.clientsFit"> · хватит на {{ it.clientsFit }} клиентов</template></p>
+</template>
+<template v-else>
+<div class="bp-lc-line"><span>Купила за</span><input type="number" inputmode="decimal" placeholder="400" :value="it.price" @input="it.onPrice" aria-label="Цена"><span>{{ v.set.cur }}</span><span>, служит ≈</span><input type="number" inputmode="numeric" placeholder="300" :value="it.life" @input="it.onLife" aria-label="Клиентов"><span>клиентов</span></div>
+<p v-if="it.wearCost" class="bp-lc-res">≈ <b>{{ it.wearCost }}</b> на клиента</p>
+</template>
+<div v-if="it.wear" class="bp-lc-stock"><span>В запасе</span><input type="number" inputmode="decimal" placeholder="0" :value="it.stock" @input="it.onStock" aria-label="В запасе"><span>шт</span><template v-if="it.stockLow"><em class="low">{{ it.stockText }}</em></template><template v-if="it.stockOk"><em>{{ it.stockText }}</em></template></div>
 </div>
 <div class="bp-pal-btns bp-dup-btns"><button v-if="it.isLastPalette" type="button" class="bp-pal-add" @click="it.addPalette">+ Ещё {{ it.name.replace(/\s+\d+$/, '').toLowerCase().startsWith('палетка') ? 'палетка' : 'такой же' }}</button><button v-if="it.isExtraPalette" type="button" class="bp-pal-del" @click="it.removePalette">Удалить</button></div>
 </template>
@@ -2743,12 +2752,13 @@ var libGroups = libSrc.map(function (g) {
       wear: e.wear != null ? !!e.wear : /износ/.test(k), life: e.life || '', setWear: function (ev) { setLib(it[0], 'wear', ev.target.checked, unit); }, onLife: function (ev) { setLib(it[0], 'life', ev.target.value, unit); },
       wearCost: (function () { var w = e.wear != null ? !!e.wear : /износ/.test(k); var pr = bpcNum(e.price), lf = bpcNum(e.life); var pc = pr / lf; return w && pr > 0 && lf > 0 ? (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur : ''; })(),
       cont: e.cont || 'Упаковка', setCont: function (ev) { setLib(it[0], 'cont', ev.target.value, unit); },
-      use: e.use || '', onUse: function (ev) { setLib(it[0], 'use', ev.target.value, unit); },
+      use: e.use || (it[2] != null ? String(it[2]).replace('.', ',') : ''), useIsDefault: !e.use, onUse: function (ev) { setLib(it[0], 'use', ev.target.value, unit); },
       useUnit: ({ 'кг': 'г', 'л': 'мл' })[e.unit || unit] || (e.unit || unit),
-      clientsFit: (function () { var pk = bpcNum(e.pack), us = bpcNum(e.use); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && us > 0)) { return ''; } return Math.floor(pk * mul / us).toLocaleString('ru-RU'); })(),
+      clientsFit: (function () { var pk = bpcNum(e.pack) * Math.max(1, bpcNum(e.stock) || 1), us = bpcNum(e.use || it[2]); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && us > 0)) { return ''; } return Math.floor(pk * mul / us).toLocaleString('ru-RU'); })(),
       unitPriceOnly: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / (pk * mul); return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       shortName: it[0].replace(/\s+\d+$/, '').replace(/\s*\(.*\)$/, '').toLowerCase(),
-      perClient: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price), us = bpcNum(e.use); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && pr > 0 && us > 0)) { return ''; } var pc = pr / (pk * mul) * us; return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
+      spent: (function () { var pr = bpcNum(e.price), n = bpcNum(e.stock) || 1; if (!(pr > 0)) { return ''; } return Math.round(pr * n).toLocaleString('ru-RU') + ' ' + cur; })(),
+      perClient: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price), us = bpcNum(e.use || it[2]); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && pr > 0 && us > 0)) { return ''; } var pc = pr / (pk * mul) * us; return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       unitCostTxt: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); var u0 = e.unit || unit; var mul = ({ 'кг': 1000, 'л': 1000 })[u0] || 1; var uu = ({ 'кг': 'г', 'л': 'мл' })[u0] || u0; if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / (pk * mul); return '1 ' + uu + ' = ' + (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       unitCost: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / pk; return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       isPalette: true, isLastPalette: !g[1].some(function (x, i) { return i > g[1].indexOf(it) && bpBase(x[0]) === bpBase(k); }),
