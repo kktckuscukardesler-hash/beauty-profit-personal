@@ -491,6 +491,14 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-pal-btns{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
 .bp-pal-add{min-height:40px;border:0;border-radius:10px;padding:0 16px;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;font-weight:800;font-size:14px;cursor:pointer}
 .bp-pal-del{min-height:40px;border:1.5px solid #f1c6cf;border-radius:10px;padding:0 14px;background:#fff;color:#b0234f;font-weight:700;font-size:13px;cursor:pointer}
+
+.bp-wear-tog{display:flex;align-items:center;gap:10px;padding:2px 0 6px 36px;font-size:13px;font-weight:700;color:#6B1F40;cursor:pointer}
+.bp-wear-tog input{width:20px;height:20px;accent-color:#8E2F56;flex:none}
+.bp-wear-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 0 10px 36px}
+.bp-wear-row label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:#554A50}
+.bp-wear-row input{height:40px;border-radius:10px;border:1px solid #D8CDD3;background:#FFFDF8;padding:0 10px;font-size:14px;color:#30272D}
+.bp-wear-sum{grid-column:1/-1;margin:0;font-size:13px;font-weight:800;color:#1C6B30}
+@media (max-width:600px){.bp-wear-tog,.bp-wear-row{padding-left:0}}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1460,7 +1468,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 <template v-if="it.used">
 <div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p><div v-if="it.isPalette" class="bp-pal-btns"><button v-if="it.isLastPalette" type="button" class="bp-pal-add" @click="it.addPalette">+ Ещё палетка</button><button v-if="it.isExtraPalette" type="button" class="bp-pal-del" @click="it.removePalette">Удалить эту палетку</button></div></div>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px 0 8px 36px">
+<label class="bp-wear-tog"><input type="checkbox" :checked="it.wear" @change="it.setWear"><span>На износ — служит много клиентов (пинцет, камень, кисть)</span></label>
+<div v-if="it.wear" class="bp-wear-row"><label><span>Цена за 1 шт, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 400" :value="it.price" @input="it.onPrice"></label><label><span>Хватает примерно на … клиентов</span><input type="number" inputmode="numeric" placeholder="напр. 300" :value="it.life" @input="it.onLife"></label><p v-if="it.wearCost" class="bp-wear-sum">На 1 клиента: {{ it.wearCost }}</p></div>
+<div v-if="!it.wear" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px 0 8px 36px">
 <input type="number" aria-label="В упаковке" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack" style="width: 96px; border: 1px solid #D8CDD3; background: #FFFDF8; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
 <select aria-label="Единица" :value="it.unit" @change="it.onUnit" style="width: 100px; height: 36px; border-radius: 8px; border: 1px solid #D8CDD3; background: #FFFDF8; padding: 0 4px; font-size: 13px"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select>
 <input type="number" aria-label="Цена упаковки" inputmode="decimal" :placeholder="`Цена, ${v.set.cur}`" :value="it.price" @input="it.onPrice" style="width: 110px; border: 1px solid #D8CDD3; background: #FFFDF8; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
@@ -2327,7 +2337,7 @@ var D_COMMON = function (extra) { return [['Одноразовое', [['Перч
 BPC_CATS.lashes = [
  ['Подготовка', [['Обезжириватель / праймер', 'мл', 0.1, 15], ['Пенка / шампунь для ресниц', 'мл', 1, 50], ['Щёточка для мытья ресниц', 'шт', 1, 50], ['Тоник для век', 'мл', 2, 100], ['Мицеллярная вода', 'мл', 3, 250]]],
  ['Изоляция', [['Патчи гидрогелевые', 'пара', 1, 50], ['Скотч / лента для изоляции', 'см', 10, 900], ['Микропор', 'см', 10, 900], ['Силиконовые патчи (износ)', 'пара', 0.02, 1]]],
- ['Ресницы и клей', [['Палетка ресниц', 'линия', 4, 20], ['Готовые пучки / промо-пучки', 'шт', 80, 500], ['Клей для наращивания', 'мл', 0.15, 5], ['Клей для чувствительных', 'мл', 0.15, 5], ['Фиксатор / закрепитель', 'мл', 0.1, 15], ['Нанотуманайзер / бондер', 'мл', 0.1, 15], ['Нефритовый камень / кольцо для клея', 'шт', 1, 100], ['Кольца для клея одноразовые', 'шт', 1, 100]]],
+ ['Ресницы и клей', [['Палетка ресниц', 'линия', 4, 20], ['Готовые пучки / промо-пучки', 'шт', 80, 500], ['Клей для наращивания', 'мл', 0.15, 5], ['Клей для чувствительных', 'мл', 0.15, 5], ['Фиксатор / закрепитель', 'мл', 0.1, 15], ['Нанотуманайзер / бондер', 'мл', 0.1, 15], ['Нефритовый камень (износ)', 'шт', 0.002, 1], ['Кольца для клея одноразовые', 'шт', 1, 100]]],
  ['Ламинирование ресниц', [['Состав №1 (поднимающий)', 'мл', 0.3, 10], ['Состав №2 (фиксирующий)', 'мл', 0.3, 10], ['Состав №3 (уход / ботокс)', 'мл', 0.3, 10], ['Клей для валиков', 'мл', 0.1, 5], ['Валики / бигуди силиконовые', 'пара', 0.05, 1], ['Плёнка пищевая', 'см', 15, 3000], ['Краска для ресниц', 'мл', 0.3, 15], ['Оксид для краски', 'мл', 0.5, 50]]],
  ['Снятие', [['Ремувер гелевый', 'г', 0.2, 15], ['Ремувер кремовый', 'г', 0.2, 15], ['Ремувер жидкий', 'мл', 0.2, 15]]],
  ['Инструмент и износ', [['Пинцет прямой (износ)', 'шт', 0.002, 1], ['Пинцет изогнутый (износ)', 'шт', 0.002, 1], ['Пинцет для объёма (износ)', 'шт', 0.002, 1], ['Щёточки для ресниц', 'шт', 1, 50], ['Микробраши', 'шт', 3, 100], ['Кисть для составов (износ)', 'шт', 0.01, 1], ['Подушка / валик под шею (чехол)', 'шт', 1, 100], ['Батарейки для фена', 'шт', 0.02, 2]]]
@@ -2495,7 +2505,10 @@ return sv.niche.mats.map(function (m) {
 eff(m) {
 var k = (m.name || '').trim().toLowerCase();
 var l = k ? (this.state.lib || {})[k] : null;
-return { pack: l && l.pack !== '' && l.pack != null ? l.pack : m.pack, price: l && l.price !== '' && l.price != null ? l.price : m.price, unit: l && l.unit ? l.unit : m.unit };
+var wear = l && l.wear != null ? !!l.wear : /износ/.test(k);
+var price = l && l.price !== '' && l.price != null ? l.price : m.price;
+if (wear) { return { pack: l && l.life ? l.life : '', price: price, unit: 'клиент', wear: true }; }
+return { pack: l && l.pack !== '' && l.pack != null ? l.pack : m.pack, price: price, unit: l && l.unit ? l.unit : m.unit };
 }
 calc(key) {
 var L = this.lib(); var BPC_N = L.BPC_N, bpcNum = L.bpcNum, bpcKey = L.bpcKey, bpcAdd = L.bpcAdd, bpcParse = L.bpcParse, bpcLabel = L.bpcLabel;
@@ -2503,7 +2516,7 @@ var st = this.state.set;
 var sv = this.svcOf(key);
 var mats = this.matsFor(key);
 var matCost = 0;
-var me = this; mats.forEach(function (m) { var e = me.eff(m); var p = bpcNum(e.pack); if (p > 0) { matCost += bpcNum(e.price) / p * bpcNum(m.use); } });
+var me = this; mats.forEach(function (m) { var e = me.eff(m); var p = bpcNum(e.pack); if (p > 0) { matCost += bpcNum(e.price) / p * (e.wear ? 1 : bpcNum(m.use)); } });
 var time = this.state.times[key] != null ? bpcNum(this.state.times[key]) : sv.time;
 var hours = bpcNum(st.hours);
 var hour = hours > 0 ? bpcNum(st.expenses) / hours : 0;
@@ -2623,7 +2636,7 @@ var r = this.calc(key);
 var mats = this.matsFor(key);
 var setLib = function (name, field, val, unit) { var k = (name || '').trim().toLowerCase(); var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); var cur0 = lb[k] || { pack: '', price: '', unit: unit || '' }; var nx = {}; Object.keys(cur0).forEach(function (x) { nx[x] = cur0[x]; }); nx.unit = cur0.unit || unit || ''; nx[field] = val; lb[k] = nx; up({ lib: lb }); };
 var setMat = function (i, field) { return function (e) { if ((field === 'pack' || field === 'price' || field === 'unit') && (mats[i].name || '').trim()) { setLib(mats[i].name, field, e.target.value, mats[i].unit); return; } var list = mats.map(function (m) { return { name: m.name, unit: m.unit, pack: m.pack, hint: m.hint, price: m.price, use: m.use }; }); list[i][field] = e.target.value; var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = list; up({ mats: mm }); }; };
-var matRows = mats.map(function (m0, i) { var ef = self.eff(m0); var m = { name: m0.name, unit: ef.unit, pack: ef.pack, hint: m0.hint, price: ef.price, use: m0.use }; var p = bpcNum(m.pack); var pr = bpcNum(m.price); var ready = p > 0 && pr > 0; var per = ready ? pr / p : 0; return { num: i + 1, name: m.name, unit: m.unit, pack: m.pack, hint: m.unit === 'упаковка' ? 'шт в 1 уп.' : 'напр. ' + (m.hint || '1'), useUnit: m.unit === 'упаковка' ? 'шт' : m.unit, packLabel: m.unit === 'упаковка' ? 'Штук в 1 упаковке' : 'В упаковке', price: m.price, use: m.use, ready: ready, notReady: !ready, perUnit: (per < 10 ? (Math.round(per * 100) / 100).toLocaleString('ru-RU') : Math.round(per).toLocaleString('ru-RU')) + ' ' + cur, cost: money(ready ? per * bpcNum(m.use) : 0), remove: function () { var list = mats.filter(function (x, j) { return j !== i; }).map(function (m) { return { name: m.name, unit: m.unit, pack: m.pack, hint: m.hint, price: m.price, use: m.use }; }); var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = list; up({ mats: mm }); }, onName: setMat(i, 'name'), onUnit: setMat(i, 'unit'), onPack: setMat(i, 'pack'), onPrice: setMat(i, 'price'), onUse: setMat(i, 'use') }; });
+var matRows = mats.map(function (m0, i) { var ef = self.eff(m0); var m = { name: m0.name, unit: ef.unit, pack: ef.pack, hint: m0.hint, price: ef.price, use: m0.use }; var p = bpcNum(m.pack); var pr = bpcNum(m.price); var ready = p > 0 && pr > 0; var per = ready ? pr / p : 0; return { num: i + 1, name: m.name, unit: m.unit, pack: m.pack, hint: m.unit === 'упаковка' ? 'шт в 1 уп.' : 'напр. ' + (m.hint || '1'), useUnit: m.unit === 'упаковка' ? 'шт' : m.unit, packLabel: m.unit === 'упаковка' ? 'Штук в 1 упаковке' : 'В упаковке', price: m.price, use: m.use, ready: ready, notReady: !ready, perUnit: (per < 10 ? (Math.round(per * 100) / 100).toLocaleString('ru-RU') : Math.round(per).toLocaleString('ru-RU')) + ' ' + cur, cost: money(ready ? per * (ef.wear ? 1 : bpcNum(m.use)) : 0), wear: !!ef.wear, remove: function () { var list = mats.filter(function (x, j) { return j !== i; }).map(function (m) { return { name: m.name, unit: m.unit, pack: m.pack, hint: m.hint, price: m.price, use: m.use }; }); var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = list; up({ mats: mm }); }, onName: setMat(i, 'name'), onUnit: setMat(i, 'unit'), onPack: setMat(i, 'pack'), onPrice: setMat(i, 'price'), onUse: setMat(i, 'use') }; });
 var usage = {};
 niches.forEach(function (n) { self.servicesOf(n.id).forEach(function (sv) { self.matsFor(n.id + '|' + sv.id).forEach(function (m) { var k = (m.name || '').trim().toLowerCase(); var u = bpcNum(m.use); if (k && u > 0) { if (!usage[k]) { usage[k] = []; } usage[k].push(u); } }); }); });
 var perClient = function (k) { var a = usage[k]; if (!a || !a.length) { return 0; } var t = 0; a.forEach(function (x) { t += x; }); return t / a.length; };
@@ -2680,6 +2693,8 @@ var libGroups = libSrc.map(function (g) {
     libTotal += 1; if (used) { libFilled += 1; }
     return { name: it[0], unit: unit, pack: e.pack || '', price: e.price || '', hint: unit === 'упаковка' ? 'шт в 1 уп.' : 'напр. ' + it[3], filled: filled, used: used, unused: !used, usedEmpty: used && !filled,
       toggle: function () { setLib(it[0], 'on', !used, unit); },
+      wear: e.wear != null ? !!e.wear : /износ/.test(k), life: e.life || '', setWear: function (ev) { setLib(it[0], 'wear', ev.target.checked, unit); }, onLife: function (ev) { setLib(it[0], 'life', ev.target.value, unit); },
+      wearCost: (function () { var w = e.wear != null ? !!e.wear : /износ/.test(k); var pr = bpcNum(e.price), lf = bpcNum(e.life); var pc = pr / lf; return w && pr > 0 && lf > 0 ? (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur : ''; })(),
       isPalette: /^палетка ресниц/.test(k), isLastPalette: /^палетка ресниц/.test(k) && !g[1].some(function (x, i) { return i > g[1].indexOf(it) && /^палетка ресниц/i.test(x[0]); }),
       isExtraPalette: /^палетка ресниц \d+$/.test(k),
       addPalette: function () {
