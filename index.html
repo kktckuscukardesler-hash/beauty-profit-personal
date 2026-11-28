@@ -614,9 +614,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 
 .bp-profile-hero.bpd-card{display:flex;flex-wrap:wrap;align-items:center;padding:clamp(20px,4vw,36px);border:1px solid #e8cdd9;background:radial-gradient(ellipse at 95% 15%,#eac4d7 0%,transparent 58%),linear-gradient(120deg,#fffaf9,#f6e3ec);border-radius:24px}
 .bp-profile-hero .bp-prof-main{flex:1 1 110px}.bp-profile-hero .bp-prof-main h2{font:600 clamp(24px,4vw,35px)/1.1 "Cormorant Garamond",Georgia,serif!important;overflow-wrap:anywhere}
-.bp-photo-button,.bp-photo-preview{width:76px;height:76px;border-radius:50%;object-fit:cover}
+.bp-photo-button,.bpc-cabinet main img.bp-photo-preview{box-sizing:border-box;width:76px;height:76px;aspect-ratio:1;border-radius:50%;flex:none}
+.bpc-cabinet main img.bp-photo-preview{display:block;object-fit:cover;object-position:center;justify-self:start}
 .bp-photo-button{position:relative;background:#8e375e;color:white;border:3px solid white;box-shadow:0 4px 14px #71254624;font:32px Georgia,serif;padding:0;cursor:pointer}
-.bp-photo-button img{width:100%;height:100%;border-radius:50%;object-fit:cover}.bp-photo-button i{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:white;color:#812b53;font:700 18px/22px sans-serif}
+.bpc-cabinet main .bp-photo-button img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center}.bp-photo-button i{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:white;color:#812b53;font:700 18px/22px sans-serif}
 .bp-prof-stats>div{border-radius:14px;padding:12px 4px;background:#fbf3f7}
 .bp-network-list{display:flex;gap:12px;flex-wrap:wrap}.bp-network-list button{padding:0;background:transparent;border:0;cursor:pointer;border-radius:13px}.bp-network-list .bp-soc-ic{width:46px;height:46px;border-radius:13px;background-size:24px}
 .bp-soc-tt .bp-soc-ic{background-color:#171418;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M14 3v13a4 4 0 1 1-4-4M14 3c0 4 3 6 7 6'/%3E%3C/svg%3E")}
