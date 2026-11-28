@@ -160,6 +160,8 @@ html,body,#app{width:100%;min-width:0}
 .bp-set-sum{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;font-size:14px;color:#776A71;cursor:pointer}
 .bp-set-sum b{color:#30272D}
 .bp-set-save{width:100%}
+.bp-calc-svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:12px}
+.bp-calc-svc.on{border:2px solid #8E2F56!important;background:#FDF7FA!important;box-shadow:0 4px 16px rgba(142,47,86,.16)!important}
 </style>
 <style>
 /* Beauty Profit first-run experience */
@@ -1728,15 +1730,22 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <section aria-label="Расчёт услуги" style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
 <div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px">
 <h2 style="margin: 0; font-size: 18px; font-weight: 700">Услуга</h2>
+<div v-if="v.svcCards.length" class="bp-calc-svc-grid">
+<template v-for="sc in v.svcCards" :key="sc.id">
+<button type="button" class="bp-calc-svc" :class="{on: sc.on}" :aria-pressed="sc.on ? 'true' : 'false'" @click="sc.pick" style="width: 100%; font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
+<span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span class="bp-svc-title">{{ sc.name }}</span><span class="bp-svc-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ sc.time }}</span></span>
+<span v-if="!sc.ready" style="display: flex; gap: 8px; width: 100%"><span style="flex: 1; background: #F7F1F4; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #6B1F40">Ваше время стоит</span><span style="font-size: 16px; font-weight: 700; color: #6B1F40">{{ sc.tOver }}</span></span><span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем за время</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.tRec }}</span></span></span>
+<span v-if="!sc.ready" class="bp-need-mats">Это цена только за ваше время. Добавьте материалы — посчитаем полную себестоимость и цену.</span>
+<span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
+<span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
+<span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
+<span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.rec }}</span></span>
+</span>
+<span style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px"><span class="bp-svc-price"><small>Ваша цена</small><b>{{ sc.price }}</b></span><span :style="`font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: ${sc.sBg}; color: ${sc.sCol}`">{{ sc.status }}</span></span>
+</button>
+</template>
+</div>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
-<template v-for="(sv, $index) in v.svcPills">
-<template v-if="sv.on">
-<button type="button" aria-pressed="true" @click="sv.pick" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 1px solid #8E2F56; background: #F9F2F5; color: #30272D; cursor: pointer">{{ sv.label }}</button>
-</template>
-<template v-if="sv.off">
-<button type="button" aria-pressed="false" @click="sv.pick" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 600; min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 1px solid #EAE3E7; background: #FFFFFF; color: #30272D; cursor: pointer">{{ sv.label }}</button>
-</template>
-</template>
 <button type="button" @click="v.pick.show" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 2px dashed #8E2F56; background: #FFFFFF; color: #8E2F56; cursor: pointer">+ Добавить услугу</button>
 </div>
 <template v-if="v.noSvc"><div style="color: #776A71; font-size: 14px">Услуг нет — нажмите «+ Добавить услугу»</div></template>
@@ -2971,7 +2980,7 @@ var svcCards = svcList.map(function (sv) {
   var stx = !ready ? 'Нужны материалы' : (mp <= 0 ? 'Цена не указана' : (mp < c.min ? 'В минус' : (mp < c.rec ? 'Можно дороже' : 'Отлично')));
   var bg = !ready ? '#F3E6EC' : (mp <= 0 ? '#F3DDE4' : (mp < c.min ? '#FDECEA' : (mp < c.rec ? '#FFF4CC' : '#E8F5E9')));
   var col = !ready ? '#6B1F40' : (mp <= 0 ? '#6B1F40' : (mp < c.min ? '#9B2C20' : (mp < c.rec ? '#6B4E00' : '#1C6B30')));
-  return { id:k, rawName:sv.name, minutes:minutes, rawPrice:st.prices[k] ?? '',
+  return { on: !!(curSvc && sv.id === curSvc.id), pick: function () { up({ svcId: sv.id, delAsk: false }); }, id:k, rawName:sv.name, minutes:minutes, rawPrice:st.prices[k] ?? '',
     save:function(name,minutes,price) {
       name = name.trim();
       if (!name) return 'Введите название услуги.';
