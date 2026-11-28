@@ -2365,6 +2365,7 @@ this.state = {
   period: 'month', seq: 10, catOpen: false, catPicked: {}, catQ: '', lib: {}, libCustom: {}, libQ: '', libNew: '', libOpen: {}
 };
 if (props && props.saved) { var sv0 = props.saved; var me0 = this; Object.keys(sv0).forEach(function (k) { if (sv0[k] != null) { me0.state[k] = sv0[k]; } }); this.state.today = t; this.state.day = t; this.state.aform = { clientId: '', svc: this.state.aform.svc, date: t, time: '12:00', price: '' }; }
+try { var sd0 = this.state.svcDetails || {}; var c0 = null; Object.keys(sd0).forEach(function (k) { if (!c0 && sd0[k] && sd0[k].currency) { c0 = sd0[k].currency; } }); if (c0 && window.BP_CUR_SYM && this.state.set) { this.state.set = Object.assign({}, this.state.set, { cur: window.BP_CUR_SYM(c0) }); } } catch (e) {}
 try { if (window.BP_NEXT_TAB) { this.state.tab = window.BP_NEXT_TAB; window.BP_NEXT_TAB = null; } } catch (e) {}
 }
 chosenNiches() {
@@ -2656,13 +2657,15 @@ var svcCards = svcList.map(function (sv) {
       return '';
     }, remove:function(){removeService(sv);},
     editCard:function(){
-      var det = Object.assign({}, (st.svcDetails||{})[k] || {}); det.minutes = minutes; det.price = st.prices[k] != null ? String(st.prices[k]) : ''; if (!det.currency) { det.currency = ({ '₽': 'RUB', '₴': 'UAH', '₸': 'KZT', '₺': 'TRY', '$': 'USD', '€': 'EUR', 'zł': 'PLN' })[(st.set && st.set.cur) || ''] || 'TRY'; }
+      var det = Object.assign({}, (st.svcDetails||{})[k] || {}); det.minutes = minutes; det.price = st.prices[k] != null ? String(st.prices[k]) : ''; if (!det.currency) { det.currency = window.BP_CUR_CODE((st.set && st.set.cur) || ''); }
       if (window.BP_EDIT_CARD) window.BP_EDIT_CARD(sv.name, active.label, det, function (d, newName) {
         var cur = self.state; var nm = String(newName || sv.name).trim() || sv.name; var mins = Number(d.minutes) || minutes || 60;
         var scoped = {}; Object.keys(cur.svcs || {}).forEach(function (x) { scoped[x] = cur.svcs[x]; });
         scoped[active.id] = self.servicesOf(active.id).map(function (it) { return it.id === sv.id ? Object.assign({}, it, { name: nm, time: mins / 60 }) : it; });
         var dd = {}; Object.keys(cur.svcDetails || {}).forEach(function (x) { dd[x] = cur.svcDetails[x]; }); dd[k] = d;
-        self.setState({ svcs: scoped, times: Object.assign({}, cur.times, { [k]: mins / 60 }), prices: Object.assign({}, cur.prices, { [k]: d.price }), svcDetails: dd });
+        var ps = { svcs: scoped, times: Object.assign({}, cur.times, { [k]: mins / 60 }), prices: Object.assign({}, cur.prices, { [k]: d.price }), svcDetails: dd };
+        if (d && d.currency) { ps.set = Object.assign({}, cur.set, { cur: window.BP_CUR_SYM(d.currency) }); }
+        self.setState(ps);
       });
     },
     name: sv.name || 'Без названия', time: duration, mats: self.matsFor(k).length, cost: money(c.cost), min: money(c.min), rec: money(c.rec),
@@ -2705,9 +2708,10 @@ var addFromCard = function (n, det) {
   var pr = {}; Object.keys(cur.prices || {}).forEach(function (k) { pr[k] = cur.prices[k]; }); if (det && String(det.price).trim()) { pr[active.id + '|' + id] = det.price; }
   var dd = {}; Object.keys(cur.svcDetails || {}).forEach(function (x) { dd[x] = cur.svcDetails[x]; }); dd[active.id + '|' + id] = det;
   var patch = { svcs: o, mats: mm, prices: pr, seq: seq, svcDetails: dd }; if (cur.tab === 'calc') { patch.svcId = id; }
+  if (det && det.currency) { patch.set = Object.assign({}, cur.set, { cur: window.BP_CUR_SYM(det.currency) }); }
   self.setState(patch);
 };
-var curCode = ({ '₽': 'RUB', '₴': 'UAH', '₸': 'KZT', '₺': 'TRY', '$': 'USD', '€': 'EUR', 'zł': 'PLN' })[(st.set && st.set.cur) || ''] || 'TRY';
+var curCode = window.BP_CUR_CODE((st.set && st.set.cur) || '');
 var openCardFor = function (n) { up({ svcPick: false, svcPicked: {}, ownDraft: '' }); if (window.BP_OPEN_CARD) { window.BP_OPEN_CARD(n, active.label, curCode, function (det) { addFromCard(n, det); }); } };
 var pickApi = {
   open: function () { up({ svcPick: true, svcPicked: {} }); },
@@ -2881,7 +2885,7 @@ return {
   planName: planNames[this.props.plan] || 'Premium', spheres: spheres, tabs: tabs,
   tabMaterials: st.tab === 'materials', tabDash: st.tab === 'dash', dashboard: dashboard, pageLabel: (tabDefs.find(function(t){return t[0]===st.tab;}) || tabDefs[0])[1], tabCalc: st.tab === 'calc', tabClients: st.tab === 'appts', tabSvcs: st.tab === 'svcs', tabAppts: st.tab === 'appts', tabIncome: st.tab === 'income', tabRemind: st.tab === 'remind', tabProfile: st.tab === 'profile', profile: profile,
   units: ['мл', 'г', 'шт', 'пара', 'м', 'упаковка'].map(function (v) { return { v: v }; }),
-  currencies: serviceCurrencies.map(([code, name]) => ({v: ({RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł'})[code] || code, label: name + ' (' + code + ')'})), set: st.set, hourCost: money(r.hour),
+  currencies: serviceCurrencies.map(([code, name]) => ({v: window.BP_CUR_SYM(code), label: name + ' (' + code + ')'})), set: st.set, hourCost: money(r.hour),
   libShow: !!st.libShow, libBtn: 'Мои материалы', libGroups: libGroups, libApi: libApi, libQ: st.libQ, libNew: st.libNew, addOpen: !!st.addOpen, addCatV: st.addCat, addNameV: st.addName || '', addUnitV: st.addUnit || 'шт', addIsPack: st.addUnit === 'упаковка', addPerV: st.addPer || '', addErr: !!st.addErr, libCatOpts: libCats.map(function (c) { return { v: c }; }), libStat: libFilled + ' из ' + libTotal,
   catOpen: st.catOpen, catGroups: catGroups, catCount: catCount, catHas: catCount > 0, catNone: catCount === 0, catQ: st.catQ, catAdd: catAdd,
   catClose: function () { up({ catOpen: false, catPicked: {}, catQ: '' }); },
@@ -3387,6 +3391,8 @@ root.mounted = function () {
 };
 
 // Сохранение профиля из кабинета
+window.BP_CUR_SYM = function (c) { var m = {RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł', MDL:'lei', RON:'lei', GEL:'₾', AMD:'֏', AZN:'₼', BYN:'Br', UZS:'сум', KGS:'сом', GBP:'£', CZK:'Kč', ILS:'₪', AED:'AED', CHF:'CHF', BGN:'лв', HUF:'Ft', RSD:'дин'}; return m[c] || c || '₽'; };
+window.BP_CUR_CODE = function (s) { var m = {RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł', MDL:'lei', RON:'lei', GEL:'₾', AMD:'֏', AZN:'₼', BYN:'Br', UZS:'сум', KGS:'сом', GBP:'£', CZK:'Kč', ILS:'₪', AED:'AED', CHF:'CHF', BGN:'лв', HUF:'Ft', RSD:'дин'}; var r = null; Object.keys(m).forEach(function (k) { if (!r && m[k] === s) { r = k; } }); if (s === 'lei') { r = 'MDL'; } return r || (/^[A-Z]{3}$/.test(s || '') ? s : 'TRY'); };
 window.BP_PROFILE_SAVE = async function (d) {
   var vm = window.BPC_APP; if (!vm) { return { err: 'Не удалось сохранить.' }; }
   var accs = bpAccounts();
@@ -3591,7 +3597,7 @@ root.methods.signupBuildCab = function () {
   data.svcs = svcs; data.prices = Object.assign({}, prices); data.sphere = spheres[0];
   var firstCur = null;
   this.serviceOptions.forEach(function (o) { if (!firstCur && o.selected && o.details && o.details.currency) firstCur = o.details.currency; });
-  if (firstCur) { var sym = ({RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł'})[firstCur] || firstCur; data.set = Object.assign({ cur: '₽', expenses: '20000', hours: '120', tax: '4', markup: '50' }, data.set || {}, { cur: sym }); }
+  if (firstCur) { var sym = window.BP_CUR_SYM(firstCur); data.set = Object.assign({ cur: '₽', expenses: '20000', hours: '120', tax: '4', markup: '50' }, data.set || {}, { cur: sym }); }
   return { plan: plan, spheres: spheres, data: data, fresh: true };
 };
 root.methods.signupFinish = function () {
