@@ -1790,67 +1790,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </label>
 </div>
 
-<div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
-<h2 style="margin: 0; font-size: 18px; font-weight: 700">Материалы на 1 клиента</h2>
-<span style="font-size: 13px; color: #776A71">В каждой карточке укажите объём упаковки и её цену — остальное посчитается само</span>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px">
-<template v-for="(m, $index) in v.matRows">
-<div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
-<div style="display: flex; align-items: center; gap: 8px">
-<span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: #F3E6EC; color: #6B1F40; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{ m.num }}</span>
-<input type="text" aria-label="Название материала" placeholder="Название материала" :title="m.name" :value="m.name" @input="m.onName" style="flex: 1; min-width: 0; height: 32px; box-sizing: border-box; border: none; border-bottom: 1px dashed #D8CDD3; padding: 0 2px; font-size: 14px; font-weight: 700; color: #30272D; background: transparent">
-<button type="button" aria-label="Удалить материал" title="Удалить материал" @click="m.remove" style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; border: none; background: #F7F1F4; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9B2C20" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 12h8l1-12M9 7V4h6v3"></path></svg></button>
-</div>
-<div style="display: flex; flex-direction: column; gap: 3px">
-<span style="font-size: 12px; font-weight: 700; color: #554A50">{{ m.packLabel }}</span>
-<div style="display: flex; gap: 6px">
-<input type="number" aria-label="Объём упаковки" inputmode="decimal" :placeholder="m.hint" :value="m.pack" @input="m.onPack" style="flex: 1; min-width: 0; border: 1px solid #D8CDD3; background: #FFFDF8; height: 34px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
-<select aria-label="Единица" :value="m.unit" @change="m.onUnit" style="width: 96px; height: 34px; border-radius: 8px; border: 1px solid #D8CDD3; background: #FFFDF8; padding: 0 4px; font-size: 13px; color: #30272D"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select>
-</div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 3px">
-<span style="font-size: 12px; font-weight: 700; color: #554A50">Цена упаковки, {{ v.set.cur }}</span>
-<input type="number" aria-label="Цена упаковки" inputmode="decimal" placeholder="0" :value="m.price" @input="m.onPrice" style="width: 100%; border: 1px solid #D8CDD3; background: #FFFDF8; height: 34px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
-</div>
-<div style="display: flex; flex-direction: column; gap: 3px">
-<span style="font-size: 12px; font-weight: 700; color: #554A50">На 1 клиента</span>
-<div style="display: flex; align-items: center; gap: 6px">
-<input type="number" aria-label="Расход на клиента" inputmode="decimal" :value="m.use" @input="m.onUse" style="flex: 1; min-width: 0; border: 1px solid #EAE3E7; background: #FFFFFF; height: 34px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
-<span style="width: 96px; height: 34px; display: flex; align-items: center; font-size: 13px; color: #776A71">{{ m.useUnit }}</span>
-</div>
-</div>
-<template v-if="m.ready">
-<div style="background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 700; color: #1C6B30"><span>На 1 клиента</span><span>{{ m.cost }}</span></div>
-</template>
-<template v-if="m.notReady">
-<div style="background: #F7F1F4; border-radius: 10px; padding: 6px 10px; font-size: 12px; color: #6B1F40">Впишите объём и цену</div>
-</template>
-</div>
-</template>
-</div>
-<button type="button" @click="v.on.addMat" style="align-self: flex-start; font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 1px solid #8E2F56; background: #FFFFFF; color: #8E2F56; cursor: pointer">+ Добавить материал</button>
-</div>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
-<div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Материалы</span><span style="font-size: 20px; font-weight: 700">{{ v.res.mats }}</span></div>
-<div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Расходы за время</span><span style="font-size: 20px; font-weight: 700">{{ v.res.over }}</span></div>
-<div v-if="v.res.ready" style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Себестоимость</span><span style="font-size: 20px; font-weight: 700">{{ v.res.cost }}</span></div>
-<div v-if="v.res.ready" style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимальная цена</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.min }}</span></div>
-<div v-if="v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуемая цена</span><span style="font-family: Lato, Arial, sans-serif; font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.rec }}</span></div>
-<div v-if="!v.res.ready" style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимум за время</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.tMin }}</span></div>
-<div v-if="!v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуем за время</span><span style="font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.tRec }}</span></div>
-</div>
-
-<div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 20px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
-<label style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700">Ваша цена сейчас
-<input type="number" inputmode="decimal" placeholder="0" :value="v.res.myPrice" @input="v.on.myPrice" style="width: 120px; min-height: 44px; border-radius: 10px; border: 1px solid #D8CDD3; padding: 0 12px; font-size: 15px; background: #FFFDF8">
-</label>
-<span v-if="v.res.ready" style="font-size: 15px; font-weight: 700">Прибыль с клиента: {{ v.res.profit }}</span>
-<span v-if="v.res.ready" style="font-size: 15px; font-weight: 700">В час: {{ v.res.perHour }}</span>
-<span v-if="v.res.ready" :style="`font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 999px; background: ${v.res.statusBg}; color: ${v.res.statusColor}`">{{ v.res.status }}</span>
-</div>
 </section>
 </div>
 </template>
