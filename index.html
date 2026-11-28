@@ -125,6 +125,15 @@ html,body,#app{width:100%;min-width:0}
 @media(max-width:340px){.bp-kpis{grid-template-columns:1fr}.bp-top-actions>span{display:none}}
 
  .bp-home-link{cursor:pointer;text-decoration:none}.bp-home-link:focus-visible{outline:2px solid #8E2F56;outline-offset:4px;border-radius:6px}
+.bp-cur-first{display:flex;flex-direction:column;gap:6px;background:#fff7f9;border:1px solid #f1d3dc;border-radius:14px;padding:12px 14px;margin:0 0 16px;text-align:left}
+.bp-cur-first label{font-weight:700;font-size:15px;color:#6B1F40}
+.bp-cur-first select{color:#30272D;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid #e2c6cf;background:#fff;width:100%}
+.bp-cur-first small{color:#8a7a80;font-size:12.5px}
+.bp-clear-row{display:flex;justify-content:center;padding:6px 0 10px}
+.bp-clear-btn{font-family:Lato,Arial,sans-serif;font-size:15px;font-weight:700;min-height:44px;padding:8px 22px;border-radius:999px;border:1px solid #D9A3B6;background:#fff;color:#8E2F56;cursor:pointer}
+.bp-clear-ask{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #EAE3E7;border-radius:16px;padding:12px 16px;font-size:14px}
+.bp-clear-yes{min-height:40px;padding:6px 16px;border-radius:999px;border:none;background:#8E2F56;color:#fff;font-weight:700;cursor:pointer}
+.bp-clear-no{min-height:40px;padding:6px 16px;border-radius:999px;border:1px solid #D8CDD3;background:#fff;color:#30272D;font-weight:700;cursor:pointer}
 </style>
 <style>
 /* Beauty Profit first-run experience */
@@ -859,6 +868,13 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
 <button v-if="serviceEdit.selected" type="button" class="bp-signup-category" @click="finishCard(false)">Убрать из выбранных</button></form>
           <div v-else-if="signupStep===1" class="bp-signup-form bp-plan-step">
+            <div class="bp-cur-first">
+              <label for="bpCurFirst">Ваша валюта</label>
+              <select id="bpCurFirst" v-model="signupCurrency">
+                <option v-for="c in signupCurrencyList" :key="c[0]" :value="c[0]">{{ c[1] }} ({{ c[0] }}) · {{ bpCurSym(c[0]) }}</option>
+              </select>
+              <small>Все цены и расчёты будут в этой валюте. Поменять можно потом в настройках.</small>
+            </div>
             <h1>Выберите тариф</h1>
             <p>Калькулятор бесплатный всегда. Тариф можно сменить в любой момент.</p>
             <div class="bp-plan-list" role="radiogroup" aria-label="Тарифы">
@@ -1563,6 +1579,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </section>
 </template>
 </template>
+<div v-if="v.libHasAny" class="bp-clear-row">
+<button v-if="!v.clearAskV" type="button" class="bp-clear-btn" @click="v.libApi.clearAsk">Очистить все материалы</button>
+<div v-else class="bp-clear-ask"><span>Снять отметки со всех материалов ({{ v.libStat.split(' ')[0] }})?</span><button type="button" class="bp-clear-yes" @click="v.libApi.clearAll">Да, очистить</button><button type="button" class="bp-clear-no" @click="v.libApi.clearCancel">Отмена</button></div>
+</div>
 </div>
 </template>
 <div v-if="v.pick.open" class="bp-pick-overlay" @click.self="v.pick.close"><div class="bp-pick" role="dialog" aria-label="Добавить услугу"><div class="bp-pick-head"><div><b>Добавить услугу — {{ v.sphereLabel }}</b><small>Нажмите на услугу, чтобы настроить её и добавить.</small></div><button type="button" class="bp-pick-x" aria-label="Закрыть" @click="v.pick.close">×</button></div><div class="bp-pick-body">
@@ -2849,6 +2869,9 @@ var libGroups = libSrc.map(function (g) {
 var libApi = {
   showMine: function () { var op = {}; libGroups.forEach(function (g) { if (/^[1-9]/.test(g.stat)) { op[g.title] = true; } }); up({ libOpen: op, libAll: {}, libQ: '' }); },
   collapseAll: function () { up({ libOpen: {} }); },
+  clearAsk: function () { up({ clearAsk: true }); },
+  clearCancel: function () { up({ clearAsk: false }); },
+  clearAll: function () { var names = {}; libSrc.forEach(function (g) { g[1].forEach(function (it) { names[it[0].toLowerCase()] = 1; }); }); var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { var c = st.lib[x]; if (names[x] && c && c.on) { var n = {}; Object.keys(c).forEach(function (y) { n[y] = c[y]; }); n.on = false; lb[x] = n; } else { lb[x] = c; } }); up({ lib: lb, libAll: {}, clearAsk: false }); },
   expandAll: function () { var o = {}; libSrc.forEach(function (g) { o[g[0]] = true; }); up({ libOpen: o }); },
   search: function (e) { up({ libQ: e.target.value }); },
   newName: function (e) { up({ libNew: e.target.value }); },
@@ -3149,7 +3172,7 @@ return {
   tabMaterials: st.tab === 'materials', tabDash: st.tab === 'dash', dashboard: dashboard, pageLabel: (tabDefs.find(function(t){return t[0]===st.tab;}) || tabDefs[0])[1], tabCalc: st.tab === 'calc', tabClients: st.tab === 'appts', tabSvcs: st.tab === 'svcs', tabAppts: st.tab === 'appts', tabIncome: st.tab === 'income', tabRemind: st.tab === 'remind', tabProfile: st.tab === 'profile', profile: profile,
   units: ['шт', 'мл', 'л', 'г', 'кг', 'пара', 'м', 'см', 'линия'].map(function (v) { return { v: v }; }),
   currencies: serviceCurrencies.map(([code, name]) => ({v: window.BP_CUR_SYM(code), label: name + ' (' + code + ')'})), set: st.set, hourCost: money(r.hour),
-  libShow: !!st.libShow, libBtn: 'Мои материалы', libGroups: libGroups, libApi: libApi, libQ: st.libQ, libNew: st.libNew, addOpen: !!st.addOpen, addCatV: st.addCat, addNameV: st.addName || '', addUnitV: st.addUnit || 'шт', addIsPack: st.addUnit === 'упаковка', addPerV: st.addPer || '', addErr: !!st.addErr, libCatOpts: libCats.map(function (c) { return { v: c }; }), libStat: libFilled + ' из ' + libTotal,
+  libShow: !!st.libShow, libBtn: 'Мои материалы', libGroups: libGroups, libApi: libApi, libQ: st.libQ, libNew: st.libNew, addOpen: !!st.addOpen, addCatV: st.addCat, addNameV: st.addName || '', addUnitV: st.addUnit || 'шт', addIsPack: st.addUnit === 'упаковка', addPerV: st.addPer || '', addErr: !!st.addErr, libCatOpts: libCats.map(function (c) { return { v: c }; }), libStat: libFilled + ' из ' + libTotal, libHasAny: libFilled > 0, clearAskV: !!st.clearAsk,
   catOpen: st.catOpen, catGroups: catGroups, catCount: catCount, catHas: catCount > 0, catNone: catCount === 0, catQ: st.catQ, catAdd: catAdd,
   catClose: function () { up({ catOpen: false, catPicked: {}, catQ: '' }); },
   catSearch: function (e) { up({ catQ: e.target.value }); },
@@ -3427,6 +3450,7 @@ var root = {
       signupClientList: [],
       loginShowPass: false, loginRemember: true, BP_REMEMBER_MASK: BP_REMEMBER_MASK,
       signupEmail: '', signupPass: '', signupShowPass: false, signupAccountError: '',
+      signupCurrency: (function(){ try { var l=(navigator.language||'').toLowerCase(); if (/md|ro/.test(l)) return 'MDL'; if (/uk|ua/.test(l)) return 'UAH'; if (/^ru/.test(l)) return 'RUB'; if (/^tr/.test(l)) return 'TRY'; } catch(e){} return 'TRY'; })(),
       signupPlan: 'master', signupPlans: [
         { id: 'start', name: 'Старт', price: '$0', period: '/ навсегда', sub: 'Калькулятор цены — бесплатно всегда', cta: 'Начать бесплатно', features: ['Калькулятор себестоимости и цены', 'Мои материалы и мои услуги', '7 дней CRM в подарок: клиенты, записи, статистика'] },
         { id: 'master', name: 'Мастер', price: '$4,99', period: '/ месяц', sub: 'Для частного мастера', popular: true, cta: 'Выбрать «Мастер»', features: ['До двух видов деятельности на выбор', 'Клиенты, записи, напоминания', 'Статистика: выручка, материалы, расходы, прибыль', 'Склад: материалы списываются сами'] },
@@ -3470,6 +3494,7 @@ var root = {
       const query = this.clientQuery.toLocaleLowerCase();
       return this.clientChoices.filter(c => (c.name+' '+c.phone).toLocaleLowerCase().includes(query));
     },
+    signupCurrencyList: function () { return serviceCurrencies; },
     currencyMatches: function () {
       const query = this.currencyQuery.toLocaleLowerCase("ru");
       return serviceCurrencies.filter(entry => entry.join(" ").toLocaleLowerCase("ru").includes(query));
@@ -3504,6 +3529,7 @@ var root = {
     sb.auth.getSession().then(function (r) { return self.onSession(r.data ? r.data.session : null); });
   },
   methods: {
+    bpCurSym: function (c) { return window.BP_CUR_SYM ? window.BP_CUR_SYM(c) : c; },
     onSession: function (session) {
       var self = this;
       self.user = session ? session.user : null;
@@ -3639,7 +3665,7 @@ root.mounted = function () {
   try {
     var st = JSON.parse(sessionStorage.getItem(BP_SESSION_KEY) || 'null');
     if (st && ['signupSteps', 'welcomeAuth', 'app', 'welcome'].indexOf(st.view) >= 0) {
-      ['signupStep', 'signupName', 'signupSelected', 'signupCategories', 'serviceCategory', 'signupPhone', 'signupPhoneFull', 'signupCountry', 'signupEmail', 'signupPlan', 'welcomeSlide', 'signupClientList'].forEach(function (k) { if (st[k] !== undefined) self[k] = st[k]; });
+      ['signupStep', 'signupName', 'signupSelected', 'signupCategories', 'serviceCategory', 'signupPhone', 'signupPhoneFull', 'signupCountry', 'signupEmail', 'signupPlan', 'signupCurrency', 'welcomeSlide', 'signupClientList'].forEach(function (k) { if (st[k] !== undefined) self[k] = st[k]; });
       if (Array.isArray(st.serviceOptions) && st.serviceOptions.length) self.serviceOptions = st.serviceOptions;
       if (st.authMode) self.auth.mode = st.authMode;
       if (st.userEmail) self.user = { email: st.userEmail };
@@ -3649,7 +3675,7 @@ root.mounted = function () {
     }
   } catch (e) {}
   this.$watch(function () {
-    return JSON.stringify({ planFirst: true, view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, signupClientList: self.signupClientList, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
+    return JSON.stringify({ planFirst: true, view: self.view, signupStep: self.signupStep, signupName: self.signupName, signupSelected: self.signupSelected, signupCategories: self.signupCategories, serviceCategory: self.serviceCategory, serviceOptions: self.serviceOptions, signupPhone: self.signupPhone, signupPhoneFull: self.signupPhoneFull, signupCountry: self.signupCountry, signupEmail: self.signupEmail, signupPlan: self.signupPlan, signupCurrency: self.signupCurrency, signupClientList: self.signupClientList, welcomeSlide: self.welcomeSlide, authMode: self.auth.mode, userEmail: self.user && self.user.email && self.user.email.indexOf('@') > 0 ? self.user.email : '' });
   }, function (json) { try { sessionStorage.setItem(BP_SESSION_KEY, json); } catch (e) {} });
 };
 
@@ -3858,8 +3884,8 @@ root.methods.signupBuildCab = function () {
   var cl = (this.signupClientList || []).slice();
   var data = { clients: cl, appts: [], mats: noMats, times: {}, lib: {}, libCustom: {}, seq: 10 + cl.length + 1 };
   data.svcs = svcs; data.prices = Object.assign({}, prices); data.sphere = spheres[0];
-  var firstCur = null;
-  this.serviceOptions.forEach(function (o) { if (!firstCur && o.selected && o.details && o.details.currency) firstCur = o.details.currency; });
+  var firstCur = this.signupCurrency || null;
+  if (!firstCur) this.serviceOptions.forEach(function (o) { if (!firstCur && o.selected && o.details && o.details.currency) firstCur = o.details.currency; });
   if (firstCur) { var sym = window.BP_CUR_SYM(firstCur); data.set = Object.assign({ cur: '₽', expenses: '20000', hours: '120', tax: '4', markup: '50' }, data.set || {}, { cur: sym }); }
   return { plan: plan, spheres: spheres, data: data, fresh: true };
 };
@@ -3917,7 +3943,7 @@ window.BP_OPEN_CARD = function (name, category, cur, cb) {
 };
 root.methods.editCard = function(service) {
   this.serviceEdit = service;
-  this.card = Object.assign({minutes:0, price:'', currency:'TRY', online:true, discount:'', from:false, photo:'', description:''}, service.details);
+  this.card = Object.assign({minutes:0, price:'', currency:(this.signupCurrency||'TRY'), online:true, discount:'', from:false, photo:'', description:''}, service.details);
   this.card.photos = Array.isArray(this.card.photos) ? this.card.photos.slice() : this.card.photo ? [this.card.photo] : [];
   this.mediaError = '';
   this.cardError = '';
