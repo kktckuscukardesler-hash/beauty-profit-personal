@@ -640,6 +640,16 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-service-filters button[aria-pressed=true]{background:#812d52;border-color:#812d52;color:#fff}
 .bp-service-filters button:focus-visible{outline:2px solid #812d52;outline-offset:2px}
 @container(min-width:760px){.bp-service-filters.bp-single-row{grid-template-columns:repeat(var(--sphere-count),minmax(0,1fr))}}
+
+.bpc-cabinet .bp-service-filters{gap:6px}
+.bpc-cabinet .bp-service-filters button{position:relative;background:linear-gradient(150deg,#fff,#faf0f5);color:#71304e;border:1px solid #dec2cf;border-radius:14px;box-shadow:0 2px 5px #6427450d;font-weight:700}
+.bpc-cabinet .bp-service-filters button[aria-pressed=true],.bpc-cabinet .bp-side nav[aria-label="Разделы"] button[aria-current=page]{color:#fff!important;background:linear-gradient(120deg,#782748,#a2406a)!important;border-color:#823052!important;box-shadow:inset 0 1px #ffffff38,0 3px 8px #70264924}
+.bpc-cabinet .bp-side nav button[aria-current=page] svg{color:inherit}
+.bpc-cabinet .bp-service-filters button[aria-pressed=true]::after{content:"";position:absolute;bottom:3px;left:calc(50% - 7px);width:14px;height:2px;border-radius:2px;background:#f8d8e6}
+.bpc-cabinet button:focus-visible{outline:2px solid #943f65;outline-offset:2px}
+@media(hover:hover){.bpc-cabinet button:enabled:hover{filter:brightness(.97);box-shadow:0 3px 9px #672a4524}}
+@media(prefers-reduced-motion:no-preference){.bpc-cabinet button{transition:box-shadow .16s,filter .16s,transform .16s}.bpc-cabinet button:enabled:active{transform:translateY(1px)}}
+.bpc-cabinet button:disabled{opacity:.55;cursor:default}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1293,7 +1303,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </template>
 </nav><div class="bp-side-footer"><a class="bp-home-link" href="#" @click.prevent="v.goDash" style="color:inherit"><b>Beauty Profit</b></a>Ваш бизнес. Ваши правила.</div></aside>
-<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details v-if="!(v.tabSvcs || v.tabMaterials || v.tabCalc)" class="bp-sphere-picker" ref="spherePicker"
+<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details v-if="!(v.tabSvcs || v.tabMaterials || v.tabCalc || v.tabAppts || v.tabIncome)" class="bp-sphere-picker" ref="spherePicker"
   @keydown.esc.prevent="$refs.spherePicker.open=false; $refs.sphereTrigger.focus()"
   @focusout="$event.currentTarget.open = $event.currentTarget.open ? $event.currentTarget.contains($event.relatedTarget) : false">
   <summary ref="sphereTrigger">Мои сферы</summary>
@@ -1580,6 +1590,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 
 <template v-if="v.tabAppts">
 <div style="display: flex; flex-direction: column; gap: 20px">
+<bp-sphere-buttons :spheres="v.spheres"></bp-sphere-buttons>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px">
 <template v-for="(d, $index) in v.week">
 <template v-if="d.on">
@@ -1639,7 +1650,8 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <span style="font-size: 12px; font-weight: 500; color: #776A71">Пусто — подставится рекомендуемая цена из калькулятора</span>
 </label>
 <template v-if="v.aformError"><div style="color: #9B2C20; font-size: 14px; font-weight: 700">Выберите клиента — или сначала добавьте его во вкладке «Клиенты»</div></template>
-<button type="button" @click="v.on.addAppt" style="font-family: Lato, Arial, sans-serif; font-size: 16px; font-weight: 700; min-height: 48px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer">Добавить запись</button>
+<p v-if="!v.svcOptions.length">Добавьте услугу для этой сферы в разделе «Мои услуги».</p>
+<button type="button" :disabled="!v.svcOptions.length" @click="v.on.addAppt" style="font-family: Lato, Arial, sans-serif; font-size: 16px; font-weight: 700; min-height: 48px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer">Добавить запись</button>
 </section>
 </div>
 </div>
@@ -1697,6 +1709,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 
 <template v-if="v.tabIncome">
 <div style="display: flex; flex-direction: column; gap: 20px">
+<bp-sphere-buttons :spheres="v.spheres"></bp-sphere-buttons>
 <div style="display: flex; flex-wrap: wrap; gap: 8px">
 <template v-for="(pr, $index) in v.periods">
 <template v-if="pr.on">
@@ -2588,26 +2601,27 @@ var clientRows = clients.filter(function (c) { return !q || c.name.toLowerCase()
     book: function () { var f = {}; Object.keys(st.aform).forEach(function (k) { f[k] = st.aform[k]; }); f.clientId = c.id; up({ tab: 'appts', aform: f, aformError: false }); } };
 });
 
+var sphereAppointments = appts.filter(function (a) { return a.svc && a.svc.split("|")[0] === active.id; });
 var week = [];
 for (var i = 0; i < 7; i++) {
   (function (k) {
     var on = st.day === k;
-    week.push({ label: i === 0 ? 'Сегодня' : (i === 1 ? 'Завтра' : bpcLabel(k)), count: appts.filter(function (a) { return a.date === k; }).length, on: on, off: !on, pick: function () { up({ day: k }); } });
+    week.push({ label: i === 0 ? 'Сегодня' : (i === 1 ? 'Завтра' : bpcLabel(k)), count: sphereAppointments.filter(function (a) { return a.date === k; }).length, on: on, off: !on, pick: function () { up({ day: k }); } });
   })(bpcKey(bpcAdd(bpcParse(st.today), i)));
 }
-var dayAppts = appts.filter(function (a) { return a.date === st.day; }).sort(function (a, b) { return a.time < b.time ? -1 : 1; }).map(function (a) {
+var dayAppts = sphereAppointments.filter(function (a) { return a.date === st.day; }).sort(function (a, b) { return a.time < b.time ? -1 : 1; }).map(function (a) {
   return { time: a.time, client: nameOf(a.clientId), service: self.svcOf(a.svc).name, price: money(a.price), done: a.done, notDone: !a.done,
     toggle: function () { var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); deduct(a.svc, a.done ? -1 : 1, lb); up({ lib: lb, appts: st.appts.map(function (x) { if (x.id !== a.id) { return x; } var y = {}; Object.keys(x).forEach(function (k) { y[k] = x[k]; }); y.done = !x.done; return y; }) }); },
     remove: function () { up({ appts: st.appts.filter(function (x) { return x.id !== a.id; }) }); } };
 });
 var svcOptions = [];
-niches.forEach(function (n) { self.servicesOf(n.id).forEach(function (s) { svcOptions.push({ key: n.id + '|' + s.id, label: (niches.length > 1 ? n.label + ' · ' : '') + (s.name || 'Без названия') }); }); });
-var aformSvc = svcOptions.filter(function (o) { return o.key === st.aform.svc; }).length ? st.aform.svc : (svcOptions[0] ? svcOptions[0].key : st.aform.svc);
-var aformRec = this.calc(aformSvc).rec;
+self.servicesOf(active.id).forEach(function (service) { svcOptions.push({ key: active.id + '|' + service.id, label: service.name || 'Без названия' }); });
+var aformSvc = svcOptions.filter(function (o) { return o.key === st.aform.svc; }).length ? st.aform.svc : (svcOptions[0] ? svcOptions[0].key : '');
+var aformRec = aformSvc ? this.calc(aformSvc).rec : 0;
 
 var periodDays = { day: 1, week: 7, month: 30 };
 var from = bpcKey(bpcAdd(bpcParse(st.today), -(periodDays[st.period] - 1)));
-var inPeriod = doneAppts.filter(function (a) { return a.date >= from && a.date <= st.today; });
+var inPeriod = sphereAppointments.filter(function (a) { return a.done && a.date >= from && a.date <= st.today; });
 var total = 0, prof = 0, by = {};
 inPeriod.forEach(function (a) {
   var c = self.calc(a.svc);
@@ -2626,7 +2640,7 @@ dashDone.forEach(function(a){ var c = self.calc(a.svc); dashTotal += a.price; da
 var dashDays = Array.from({length:30}, function(_,i){ var k=bpcKey(bpcAdd(bpcParse(st.today),i-29)); return {date:k, sum:dashDone.filter(function(a){return a.date===k;}).reduce(function(t,a){return t+a.price;},0)}; });
 var dashMax = Math.max.apply(null,[1].concat(dashDays.map(function(d){return d.sum;})));
 var dashPoints = dashDays.map(function(d,i){return (12+i*376/29).toFixed(2)+','+(132-112*d.sum/dashMax).toFixed(2);}).join(' ');
-var dashUpcoming = appts.filter(function(a){return !a.done && a.date >= st.today;}).sort(function(a,b){return (a.date+a.time).localeCompare(b.date+b.time);}).slice(0,4).map(function(a){return {id:a.id,client:nameOf(a.clientId),initial:nameOf(a.clientId).slice(0,1),service:self.svcOf(a.svc).name,date:a.date===st.today?'Сегодня':bpcLabel(a.date),time:a.time,open:function(){up({tab:'appts',day:a.date});}};});
+var dashUpcoming = appts.filter(function(a){return !a.done && a.date >= st.today;}).sort(function(a,b){return (a.date+a.time).localeCompare(b.date+b.time);}).slice(0,4).map(function(a){return {id:a.id,client:nameOf(a.clientId),initial:nameOf(a.clientId).slice(0,1),service:self.svcOf(a.svc).name,date:a.date===st.today?'Сегодня':bpcLabel(a.date),time:a.time,open:function(){up({tab:'appts',day:a.date,sphere:a.svc.split('|')[0]});}};});
 var dashboard = {total:money(dashTotal),profit:money(dashProfit),cost:money(dashTotal-dashProfit),count:clients.length,points:dashPoints,area:'12,132 '+dashPoints+' 388,132',max:money(dashMax),empty:!dashDone.length,from:bpcLabel(dashFrom),to:bpcLabel(st.today),upcoming:dashUpcoming,openAppts:function(){up({tab:'appts',day:st.today});},openClients:function(){up({tab:'appts',day:st.today}); Vue.nextTick(function(){var el=document.querySelector('[aria-label="Новый клиент"]');if(el)el.scrollIntoView({block:'start',behavior:'smooth'});});},openIncome:function(){up({tab:'income',period:'month'});},openCalc:function(){up({tab:'calc'});}};
 
 // ===== Новый вид «Обзора» (визуал в стиле аналитической панели) =====
@@ -2676,7 +2690,7 @@ var dashboard = {total:money(dashTotal),profit:money(dashProfit),cost:money(dash
   var nextKeys = Array.from({ length: 10 }, function (_, i) { return bpcKey(bpcAdd(td, i)); });
   var svcNames = []; svcList.forEach(function (sv) { if (svcNames.length < 5) { svcNames.push(sv); } });
   var sched = svcNames.map(function (sv, r) { var key = active.id + '|' + sv.id; return { name: sv.name, color: colors[r % colors.length], cells: nextKeys.map(function (k) { return appts.some(function (a) { return a.date === k && (a.svc === key || self.svcOf(a.svc).name === sv.name); }); }) }; });
-  var todayList = appts.filter(function (a) { return a.date === st.today; }).sort(function (a, b) { return a.time.localeCompare(b.time); }).map(function (a) { return { id: a.id, client: nameOf(a.clientId), initial: nameOf(a.clientId).slice(0, 1), service: self.svcOf(a.svc).name, time: a.time, done: a.done, open: function () { up({ tab: 'appts', day: a.date }); } }; });
+  var todayList = appts.filter(function (a) { return a.date === st.today; }).sort(function (a, b) { return a.time.localeCompare(b.time); }).map(function (a) { return { id: a.id, client: nameOf(a.clientId), initial: nameOf(a.clientId).slice(0, 1), service: self.svcOf(a.svc).name, time: a.time, done: a.done, open: function () { up({ tab: 'appts', day: a.date, sphere:a.svc.split('|')[0] }); } }; });
   var who = ''; try { var acc0 = bpAccounts()[self.props.email]; who = acc0 && acc0.name ? acc0.name : ''; } catch (e) {}
   Object.assign(dashboard, {
     who: who, whoInitial: (who || 'М').slice(0, 1).toUpperCase(),
@@ -2748,6 +2762,7 @@ return {
     aClient: setField('aform', 'clientId'), aSvc: setField('aform', 'svc'), aDate: setField('aform', 'date'), aTime: setField('aform', 'time'), aPrice: setField('aform', 'price'),
     addAppt: function () {
       var f = { clientId: st.aform.clientId, svc: aformSvc, date: st.aform.date, time: st.aform.time, price: st.aform.price }; if (!f.clientId) { up({ aformError: true }); return; }
+      if (!f.svc) return;
       var price = bpcNum(f.price) > 0 ? bpcNum(f.price) : self.calc(f.svc).rec;
       up({ appts: st.appts.concat([{ id: 'a' + st.seq, clientId: f.clientId, svc: f.svc, date: f.date || st.today, time: f.time || '12:00', price: price, done: false }]), seq: st.seq + 1, day: f.date || st.today, aformError: false,
         aform: { clientId: '', svc: f.svc, date: f.date, time: f.time, price: '' } });
