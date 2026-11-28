@@ -165,7 +165,7 @@ html,body,#app{width:100%;min-width:0}
 .bp-cat-empty{display:flex;flex-direction:column;align-items:flex-start;gap:12px;background:#fff;border:1px dashed #E2C6CF;border-radius:16px;padding:16px;font-size:15px;color:#554A50}
 .bp-cat-empty p{margin:0}
 @media (max-width:900px){.bp-save-toast{bottom:84px!important}}
-.bp-calc-svc-wrap{display:flex;flex-direction:column;gap:0;border-radius:18px}
+.bp-calc-svc-wrap{display:flex;flex-direction:column;gap:0;border-radius:18px;align-self:start}
 .bp-calc-svc-wrap .bp-calc-svc{border-bottom-left-radius:0!important;border-bottom-right-radius:0!important}
 .bp-card-addmat{font-family:Lato,Arial,sans-serif;font-size:14px;font-weight:800;min-height:46px;border:1px solid #EAE3E7;border-top:none;border-radius:0 0 18px 18px;background:#8E2F56;color:#fff;cursor:pointer}
 .bp-calc-svc-wrap.on .bp-card-addmat{border:2px solid #8E2F56;border-top:none}
@@ -821,6 +821,83 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 @media(prefers-reduced-motion:reduce){.bp-selection-glide{transition:none!important}}
 .bp-manage-service{display:flex;flex-direction:column;background:#fff;border:1px solid #eadde4;border-radius:18px;min-width:0}
 .bp-manage-service>button{flex:1;border:0!important}.bp-service-actions{display:flex;justify-content:space-between;gap:8px;padding:3px 14px 10px}.bp-service-actions>button{border:0;background:transparent;color:#792b50;font:600 13px/1.2 Lato,Arial,sans-serif;min-height:40px;cursor:pointer}
+
+/* ===== Luxe theme: plum & champagne ===== */
+.bpc-cabinet{--lx-plum:#5E1A38;--lx-plum2:#8E2F56;--lx-rose:#C0668E;--lx-gold:#C9A46A;--lx-gold2:#E9D3A6;--lx-ink:#2B1D24;--lx-line:#EBDDD3;
+  background:radial-gradient(1100px 520px at 100% -10%,#F6E4EC 0%,transparent 60%),radial-gradient(900px 500px at -10% 110%,#F5EBDD 0%,transparent 55%),#FBF8F5!important;color:var(--lx-ink)!important}
+.bpc-cabinet main h2,.bpc-cabinet main h3:not(:has(button)),.bpc-cabinet .bp-svc-title,.bp-set-head span{font-family:"Cormorant Garamond",Georgia,serif!important;font-weight:600!important;letter-spacing:.005em}
+.bpc-cabinet main section>h2,.bpc-cabinet main div>h2{font-size:24px!important}
+.bp-set-head{font-family:"Cormorant Garamond",Georgia,serif!important;font-size:24px!important}
+.bpc-cabinet .bp-svc-title{font-size:23px!important;line-height:1.15!important}
+.bpc-cabinet main [style*="border: 1px solid #EAE3E7"]{border:1px solid var(--lx-line)!important;box-shadow:0 1px 0 #fff inset,0 10px 30px -14px #5E1A3833,0 2px 6px #5E1A380a!important}
+.bpc-cabinet main section[style*="border-radius: 20px"],.bpc-cabinet main div[style*="border-radius: 20px"]{position:relative;background:linear-gradient(180deg,#FFFFFF,#FFFCFA)!important}
+.bpc-cabinet main section[style*="border-radius: 20px"]::before,.bpc-cabinet main div[style*="border-radius: 20px"][style*="border: 1px solid #EAE3E7"]::before{content:"";position:absolute;left:22px;right:22px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--lx-gold2),var(--lx-gold),var(--lx-gold2),transparent);opacity:.9}
+/* primary buttons */
+.bpc-cabinet main button[style*="background: #8E2F56"],.bp-card-addmat,.bp-gsave,.bp-clear-yes,.bpc-cabinet .bp-pick button[style*="background: #8E2F56"]{background:linear-gradient(135deg,#4E1530 0%,#7E2A4E 45%,#A9476F 100%)!important;color:#FFF7F0!important;border:1px solid #3F0F26!important;box-shadow:inset 0 1px 0 #ffffff33,inset 0 -2px 0 #00000026,0 8px 20px -8px #5E1A3899!important;letter-spacing:.04em;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease,filter .15s}
+.bpc-cabinet main button[style*="background: #8E2F56"]::after,.bp-card-addmat::after,.bp-gsave::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(105deg,transparent,#ffffff40,transparent);transform:skewX(-20deg);transition:left .6s ease;pointer-events:none}
+.bpc-cabinet main button[style*="background: #8E2F56"]:hover::after,.bp-card-addmat:hover::after,.bp-gsave:hover::after{left:130%}
+.bpc-cabinet main button[style*="background: #8E2F56"]:active,.bp-card-addmat:active,.bp-gsave:active{transform:translateY(1px) scale(.995)}
+.bp-gsave{background:linear-gradient(135deg,#4E1530,#7E2A4E 45%,#A9476F)!important;box-shadow:inset 0 1px 0 #ffffff33,0 8px 20px -8px #5E1A3899!important}
+.bp-card-addmat{border-top:1px solid #C9A46A80!important;font-size:13px!important;text-transform:uppercase;letter-spacing:.09em!important}
+.bp-card-addmat::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--lx-gold2),transparent)}
+/* dashed/outline secondary buttons */
+.bpc-cabinet main button[style*="dashed #8E2F56"]{border:1px solid var(--lx-gold)!important;background:linear-gradient(180deg,#FFFDF8,#FBF2E4)!important;color:var(--lx-plum)!important;border-radius:999px!important;padding-left:20px!important;padding-right:20px!important;box-shadow:0 4px 14px -8px #C9A46A99}
+.bpc-cabinet main button[style*="border: 1px solid #D8CDD3"],.bpc-cabinet main button[style*="border: 1px solid #E0D6DC"]{border-color:#E4D2C3!important;background:#FFFDFA!important}
+/* inputs */
+.bpc-cabinet main input:not([type=checkbox]):not([type=radio]),.bpc-cabinet main select{border-color:#E6D6CC!important;background:#FFFDFB!important;transition:border-color .15s,box-shadow .15s}
+.bpc-cabinet main input:focus,.bpc-cabinet main select:focus{outline:none;border-color:var(--lx-gold)!important;box-shadow:0 0 0 3px #E9D3A655!important}
+/* service cards */
+.bpc-cabinet .bp-calc-svc,.bpc-cabinet .bp-manage-service>button{background:linear-gradient(165deg,#FFFFFF 0%,#FFF8FA 70%,#FCF3EA 100%)!important;border:1px solid var(--lx-line)!important;box-shadow:0 14px 34px -18px #5E1A3866,0 2px 6px #5E1A380d!important;transition:transform .2s ease,box-shadow .2s ease}
+.bpc-cabinet .bp-calc-svc:hover,.bpc-cabinet .bp-manage-service>button:hover{transform:translateY(-2px);box-shadow:0 20px 40px -18px #5E1A3880!important}
+.bpc-cabinet .bp-calc-svc.on{border:1.5px solid var(--lx-gold)!important;background:linear-gradient(165deg,#FFFDF8,#FBF0F4)!important;box-shadow:0 0 0 3px #E9D3A666,0 18px 40px -18px #5E1A3880!important}
+.bp-calc-svc-wrap{border-radius:18px;box-shadow:0 14px 34px -22px #5E1A3866}
+.bpc-cabinet .bp-svc-time{background:linear-gradient(135deg,#4E1530,#8E2F56 60%,#B85A82)!important;box-shadow:inset 0 0 0 1px #E9D3A666,0 6px 14px -6px #5E1A3899!important;letter-spacing:.02em}
+.bpc-cabinet .bp-svc-price{background:linear-gradient(160deg,#FBEFF4,#F4DCE7)!important;border:1px solid #E5BDD0!important}
+.bp-rec-price{background:linear-gradient(160deg,#F1F8F1,#E2F0E4)!important}
+.bp-card-mc{background:linear-gradient(90deg,#FBF3E4,#FFF9EF)!important;border:1px solid #EBD9B6;color:#6E5320!important}
+.bp-card-st{border:1px solid #00000010}
+/* sphere switcher */
+.bpc-cabinet .bp-service-filters button{background:linear-gradient(180deg,#FFFFFF,#FBF4F1)!important;border:1px solid #E7D5CB!important;color:var(--lx-plum)!important;letter-spacing:.03em}
+.bpc-cabinet .bp-service-filters button[aria-pressed=true]{background:linear-gradient(135deg,#4E1530,#8E2F56 60%,#B85A82)!important;color:#FFF7F0!important;border-color:#4E1530!important;box-shadow:inset 0 0 0 1px #E9D3A655,0 10px 22px -10px #5E1A38aa!important}
+/* sidebar */
+.bpc-cabinet .bp-side{background:linear-gradient(180deg,#FFFFFF 0%,#FBF3F5 55%,#F7ECE2 100%)!important;border-right:1px solid var(--lx-line)!important}
+.bpc-cabinet .bp-side nav button[aria-current=page]{background:linear-gradient(135deg,#4E1530,#8E2F56 65%,#B05479)!important;color:#FFF7F0!important;box-shadow:inset 0 0 0 1px #E9D3A655,0 10px 22px -12px #5E1A38cc!important}
+.bpc-cabinet .bp-side nav button[aria-current=page] svg{color:#E9D3A6!important;stroke:#E9D3A6}
+.bpc-cabinet .bp-side nav button:not([aria-current]):hover{background:#F6EAEE!important}
+.bpc-cabinet .bp-side-footer b{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;color:var(--lx-plum)}
+@media (max-width:760px){
+  .bpc-cabinet .bp-side nav[aria-label="Разделы"]{background:rgba(255,251,248,.92)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #E9D3A699!important;box-shadow:0 -10px 30px -12px #5E1A3833!important}
+  .bpc-cabinet .bp-side nav[aria-label="Разделы"] button[aria-current=page]{border-radius:14px!important}
+}
+/* header */
+.bpc-cabinet>header{background:rgba(255,252,249,.82)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--lx-line)!important}
+.bpc-cabinet .bp-top-actions button.bp-plan-chip{border-radius:999px!important;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:6px 14px;border-radius:999px;border:1px solid #C9A46A!important;background:linear-gradient(135deg,#FFF8EA,#F3DDB2 55%,#E7C687)!important;color:#5A3A12!important;font-size:13px!important;font:800 12.5px Lato,Arial,sans-serif;letter-spacing:.04em;cursor:pointer;box-shadow:inset 0 1px 0 #ffffffaa,0 6px 16px -8px #A07A3a99;transition:transform .15s,box-shadow .15s}
+.bpc-cabinet .bp-top-actions button.bp-plan-chip:hover{transform:translateY(-1px);box-shadow:inset 0 1px 0 #ffffffaa,0 10px 20px -8px #A07A3abb}
+/* plan picker */
+.bp-pp-overlay{position:fixed;inset:0;z-index:1200;background:#2a101ccc;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 14px}
+.bp-pp-sheet{width:min(980px,100%);background:radial-gradient(700px 300px at 90% -10%,#7E2A4E 0%,transparent 70%),linear-gradient(160deg,#3A0F24,#22101A);color:#FBEFE6;border:1px solid #C9A46A66;border-radius:26px;padding:26px clamp(16px,3vw,32px) 28px;box-shadow:0 30px 80px #0008}
+.bp-pp-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:18px}
+.bp-pp-head small{font:700 11px Lato,sans-serif;letter-spacing:.25em;text-transform:uppercase;color:#E9D3A6}
+.bp-pp-head h2{margin:4px 0 4px;font:600 34px/1.05 "Cormorant Garamond",Georgia,serif;color:#FFF6EE}
+.bp-pp-head p{margin:0;color:#D9C2C9;font-size:14px}
+.bp-pp-x{width:42px;height:42px;flex:none;border-radius:50%;border:1px solid #E9D3A666;background:#ffffff10;color:#FBEFE6;font-size:26px;line-height:1;cursor:pointer}
+.bp-pp-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.bp-pp-card{position:relative;display:flex;flex-direction:column;gap:10px;text-align:left;padding:20px;border-radius:20px;border:1px solid #ffffff22;background:linear-gradient(170deg,#ffffff14,#ffffff06);color:#FBEFE6;font-family:Lato,Arial,sans-serif;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.bp-pp-card:hover{transform:translateY(-3px);border-color:#E9D3A699}
+.bp-pp-card.pop{border-color:#C9A46A;box-shadow:0 0 0 1px #C9A46A66,0 18px 40px -16px #000c}
+.bp-pp-card.on{border-color:#E9D3A6;background:linear-gradient(170deg,#E9D3A626,#ffffff08)}
+.bp-pp-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bp-pp-top b{font:600 26px "Cormorant Garamond",Georgia,serif;color:#FFF6EE}
+.bp-pp-top em{font-style:normal;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;background:#E9D3A6;color:#4A2E0E}
+.bp-pp-top em.pop{background:linear-gradient(135deg,#F3DDB2,#C9A46A)}
+.bp-pp-price{font:800 30px/1 Lato,sans-serif;color:#F3DDB2}.bp-pp-price small{font-size:13px;font-weight:600;color:#D9C2C9;margin-left:6px}
+.bp-pp-sub{font-size:13.5px;color:#E7D3D9}
+.bp-pp-feats{display:flex;flex-direction:column;gap:7px;padding-top:10px;border-top:1px solid #ffffff1a}
+.bp-pp-feats span{position:relative;padding-left:22px;font-size:13.5px;line-height:1.35;color:#F5E6EA}
+.bp-pp-feats span::before{content:"";position:absolute;left:2px;top:5px;width:10px;height:6px;border-left:2px solid #E9D3A6;border-bottom:2px solid #E9D3A6;transform:rotate(-45deg)}
+.bp-pp-cta{margin-top:auto;display:flex;justify-content:center;align-items:center;min-height:46px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:.04em;background:linear-gradient(135deg,#FFF8EA,#E7C687);color:#4A2E0E;box-shadow:inset 0 1px 0 #fff9,0 8px 18px -8px #000a}
+.bp-pp-card.on .bp-pp-cta{background:transparent;color:#E9D3A6;border:1px solid #E9D3A699;box-shadow:none}
+.bp-pp-err{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:#ffffff14;border:1px solid #F0A6A6aa;color:#FFD9D9;font-size:14px}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1548,11 +1625,22 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
       <span>{{ sp.label }}</span><span v-if="sp.on" aria-hidden="true">✓</span>
     </button>
   </div>
-</details><div class="bp-top-actions"><span style="background: #F3E6EC; color: #6B1F40; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 999px">Тариф {{ v.planName }}{{ v.planNote }}</span>
+</details><div class="bp-top-actions"><button type="button" class="bp-plan-chip" @click="v.planPick.show" title="Сменить тариф"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg><span>Тариф {{ v.planName }}</span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
 <template v-if="v.hasLogout">
 <button type="button" @click="v.logout" :title="v.userEmail" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 12px; border-radius: 999px; border: 1px solid #E0D6DC; background: #FFFFFF; color: #554A50; cursor: pointer">Выйти</button>
 </template>
 </div></div></header>
+<div v-if="v.planPick.open" class="bp-pp-overlay" @click.self="v.planPick.close"><div class="bp-pp-sheet" role="dialog" aria-modal="true" aria-label="Тарифы">
+<div class="bp-pp-head"><div><small>Beauty Profit</small><h2>Выберите тариф</h2><p>Сменить можно в любой момент</p></div><button type="button" class="bp-pp-x" aria-label="Закрыть" @click="v.planPick.close">×</button></div>
+<div class="bp-pp-list"><button v-for="pl in v.planPick.plans" :key="pl.id" type="button" class="bp-pp-card" :class="{on: pl.on, pop: pl.popular}" @click="pl.choose">
+<span class="bp-pp-top"><b>{{ pl.name }}</b><em v-if="pl.on">Ваш тариф</em><em v-else-if="pl.popular" class="pop">Популярный</em></span>
+<span class="bp-pp-price">{{ pl.price }}<small>{{ pl.period }}</small></span>
+<span class="bp-pp-sub">{{ pl.sub }}</span>
+<span class="bp-pp-feats"><span v-for="f in pl.features" :key="f">{{ f }}</span></span>
+<span class="bp-pp-cta">{{ pl.on ? 'Сейчас активен' : 'Выбрать «' + pl.name + '»' }}</span>
+</button></div>
+<p v-if="v.planPick.err" class="bp-pp-err" role="alert">{{ v.planPick.err }}</p>
+</div></div>
 
 <main style="max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px"><template v-if="v.tabMaterials || v.libShow">
 <div :role="v.tabMaterials ? 'region' : 'dialog'" :aria-modal="v.tabMaterials ? null : 'true'" :class="{'bp-materials-page':v.tabMaterials}" aria-label="Мои материалы" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 65; overflow-y: auto; background: #FAF9F8; display: flex; flex-direction: column; gap: 14px; padding: 0 max(16px, calc((100vw - 1100px) / 2)) 40px">
@@ -3180,6 +3268,8 @@ return {
   periods: periods, inc: { total: money(total), profit: money(prof), count: inPeriod.length, avg: money(inPeriod.length ? total / inPeriod.length : 0), bars: bars, empty: bars.length === 0 },
   sharpList: sharpList, hasSharp: sharpList.length > 0, lowList: lowList, hasLow: lowList.length > 0, noLow: lowList.length === 0, lowCount: lowList.length, toRemind: function () { up({ tab: 'remind', libShow: false }); },
   tomorrow: tomorrow, noTomorrow: tomorrow.length === 0, dueList: dueList, noDue: dueList.length === 0,
+  planPick: { open: !!st.planOpen, err: st.planErr || '', show: function () { up({ planOpen: true, planErr: '' }); }, close: function () { up({ planOpen: false, planErr: '' }); },
+    plans: ((window.BPC_APP && window.BPC_APP.signupPlans) || []).map(function (pl) { var cur = self.props.plan; return { id: pl.id, name: pl.name, price: pl.price, period: pl.period, sub: pl.sub, features: pl.features || [], popular: !!pl.popular, on: cur === pl.id, choose: function () { if (cur === pl.id) { up({ planOpen: false }); return; } var res = window.BP_SET_PLAN ? window.BP_SET_PLAN(pl.id, st.tab) : 'Не удалось сменить тариф.'; if (res) { up({ planErr: res }); } } }; }) },
   hoursInfo: this.autoHours(), setClosed: !(st.setOpenAt && st.setOpenAt === (window.BP_PAGE_ID || (window.BP_PAGE_ID = String(Date.now()) + Math.random()))),
   rentOn: st.set.rentOn === '1', rentOff: st.set.rentOn === '0',
   on: {
@@ -3681,6 +3771,15 @@ root.mounted = function () {
 // Сохранение профиля из кабинета
 window.BP_CUR_SYM = function (c) { var m = {RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł', MDL:'lei', RON:'lei', GEL:'₾', AMD:'֏', AZN:'₼', BYN:'Br', UZS:'сум', KGS:'сом', GBP:'£', CZK:'Kč', ILS:'₪', AED:'AED', CHF:'CHF', BGN:'лв', HUF:'Ft', RSD:'дин'}; return m[c] || c || '₽'; };
 window.BP_CUR_CODE = function (s) { var m = {RUB:'₽', UAH:'₴', KZT:'₸', TRY:'₺', USD:'$', EUR:'€', PLN:'zł', MDL:'lei', RON:'lei', GEL:'₾', AMD:'֏', AZN:'₼', BYN:'Br', UZS:'сум', KGS:'сом', GBP:'£', CZK:'Kč', ILS:'₪', AED:'AED', CHF:'CHF', BGN:'лв', HUF:'Ft', RSD:'дин'}; var r = null; Object.keys(m).forEach(function (k) { if (!r && m[k] === s) { r = k; } }); if (s === 'lei') { r = 'MDL'; } return r || (/^[A-Z]{3}$/.test(s || '') ? s : 'TRY'); };
+window.BP_SET_PLAN = function (id, tab) {
+  var vm = window.BPC_APP; if (!vm || !vm.cab) { return 'Не удалось сменить тариф.'; }
+  var sp = vm.cab.spheres || [];
+  if (id === 'master' && sp.length > 2) { return 'В тарифе «Мастер» можно до двух видов деятельности. Сейчас у вас ' + sp.length + ' — уберите лишние в профиле или выберите «Салон Pro».'; }
+  var cab = vm.cab; cab.plan = id;
+  try { var accs = bpAccounts(); var em = vm.user && vm.user.email; if (em && accs[em]) { accs[em].plan = id; accs[em].cab = cab; bpSaveAccounts(accs); } } catch (e) {}
+  try { var d = JSON.parse(localStorage.getItem('beauty-profit-personal-demo-v1') || 'null'); } catch (e) {}
+  vm.cab = cab; saveDemo(cab); window.BP_NEXT_TAB = tab || 'profile'; vm.appKey++; return '';
+};
 window.BP_PROFILE_SAVE = async function (d) {
   var vm = window.BPC_APP; if (!vm) { return { err: 'Не удалось сохранить.' }; }
   var accs = bpAccounts();
