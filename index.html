@@ -153,6 +153,9 @@ html,body,#app{width:100%;min-width:0}
 .bp-exp-total{display:flex;justify-content:space-between;border-top:1px dashed #E2D6DC;padding-top:10px;font-size:15px}
 .bp-hours{background:#F7F0F4;border-radius:12px;padding:12px 14px;font-size:14px}
 .bp-hours small{display:block;margin-top:3px;font-size:12px;color:#776A71;font-weight:500}
+.bp-gsave-row{display:flex;justify-content:flex-end;padding:10px 0 8px;border-top:1px solid #F5EBEF}
+.bp-gsave{font-family:Lato,Arial,sans-serif;font-size:15px;font-weight:700;min-height:44px;padding:8px 22px;border-radius:999px;border:none;background:#2E7D4F;color:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(46,125,79,.25)}
+@media (max-width:600px){.bp-gsave{width:100%}}
 </style>
 <style>
 /* Beauty Profit first-run experience */
@@ -1543,7 +1546,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 <template v-for="(g, $index) in v.libGroups">
 <template v-if="g.show">
-<section style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 8px 18px; display: flex; flex-direction: column; gap: 4px">
+<section :data-libgroup="g.title.replace(/&quot;/g, '')" style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 8px 18px; display: flex; flex-direction: column; gap: 4px; scroll-margin-top: 90px">
 <h3 style="margin: 0"><button type="button" :aria-expanded="g.open" @click="g.toggle" style="width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border: none; background: transparent; padding: 0; cursor: pointer; font-family: Lato, Arial, sans-serif; text-align: left">
 <span style="font-size: 14px; font-weight: 700; color: #6B1F40; text-transform: uppercase; letter-spacing: 0.05em">{{ g.title }}</span>
 <span style="display: flex; align-items: center; gap: 10px">
@@ -1593,6 +1596,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 </template>
 <div class="bp-more-row"><button v-if="g.canMore" type="button" class="bp-more-btn" @click="g.more">+ Добавить ещё материал</button><button v-if="g.canLess" type="button" class="bp-less-btn" @click="g.less">Показать только мои</button></div>
+<div class="bp-gsave-row"><button type="button" class="bp-gsave" @click="g.save">{{ g.saveLabel }}</button></div>
 </template>
 </section>
 </template>
@@ -2830,7 +2834,7 @@ myList.forEach(function (n) {
 });
 var lq = (st.libQ || '').toLowerCase();
 var libTotal = 0, libFilled = 0;
-var libGroups = libSrc.map(function (g) {
+var libGroups = libSrc.map(function (g, gi) {
   var gfPre = g[1].filter(function (x) { return !!((st.lib || {})[x[0].toLowerCase()] || {}).on; }).length;
   var showAllPre = !!(st.libAll || {})[g[0]] || !!lq || gfPre === 0;
   var items = g[1].map(function (it) {
@@ -2889,7 +2893,8 @@ var libGroups = libSrc.map(function (g) {
   var vis = items.filter(function (x) { return x.show && (showAll || x.used); });
   var closed = !lq && !(st.libOpen || {})[g[0]];
   var setAll = function (val) { var o = {}; Object.keys(st.libAll || {}).forEach(function (k) { o[k] = st.libAll[k]; }); o[g[0]] = val; up({ libAll: o }); };
-  return { title: g[0], items: vis, show: items.some(function (x) { return x.show; }), open: !closed, closed: closed, stat: gf + ' из ' + items.length,
+  var saveGroup = function () { var o = {}; Object.keys(st.libOpen || {}).forEach(function (k) { o[k] = st.libOpen[k]; }); o[g[0]] = false; var nx = libSrc[gi + 1]; if (nx) { o[nx[0]] = true; } var la = {}; Object.keys(st.libAll || {}).forEach(function (k) { la[k] = st.libAll[k]; }); la[g[0]] = false; up({ libOpen: o, libAll: la }); setTimeout(function () { var el = document.querySelector('[data-libgroup="' + (nx ? nx[0] : g[0]).replace(/"/g, '') + '"]'); if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 80); };
+  return { save: saveGroup, saveLabel: libSrc[gi + 1] ? 'Сохранить и дальше →' : 'Сохранить', title: g[0], items: vis, show: items.some(function (x) { return x.show; }), open: !closed, closed: closed, stat: gf + ' из ' + items.length,
     canMore: !showAll, canLess: !!(st.libAll || {})[g[0]] && gf > 0 && !lq, more: function () { setAll(true); }, less: function () { setAll(false); },
     toggle: function () { var o = {}; Object.keys(st.libOpen || {}).forEach(function (k) { o[k] = st.libOpen[k]; }); o[g[0]] = closed; var la = {}; Object.keys(st.libAll || {}).forEach(function (k) { la[k] = st.libAll[k]; }); if (!closed) { la[g[0]] = false; } up({ libOpen: o, libAll: la }); } };
 });
