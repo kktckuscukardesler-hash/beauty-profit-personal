@@ -162,6 +162,9 @@ html,body,#app{width:100%;min-width:0}
 .bp-set-save{width:100%}
 .bp-calc-svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:12px}
 .bp-calc-svc.on{border:2px solid #8E2F56!important;background:#FDF7FA!important;box-shadow:0 4px 16px rgba(142,47,86,.16)!important}
+.bp-cat-empty{display:flex;flex-direction:column;align-items:flex-start;gap:12px;background:#fff;border:1px dashed #E2C6CF;border-radius:16px;padding:16px;font-size:15px;color:#554A50}
+.bp-cat-empty p{margin:0}
+@media (max-width:900px){.bp-save-toast{bottom:84px!important}}
 </style>
 <style>
 /* Beauty Profit first-run experience */
@@ -1176,7 +1179,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <p v-if="cardError" role="alert">{{cardError}}</p>
 <button type="submit" class="bp-signup-primary" :disabled="photoBusy">{{serviceEdit.selected ? 'Сохранить изменения' : 'Создать услугу'}}</button>
 <button type="button" class="bp-signup-category" @click="closeCabinetCard">Отмена</button></form></div></div></section></div>
-    <div v-if="saveMsg" role="status" style="position:fixed;right:14px;bottom:14px;z-index:40;background:#30272D;color:#FAF9F8;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;opacity:.9">{{ saveMsg }}</div>
+    <div v-if="saveMsg" role="status" class="bp-save-toast" style="position:fixed;right:14px;bottom:14px;z-index:40;pointer-events:none;background:#30272D;color:#FAF9F8;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;opacity:.9">{{ saveMsg }}</div>
   </template>
 </div>
 </script>
@@ -1676,7 +1679,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span class="bp-svc-title">{{ sc.name }}</span><span class="bp-svc-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ sc.time }}</span></span>
 <span v-if="!sc.ready" style="display: flex; gap: 8px; width: 100%"><span style="flex: 1; background: #F7F1F4; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #6B1F40">Ваше время стоит</span><span style="font-size: 16px; font-weight: 700; color: #6B1F40">{{ sc.tOver }}</span></span><span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем за время</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.tRec }}</span></span></span>
-<span v-if="!sc.ready" class="bp-need-mats">Это цена только за ваше время. Добавьте материалы — посчитаем полную себестоимость и цену.</span>
 <span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
 <span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
 <span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
@@ -1735,7 +1737,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="button" class="bp-calc-svc" :class="{on: sc.on}" :aria-pressed="sc.on ? 'true' : 'false'" @click="sc.pick" style="width: 100%; font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span class="bp-svc-title">{{ sc.name }}</span><span class="bp-svc-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ sc.time }}</span></span>
 <span v-if="!sc.ready" style="display: flex; gap: 8px; width: 100%"><span style="flex: 1; background: #F7F1F4; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #6B1F40">Ваше время стоит</span><span style="font-size: 16px; font-weight: 700; color: #6B1F40">{{ sc.tOver }}</span></span><span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем за время</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.tRec }}</span></span></span>
-<span v-if="!sc.ready" class="bp-need-mats">Это цена только за ваше время. Добавьте материалы — посчитаем полную себестоимость и цену.</span>
 <span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
 <span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
 <span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
@@ -1822,7 +1823,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-if="v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуемая цена</span><span style="font-family: Lato, Arial, sans-serif; font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.rec }}</span></div>
 <div v-if="!v.res.ready" style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимум за время</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.tMin }}</span></div>
 <div v-if="!v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуем за время</span><span style="font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.tRec }}</span></div>
-<div v-if="!v.res.ready" class="bp-need-mats bp-need-mats-big">Пока это цена только за ваше время. Добавьте материалы на 1 клиента выше — посчитаем полную себестоимость и цену.</div>
 </div>
 
 <div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 20px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
@@ -2108,13 +2108,14 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <h2 style="margin: 0; font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 22px">Добавьте материалы</h2>
-<p style="margin: 0; font-size: 14px; color: #554A50">Нажмите на всё, чем пользуетесь в этой услуге</p>
+<p style="margin: 0; font-size: 14px; color: #554A50">Это материалы, которые вы отметили в разделе «Материалы». Нажмите на те, что нужны для этой услуги</p>
 </div>
 <button type="button" aria-label="Закрыть" @click="v.catClose" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; border: none; background: #F3E6EC; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#30272D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
 <input type="search" aria-label="Поиск материала" placeholder="Поиск материала…" :value="v.catQ" @input="v.catSearch" style="min-height: 44px; border-radius: 999px; border: 1px solid #D8CDD3; padding: 0 16px; font-size: 15px; background: #FFFFFF">
 </div>
 <div style="padding: 16px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px">
+<div v-if="v.catMineEmpty" class="bp-cat-empty"><p>Вы ещё не отметили ни одного материала. Сначала выберите в разделе «Материалы», чем пользуетесь, — и они появятся здесь.</p><button type="button" class="bp-gsave" @click="v.catToMaterials">Перейти в «Материалы»</button></div>
 <template v-for="(g, $index) in v.catGroups">
 <template v-if="g.show">
 <div style="display: flex; flex-direction: column; gap: 8px">
@@ -2953,6 +2954,10 @@ var catGroups = catSrc.map(function (g) {
   return { title: g[0], items: items, show: items.length > 0 };
 });
 if (myList.length) { catSrc = [['Мои материалы', myList.map(function (n) { return typeof n === 'string' ? [n, 'шт', 1, 1] : [n.name, n.unit || 'шт', 1, 1]; })]].concat(catSrc); catGroups = catSrc.map(function (g) { var items = g[1].filter(function (it) { return !cq || it[0].toLowerCase().indexOf(cq) >= 0; }).map(function (it) { var has = !!have[it[0].toLowerCase()]; var on = !has && !!cp[it[0]]; return { name: it[0], has: has, on: on, off: !has && !on, pick: function () { var n = {}; Object.keys(cp).forEach(function (k) { n[k] = cp[k]; }); n[it[0]] = !cp[it[0]]; up({ catPicked: n }); } }; }); return { title: g[0], items: items, show: items.length > 0 }; }); }
+var bpLibOn = st.lib || {};
+catSrc = libSrc.map(function (g) { return [g[0], g[1].filter(function (it) { return (bpLibOn[it[0].toLowerCase()] || {}).on; })]; }).filter(function (g) { return g[1].length > 0; });
+var catMineEmpty = catSrc.length === 0;
+catGroups = catSrc.map(function (g) { var items = g[1].filter(function (it) { return !cq || it[0].toLowerCase().indexOf(cq) >= 0; }).map(function (it) { var has = !!have[it[0].toLowerCase()]; var on = !has && !!cp[it[0]]; return { name: it[0], has: has, on: on, off: !has && !on, pick: function () { var n = {}; Object.keys(cp).forEach(function (k) { n[k] = cp[k]; }); n[it[0]] = !cp[it[0]]; up({ catPicked: n }); } }; }); return { title: g[0], items: items, show: items.length > 0 }; });
 var catAll = []; catSrc.forEach(function (g) { g[1].forEach(function (it) { catAll.push(it); }); });
 var catAdd = function () {
   var add = catAll.filter(function (it) { return cp[it[0]] && !have[it[0].toLowerCase()]; }).map(function (it) { return { name: it[0], unit: it[1], pack: '', hint: String(it[3]), price: '', use: String(it[2]) }; });
@@ -3222,7 +3227,7 @@ return {
   units: ['шт', 'мл', 'л', 'г', 'кг', 'пара', 'м', 'см', 'линия'].map(function (v) { return { v: v }; }),
   currencies: serviceCurrencies.map(([code, name]) => ({v: window.BP_CUR_SYM(code), label: name + ' (' + code + ')'})), set: st.set, hourCost: money(r.hour),
   libShow: !!st.libShow, libBtn: 'Мои материалы', libGroups: libGroups, libApi: libApi, libQ: st.libQ, libNew: st.libNew, addOpen: !!st.addOpen, addCatV: st.addCat, addNameV: st.addName || '', addUnitV: st.addUnit || 'шт', addIsPack: st.addUnit === 'упаковка', addPerV: st.addPer || '', addErr: !!st.addErr, libCatOpts: libCats.map(function (c) { return { v: c }; }), libStat: libFilled + ' из ' + libTotal, libHasAny: libFilled > 0, clearAskV: !!st.clearAsk,
-  catOpen: st.catOpen, catGroups: catGroups, catCount: catCount, catHas: catCount > 0, catNone: catCount === 0, catQ: st.catQ, catAdd: catAdd,
+  catOpen: st.catOpen, catMineEmpty: catMineEmpty, catToMaterials: function () { up({ catOpen: false, catPicked: {}, catQ: '', tab: 'materials' }); }, catGroups: catGroups, catCount: catCount, catHas: catCount > 0, catNone: catCount === 0, catQ: st.catQ, catAdd: catAdd,
   catClose: function () { up({ catOpen: false, catPicked: {}, catQ: '' }); },
   catSearch: function (e) { up({ catQ: e.target.value }); },
   catCustom: function () { var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = mats.concat([{ name: '', unit: 'шт', pack: '', hint: '1', price: '', use: '1' }]); up({ mats: mm, catOpen: false, catPicked: {}, catQ: '' }); },
