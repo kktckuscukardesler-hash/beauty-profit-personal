@@ -2126,7 +2126,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <h2 style="margin: 0; font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 22px">Добавьте материалы</h2>
-<p style="margin: 0; font-size: 14px; color: #554A50">Это материалы, которые вы отметили в разделе «Материалы». Нажмите на те, что нужны для этой услуги</p>
+<p style="margin: 0; font-size: 14px; color: #554A50">Это материалы, которые вы отметили в разделе «Материалы». Нажмите на те, что нужны для этой услуги. Нажмёте ещё раз — материал уберётся.</p>
 </div>
 <button type="button" aria-label="Закрыть" @click="v.catClose" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; border: none; background: #F3E6EC; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#30272D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
@@ -2147,7 +2147,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="button" aria-pressed="false" @click="it.pick" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 600; min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #E0D6DC; background: #FFFFFF; color: #30272D; cursor: pointer">{{ it.name }}</button>
 </template>
 <template v-if="it.has">
-<span style="font-size: 14px; font-weight: 600; min-height: 40px; box-sizing: border-box; padding: 8px 14px; border-radius: 999px; border: 1px solid #CDE8D2; background: #EFF7EF; color: #1C6B30; display: inline-flex; align-items: center">{{ it.name }} · уже есть</span>
+<button type="button" aria-pressed="true" title="Нажмите ещё раз, чтобы убрать из услуги" @click="it.unhave" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 40px; box-sizing: border-box; padding: 8px 14px; border-radius: 999px; border: 1px solid #2E7D4F; background: #2E7D4F; color: #FFFFFF; display: inline-flex; align-items: center; gap: 6px; cursor: pointer">✓ {{ it.name }}</button>
 </template>
 </template>
 </div>
@@ -2975,7 +2975,7 @@ if (myList.length) { catSrc = [['Мои материалы', myList.map(function
 var bpLibOn = st.lib || {};
 catSrc = libSrc.map(function (g) { return [g[0], g[1].filter(function (it) { return (bpLibOn[it[0].toLowerCase()] || {}).on; })]; }).filter(function (g) { return g[1].length > 0; });
 var catMineEmpty = catSrc.length === 0;
-catGroups = catSrc.map(function (g) { var items = g[1].filter(function (it) { return !cq || it[0].toLowerCase().indexOf(cq) >= 0; }).map(function (it) { var has = !!have[it[0].toLowerCase()]; var on = !has && !!cp[it[0]]; return { name: it[0], has: has, on: on, off: !has && !on, pick: function () { var n = {}; Object.keys(cp).forEach(function (k) { n[k] = cp[k]; }); n[it[0]] = !cp[it[0]]; up({ catPicked: n }); } }; }); var cgo = st.catGOpen || {}; var gOpen = !!cq || !!cgo[g[0]]; var gPicked = items.filter(function (x) { return x.on; }).length; var gHas = items.filter(function (x) { return x.has; }).length;
+catGroups = catSrc.map(function (g) { var items = g[1].filter(function (it) { return !cq || it[0].toLowerCase().indexOf(cq) >= 0; }).map(function (it) { var has = !!have[it[0].toLowerCase()]; var on = !has && !!cp[it[0]]; return { name: it[0], has: has, on: on, off: !has && !on, unhave: function () { var lk = it[0].toLowerCase(); var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = mats.filter(function (m) { return (m.name || '').toLowerCase() !== lk; }); up({ mats: mm }); }, pick: function () { var n = {}; Object.keys(cp).forEach(function (k) { n[k] = cp[k]; }); n[it[0]] = !cp[it[0]]; up({ catPicked: n }); } }; }); var cgo = st.catGOpen || {}; var gOpen = !!cq || !!cgo[g[0]]; var gPicked = items.filter(function (x) { return x.on; }).length; var gHas = items.filter(function (x) { return x.has; }).length;
   return { title: g[0], items: items, show: items.length > 0, open: gOpen, info: (gPicked ? 'выбрано ' + gPicked : '') + (gPicked && gHas ? ' · ' : '') + (gHas ? 'уже в услуге ' + gHas : '') || (items.length + ' шт.'), toggle: function () { var o = {}; Object.keys(cgo).forEach(function (k) { o[k] = cgo[k]; }); o[g[0]] = !cgo[g[0]]; up({ catGOpen: o }); } }; });
 var catAll = []; catSrc.forEach(function (g) { g[1].forEach(function (it) { catAll.push(it); }); });
 var catAdd = function () {
