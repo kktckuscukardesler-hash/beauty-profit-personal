@@ -466,6 +466,7 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 @media (max-width:600px){.bp-soc-list{grid-template-columns:1fr}.bp-pf-plans{grid-template-columns:1fr}}
 
 .bp-cab-card-overlay{position:fixed;inset:0;z-index:1100;overflow:auto}
+.bp-cab-name{display:grid;gap:6px;font-weight:700}.bp-cab-name input{min-height:48px;border-radius:12px;border:1.5px solid #EAD9E1;padding:0 14px;font-size:16px;color:#30232c;background:#fff}
 .bp-cab-card-overlay .bp-signup{min-height:100%}
 .bp-pick-ownform{display:flex;gap:8px}
 .bp-pick-ownform input{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px dashed #C25B86;padding:0 14px;font-size:15px;color:#30232c;background:#fff}
@@ -1010,7 +1011,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
     <bpc-app :key="'a' + appKey" :chosen="chosen" :plan="planId" :saved="saved" :fresh="!!(cab && cab.fresh)" :on-back="toSite" :on-logout="logout" :on-state="onAppState" :email="user ? user.email : ''" :plan-note="planNote"></bpc-app>
     <div v-if="serviceEdit && cabCardCb" class="bp-cab-card-overlay"><section class="bp-intro bp-signup"><div class="bp-signup-inner"><header class="bp-signup-top"><button class="bp-signup-back" type="button" @click="closeCabinetCard" aria-label="Назад">←</button></header><div class="bp-signup-content"><form v-if="serviceEdit" class="bp-signup-form bp-card-editor" @submit.prevent="finishCard(true)">
 <h1>{{ serviceEdit.selected ? 'Настройки услуги' : 'Новая услуга' }}</h1>
-<p>{{ serviceEdit.category }}</p><h2>{{ serviceEdit.name }}</h2>
+<p>{{ serviceEdit.category }}</p><h2 v-if="!serviceEdit.selected">{{ serviceEdit.name }}</h2><label v-else class="bp-cab-name">Название услуги<input v-model="cabCardName" maxlength="80"></label>
 <button type="button" class="bp-signup-category" @click="showTime">Продолжительность <span>{{ card.minutes ? durationText(card.minutes) : 'Нет' }} ›</span></button>
 <dialog ref="timeSheet" class="bp-time-sheet" aria-labelledby="bp-duration-title">
 <header><h2 id="bp-duration-title">Продолжительность</h2><button class="bp-sheet-close" type="button" aria-label="Закрыть" @click="$refs.timeSheet.close()">×</button></header>
@@ -1354,7 +1355,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </script>
 
 <script type="text/x-template" id="tpl-service-actions">
-<div class="bp-service-actions"><button type="button" @click="show('edit')">Редактировать</button><button type="button" @click="show('delete')">Удалить</button>
+<div class="bp-service-actions"><button type="button" @click="service.editCard()">Редактировать</button><button type="button" @click="show('delete')">Удалить</button>
 <dialog ref="dialog" class="bp-profile-dialog" :aria-label="mode==='edit'?'Редактировать услугу':'Удалить услугу'"><form @submit.prevent="submit">
 <h2>{{ mode==='edit'?'Редактировать услугу':'Удалить услугу?' }}</h2>
 <template v-if="mode==='edit'">
@@ -2654,6 +2655,16 @@ var svcCards = svcList.map(function (sv) {
       up({svcs:scoped,times:Object.assign({},st.times,{[k]:minutes/60}), prices:Object.assign({},st.prices,{[k]:price})});
       return '';
     }, remove:function(){removeService(sv);},
+    editCard:function(){
+      var det = Object.assign({}, (st.svcDetails||{})[k] || {}); det.minutes = minutes; det.price = st.prices[k] != null ? String(st.prices[k]) : ''; if (!det.currency) { det.currency = ({ '₽': 'RUB', '₴': 'UAH', '₸': 'KZT', '₺': 'TRY', '$': 'USD', '€': 'EUR', 'zł': 'PLN' })[(st.set && st.set.cur) || ''] || 'TRY'; }
+      if (window.BP_EDIT_CARD) window.BP_EDIT_CARD(sv.name, active.label, det, function (d, newName) {
+        var cur = self.state; var nm = String(newName || sv.name).trim() || sv.name; var mins = Number(d.minutes) || minutes || 60;
+        var scoped = {}; Object.keys(cur.svcs || {}).forEach(function (x) { scoped[x] = cur.svcs[x]; });
+        scoped[active.id] = self.servicesOf(active.id).map(function (it) { return it.id === sv.id ? Object.assign({}, it, { name: nm, time: mins / 60 }) : it; });
+        var dd = {}; Object.keys(cur.svcDetails || {}).forEach(function (x) { dd[x] = cur.svcDetails[x]; }); dd[k] = d;
+        self.setState({ svcs: scoped, times: Object.assign({}, cur.times, { [k]: mins / 60 }), prices: Object.assign({}, cur.prices, { [k]: d.price }), svcDetails: dd });
+      });
+    },
     name: sv.name || 'Без названия', time: duration, mats: self.matsFor(k).length, cost: money(c.cost), min: money(c.min), rec: money(c.rec),
     price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col, ready: ready, tOver: money(c.over), tMin: money(c.tMin), tRec: money(c.tRec),
     open: function () { up({ tab: 'calc', svcId: sv.id, delAsk: false }); } };
@@ -2692,7 +2703,8 @@ var addFromCard = function (n, det) {
   o[active.id] = list;
   var mm = {}; Object.keys(cur.mats || {}).forEach(function (k) { mm[k] = cur.mats[k]; }); mm[active.id + '|' + id] = [];
   var pr = {}; Object.keys(cur.prices || {}).forEach(function (k) { pr[k] = cur.prices[k]; }); if (det && String(det.price).trim()) { pr[active.id + '|' + id] = det.price; }
-  var patch = { svcs: o, mats: mm, prices: pr, seq: seq }; if (cur.tab === 'calc') { patch.svcId = id; }
+  var dd = {}; Object.keys(cur.svcDetails || {}).forEach(function (x) { dd[x] = cur.svcDetails[x]; }); dd[active.id + '|' + id] = det;
+  var patch = { svcs: o, mats: mm, prices: pr, seq: seq, svcDetails: dd }; if (cur.tab === 'calc') { patch.svcId = id; }
   self.setState(patch);
 };
 var curCode = ({ '₽': 'RUB', '₴': 'UAH', '₸': 'KZT', '₺': 'TRY', '$': 'USD', '€': 'EUR', 'zł': 'PLN' })[(st.set && st.set.cur) || ''] || 'TRY';
@@ -2985,7 +2997,7 @@ var root = {
       view: 'loading',
       welcomeSlide: 0,
       discountMode:'percent', discountDraft:'0', discountReplace:true,
-      mediaError:'', serviceEdit:null, cabCardCb:null, card:null, cardError:'', photoBusy:false, hours:0, mins:0,
+      mediaError:'', serviceEdit:null, cabCardCb:null, cabCardName:'', card:null, cardError:'', photoBusy:false, hours:0, mins:0,
       currencyQuery:'',
       serviceCategory: '',
       serviceDraft: '',
@@ -3622,6 +3634,12 @@ root.methods.showTime = function() {
   this.$nextTick(() => this.$refs.timeSheet.querySelectorAll('input:checked').forEach(input => input.parentElement.scrollIntoView({block:'nearest'})));
 };
 
+window.BP_EDIT_CARD = function (name, category, details, cb) {
+  var vm = window.BPC_APP; if (!vm) { return; }
+  vm.cabCardCb = cb; vm.cabCardName = name;
+  vm.editCard({ name: name, category: category, selected: true, details: details });
+  vm.hours = Math.floor((Number(details.minutes) || 0) / 60); vm.mins = (Number(details.minutes) || 0) % 60;
+};
 root.methods.closeCabinetCard = function () { this.serviceEdit = null; this.cabCardCb = null; this.card = null; };
 window.BP_OPEN_CARD = function (name, category, cur, cb) {
   var vm = window.BPC_APP; if (!vm) { return; }
@@ -3684,7 +3702,7 @@ root.methods.finishCard = function(selected) {
     if (this.card.discountMode === 'amount' && this.card.discount > Number(String(this.card.price).replace(',', '.'))) { this.cardError = 'Скидка превышает цену услуги'; return; }
     var det = Object.assign({}, this.card, {photo:this.card.photos[0] || '', price:String(this.card.price).replace(',', '.')});
     var cb = this.cabCardCb; this.cabCardCb = null; this.serviceEdit = null; this.card = null;
-    try { cb(det); } catch (e) {}
+    try { cb(det, this.cabCardName); } catch (e) {}
     return;
   }
   if (selected && this.card.discountMode === 'amount' && this.card.discount > Number(String(this.card.price).replace(',', '.'))) {
