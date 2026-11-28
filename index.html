@@ -487,6 +487,10 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-mat-params select{height:40px;border-radius:10px;border:1.5px solid #E2BFD0;background:#FBF1F6;padding:0 8px;font-size:14px;color:#30232c}
 @media (max-width:600px){.bp-mat-params{padding-left:0;grid-template-columns:1fr 1fr}.bp-mat-params select{font-size:13px;padding:0 4px}}
 .bp-mat-param-sum{grid-column:1/-1;margin:2px 0 0;font-size:13px;font-weight:800;color:#8E2F56}
+
+.bp-pal-btns{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.bp-pal-add{min-height:40px;border:0;border-radius:10px;padding:0 16px;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+.bp-pal-del{min-height:40px;border:1.5px solid #f1c6cf;border-radius:10px;padding:0 14px;background:#fff;color:#b0234f;font-weight:700;font-size:13px;cursor:pointer}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1455,7 +1459,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="button" aria-pressed="false" title="Нажмите, если пользуетесь" @click="it.toggle" style="font-family: Lato, Arial, sans-serif; flex: 1 1 220px; min-height: 44px; display: flex; align-items: center; gap: 10px; border: none; background: transparent; padding: 0; cursor: pointer; text-align: left; font-size: 14px; color: #30272D; font-weight: 600"><span style="width: 26px; height: 26px; flex-shrink: 0; box-sizing: border-box; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C9AAB7; background: #FFFFFF"></span><span>{{ it.name }}</span></button>
 </template>
 <template v-if="it.used">
-<div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p></div>
+<div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p><div v-if="it.isPalette" class="bp-pal-btns"><button v-if="it.isLastPalette" type="button" class="bp-pal-add" @click="it.addPalette">+ Ещё палетка</button><button v-if="it.isExtraPalette" type="button" class="bp-pal-del" @click="it.removePalette">Удалить эту палетку</button></div></div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px 0 8px 36px">
 <input type="number" aria-label="В упаковке" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack" style="width: 96px; border: 1px solid #D8CDD3; background: #FFFDF8; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
 <select aria-label="Единица" :value="it.unit" @change="it.onUnit" style="width: 100px; height: 36px; border-radius: 8px; border: 1px solid #D8CDD3; background: #FFFDF8; padding: 0 4px; font-size: 13px"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select>
@@ -2665,7 +2669,7 @@ myList.forEach(function (n) {
   var nm = typeof n === 'string' ? n : n.name; var ct = (typeof n === 'string' ? '' : n.cat) || 'Мои материалы'; var un = (typeof n === 'string' ? '' : n.unit) || 'шт';
   var g = libSrc.filter(function (x) { return x[0] === ct; })[0];
   if (!g) { g = [ct, []]; libSrc.unshift(g); }
-  g[1].unshift([nm, un, 1, 1]);
+  if (/^палетка ресниц/i.test(nm)) { var pi = -1; g[1].forEach(function (x, i) { if (/^палетка ресниц/i.test(x[0])) { pi = i; } }); g[1].splice(pi + 1, 0, [nm, un, 4, 20]); } else { g[1].unshift([nm, un, 1, 1]); }
 });
 var lq = (st.libQ || '').toLowerCase();
 var libTotal = 0, libFilled = 0;
@@ -2676,13 +2680,27 @@ var libGroups = libSrc.map(function (g) {
     libTotal += 1; if (used) { libFilled += 1; }
     return { name: it[0], unit: unit, pack: e.pack || '', price: e.price || '', hint: unit === 'упаковка' ? 'шт в 1 уп.' : 'напр. ' + it[3], filled: filled, used: used, unused: !used, usedEmpty: used && !filled,
       toggle: function () { setLib(it[0], 'on', !used, unit); },
+      isPalette: /^палетка ресниц/.test(k), isLastPalette: /^палетка ресниц/.test(k) && !g[1].some(function (x, i) { return i > g[1].indexOf(it) && /^палетка ресниц/i.test(x[0]); }),
+      isExtraPalette: /^палетка ресниц \d+$/.test(k),
+      addPalette: function () {
+        var n = 2; while (g[1].some(function (x) { return x[0].toLowerCase() === 'палетка ресниц ' + n; })) { n++; }
+        var nm = 'Палетка ресниц ' + n;
+        var o = {}; Object.keys(st.libCustom || {}).forEach(function (x) { o[x] = st.libCustom[x]; }); o[active.id] = myList.concat([{ name: nm, cat: g[0], unit: 'линия' }]);
+        var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); var base = lb[k] || {}; lb[nm.toLowerCase()] = { pack: base.pack || '', price: base.price || '', unit: 'линия', on: true, curl: base.curl || '', thick: base.thick || '', len: '', color: base.color || '', type: base.type || '', lines: base.lines || '' };
+        up({ libCustom: o, lib: lb });
+      },
+      removePalette: function () {
+        var o = {}; Object.keys(st.libCustom || {}).forEach(function (x) { o[x] = st.libCustom[x]; }); o[active.id] = myList.filter(function (x) { return (typeof x === 'string' ? x : x.name).toLowerCase() !== k; });
+        var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { if (x !== k) { lb[x] = st.lib[x]; } });
+        up({ libCustom: o, lib: lb });
+      },
       show: !lq || k.indexOf(lq) >= 0,
       onPack: function (ev) { setLib(it[0], 'pack', ev.target.value, unit); },
       onPrice: function (ev) { setLib(it[0], 'price', ev.target.value, unit); },
       onUnit: function (ev) { setLib(it[0], 'unit', ev.target.value, unit); },
       stock: e.stock == null ? '' : e.stock, onStock: function (ev) { setLib(it[0], 'stock', ev.target.value, unit); },
-      params: (BP_MAT_PARAMS[k] || []).map(function (p) { return { id: p[0], label: p[1], opts: p[2], val: e[p[0]] || '', set: function (ev) { setLib(it[0], p[0], ev.target.value, unit); } }; }),
-      paramText: (BP_MAT_PARAMS[k] || []).map(function (p) { return e[p[0]]; }).filter(Boolean).join(' · '),
+      params: (BP_MAT_PARAMS[/^палетка ресниц/.test(k) ? 'палетка ресниц' : k] || []).map(function (p) { return { id: p[0], label: p[1], opts: p[2], val: e[p[0]] || '', set: function (ev) { setLib(it[0], p[0], ev.target.value, unit); } }; }),
+      paramText: (BP_MAT_PARAMS[/^палетка ресниц/.test(k) ? 'палетка ресниц' : k] || []).map(function (p) { return e[p[0]]; }).filter(Boolean).join(' · '),
       stockText: (stockInfo(k, e) || {}).text || '', stockLow: !!(stockInfo(k, e) || {}).low, stockOk: !!stockInfo(k, e) && !stockInfo(k, e).low };
   });
   var gf = items.filter(function (x) { return x.used; }).length;
