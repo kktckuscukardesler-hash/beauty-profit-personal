@@ -1330,7 +1330,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </template>
 </nav><div class="bp-side-footer"><a class="bp-home-link" href="#" @click.prevent="v.goDash" style="color:inherit"><b>Beauty Profit</b></a>Ваш бизнес. Ваши правила.</div></aside>
-<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details v-if="!(v.tabSvcs || v.tabMaterials || v.tabCalc || v.tabAppts || v.tabIncome)" class="bp-sphere-picker" ref="spherePicker"
+<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details v-if="!(v.tabSvcs || v.tabMaterials || v.tabCalc || v.tabAppts || v.tabIncome || v.tabProfile)" class="bp-sphere-picker" ref="spherePicker"
   @keydown.esc.prevent="$refs.spherePicker.open=false; $refs.sphereTrigger.focus()"
   @focusout="$event.currentTarget.open = $event.currentTarget.open ? $event.currentTarget.contains($event.relatedTarget) : false">
   <summary ref="sphereTrigger">Моя деятельность</summary>
@@ -2313,6 +2313,7 @@ niche(id) { var BPC_N = this.lib().BPC_N; return BPC_N.filter(function (x) { ret
 servicesOf(id) {
 var n = this.niche(id);
 var sv = this.state.svcs && this.state.svcs[id];
+if (!sv && this.props && this.props.fresh) { return []; }
 return sv ? sv : n.services.map(function (s, i) { return { id: String(i), name: s[0], time: s[1], idx: i }; });
 }
 svcOf(key) { var p = key.split('|'); var n = this.niche(p[0]); var f = this.servicesOf(n.id).filter(function (x) { return x.id === p[1]; })[0]; if (!f && !(this.state.svcs && this.state.svcs[n.id]) && /^[0-9]+$/.test(p[1]) && n.services[+p[1]]) { f = { id: p[1], name: n.services[+p[1]][0], time: n.services[+p[1]][1], idx: +p[1] }; } if (!f && this.state.archivedServices) f = this.state.archivedServices[key]; return f ? { niche: n, idx: f.idx, name: f.name, time: f.time } : { niche: n, idx: null, name: 'Удалённая услуга', time: 0 }; }
