@@ -1447,10 +1447,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <h2 style="margin: 0; font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 24px">Мои услуги</h2>
 <p style="margin: 0; font-size: 14px; color: #776A71">Нажмите на услугу, чтобы открыть её в калькуляторе</p>
 </div>
-<button type="button" @click="v.pick.show" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">+ Добавить услугу</button>
 </div>
 <bp-sphere-buttons :spheres="v.spheres"></bp-sphere-buttons>
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px">
+<div v-if="v.svcCards.length" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px">
 <template v-for="(sc, $index) in v.svcCards">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span style="font-size: 17px; font-weight: 700">{{ sc.name }}</span><span style="flex-shrink: 0; font-size: 13px; font-weight: 700; color: #776A71; background: #F7F1F4; padding: 4px 10px; border-radius: 999px">{{ sc.time }}</span></span>
@@ -1463,6 +1462,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </button>
 </template>
 </div>
+<button type="button" @click="v.pick.show" style="align-self:flex-start; font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">+ Добавить услугу</button>
 </div>
 </template>
 
