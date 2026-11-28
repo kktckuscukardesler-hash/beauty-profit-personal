@@ -1274,6 +1274,12 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 </script>
 
+<script type="text/x-template" id="tpl-sphere-buttons">
+<div class="bp-service-scope">
+<div class="bp-service-filters" role="group" aria-label="Сферы услуг" :class="{'bp-few-spheres':spheres.length<=3,'bp-single-row':spheres.length<=8}" :style="{'--sphere-count':spheres.length,'--sphere-half':Math.ceil(spheres.length/2)}">
+<button v-for="sp in spheres" :key="sp.id" type="button" :aria-pressed="sp.on" @click="sp.pick">{{ sp.label }}</button>
+</div></div>
+</script>
 <script type="text/x-template" id="tpl-app">
 <div class="bpc-cabinet" style="font-family: Lato, Arial, sans-serif; color: #30272D; background: #FAF9F8; min-height: 100vh">
 
@@ -1287,7 +1293,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </template>
 </nav><div class="bp-side-footer"><a class="bp-home-link" href="#" @click.prevent="v.goDash" style="color:inherit"><b>Beauty Profit</b></a>Ваш бизнес. Ваши правила.</div></aside>
-<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details class="bp-sphere-picker" ref="spherePicker"
+<header><div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px"><a class="bp-header-brand bp-home-link" href="#" @click.prevent="v.goDash" aria-label="Beauty Profit — к обзору"><span><em>Beauty</em> Profit</span><small>BUSINESS SUITE</small></a><details v-if="!(v.tabSvcs || v.tabMaterials || v.tabCalc)" class="bp-sphere-picker" ref="spherePicker"
   @keydown.esc.prevent="$refs.spherePicker.open=false; $refs.sphereTrigger.focus()"
   @focusout="$event.currentTarget.open = $event.currentTarget.open ? $event.currentTarget.contains($event.relatedTarget) : false">
   <summary ref="sphereTrigger">Мои сферы</summary>
@@ -1315,6 +1321,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button v-if="!v.tabMaterials" type="button" @click="v.libApi.open" style="font-family: Lato, Arial, sans-serif; font-size: 13px; font-weight: 700; min-height: 36px; padding: 4px 14px; border-radius: 999px; border: 1px solid #FAF9F8; background: #FAF9F8; color: #30272D; cursor: pointer">Готово ✕</button>
 </div>
 </div>
+<bp-sphere-buttons v-if="v.tabMaterials" :spheres="v.spheres"></bp-sphere-buttons>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
 <input type="search" aria-label="Поиск материала" placeholder="Поиск: база, фреза, перчатки…" :value="v.libQ" @input="v.libApi.search" style="flex: 1 1 260px; min-height: 44px; border-radius: 999px; border: 1px solid #D8CDD3; padding: 0 16px; font-size: 15px; background: #FFFFFF">
 
@@ -1421,10 +1428,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 <button type="button" @click="v.pick.show" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">+ Добавить услугу</button>
 </div>
-<div class="bp-service-scope">
-<div class="bp-service-filters" role="group" aria-label="Сферы услуг" :class="{'bp-few-spheres':v.spheres.length<=3,'bp-single-row':v.spheres.length<=8}" :style="{'--sphere-count':v.spheres.length,'--sphere-half':Math.ceil(v.spheres.length/2)}">
-<button v-for="sp in v.spheres" :key="sp.id" type="button" :aria-pressed="sp.on" @click="sp.pick">{{ sp.label }}</button>
-</div></div>
+<bp-sphere-buttons :spheres="v.spheres"></bp-sphere-buttons>
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px">
 <template v-for="(sc, $index) in v.svcCards">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
@@ -1442,6 +1446,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 
 <template v-if="v.tabCalc">
+<bp-sphere-buttons style="margin-bottom:16px" :spheres="v.spheres"></bp-sphere-buttons>
 <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
 
 <div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 14px">
@@ -2757,6 +2762,7 @@ function dc(Logic, tpl, props) {
   return {
     props: props,
     template: tpl,
+    components: { "bp-sphere-buttons": { props: ["spheres"], template: "#tpl-sphere-buttons" } },
     setup: function (p) {
       var c = new Logic(p);
       c.props = p;
