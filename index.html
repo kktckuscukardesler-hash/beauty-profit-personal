@@ -501,6 +501,13 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-wear-row input{height:40px;border-radius:10px;border:1px solid #D8CDD3;background:#FFFDF8;padding:0 10px;font-size:14px;color:#30272D}
 .bp-wear-sum{grid-column:1/-1;margin:0;font-size:13px;font-weight:800;color:#1C6B30}
 @media (max-width:600px){.bp-wear-tog,.bp-wear-row{padding-left:0}}
+
+.bp-pack-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:2px 0 10px 36px;align-items:end}
+.bp-pack-row label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:#554A50;min-width:0}
+.bp-pack-row input,.bp-pack-row select{height:40px;border-radius:10px;border:1px solid #D8CDD3;background:#FFFDF8;padding:0 8px;font-size:14px;color:#30272D;min-width:0;width:100%;box-sizing:border-box}
+.bp-pack-pair{display:grid;grid-template-columns:1fr 76px;gap:6px}
+.bp-pack-row .bp-wear-sum{grid-column:1/-1}
+@media (max-width:600px){.bp-pack-row{grid-template-columns:1fr 1fr;padding-left:0}.bp-pack-row label:first-child{grid-column:1/-1}}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1472,13 +1479,11 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p></div>
 <label class="bp-wear-tog"><input type="checkbox" :checked="it.wear" @change="it.setWear"><span>На износ — служит много клиентов (пинцет, камень, кисть)</span></label>
 <div v-if="it.wear" class="bp-wear-row"><label><span>Цена за 1 шт, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 400" :value="it.price" @input="it.onPrice"></label><label><span>Хватает примерно на … клиентов</span><input type="number" inputmode="numeric" placeholder="напр. 300" :value="it.life" @input="it.onLife"></label><p v-if="it.wearCost" class="bp-wear-sum">На 1 клиента: {{ it.wearCost }}</p></div>
-<div v-if="!it.wear" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px 0 8px 36px">
-<input type="number" aria-label="В упаковке" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack" style="width: 96px; border: 1px solid #D8CDD3; background: #FFFDF8; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
-<select aria-label="Единица" :value="it.unit" @change="it.onUnit" style="width: 100px; height: 36px; border-radius: 8px; border: 1px solid #D8CDD3; background: #FFFDF8; padding: 0 4px; font-size: 13px"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select>
-<input type="number" aria-label="Цена упаковки" inputmode="decimal" :placeholder="`Цена, ${v.set.cur}`" :value="it.price" @input="it.onPrice" style="width: 110px; border: 1px solid #D8CDD3; background: #FFFDF8; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
-<label style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #554A50"><span>Остаток</span>
-<input type="number" inputmode="decimal" placeholder="уп." :value="it.stock" @input="it.onStock" style="width: 70px; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; border: 1px solid #D8CDD3; background: #FFFFFF; color: #30272D"><span>уп.</span>
-</label>
+<div v-if="!it.wear" class="bp-pack-row">
+<label><span>Сколько в 1 упаковке</span><span class="bp-pack-pair"><input type="number" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack"><select aria-label="Единица" :value="it.unit === 'упаковка' ? 'шт' : it.unit" @change="it.onUnit"><template v-for="(u, $index) in v.units"><option v-if="u.v !== 'упаковка'" :value="u.v">{{ u.v }}</option></template></select></span></label>
+<label><span>Цена 1 упаковки, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 50" :value="it.price" @input="it.onPrice"></label>
+<label><span>Остаток, упаковок</span><input type="number" inputmode="decimal" placeholder="уп." :value="it.stock" @input="it.onStock"></label>
+<p v-if="it.unitCost" class="bp-wear-sum">1 {{ it.unit === 'упаковка' ? 'шт' : it.unit }} = {{ it.unitCost }}</p>
 <template v-if="it.stockLow"><span style="font-size: 12px; font-weight: 700; color: #9B2C20; background: #FDF1EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
 <template v-if="it.stockOk"><span style="font-size: 12px; font-weight: 700; color: #1C6B30; background: #EFF7EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
 </div>
@@ -2696,10 +2701,11 @@ var libGroups = libSrc.map(function (g) {
     var k = it[0].toLowerCase(); var e = (st.lib || {})[k] || {};
     var unit = e.unit || it[1]; var used = !!e.on; var filled = used && bpcNum(e.pack) > 0 && bpcNum(e.price) > 0;
     libTotal += 1; if (used) { libFilled += 1; }
-    return { name: it[0], unit: unit, pack: e.pack || '', price: e.price || '', hint: unit === 'упаковка' ? 'шт в 1 уп.' : 'напр. ' + it[3], filled: filled, used: used, unused: !used, usedEmpty: used && !filled,
+    return { name: it[0], unit: unit, pack: e.pack || '', price: e.price || '', hint: 'напр. ' + it[3], filled: filled, used: used, unused: !used, usedEmpty: used && !filled,
       toggle: function () { setLib(it[0], 'on', !used, unit); },
       wear: e.wear != null ? !!e.wear : /износ/.test(k), life: e.life || '', setWear: function (ev) { setLib(it[0], 'wear', ev.target.checked, unit); }, onLife: function (ev) { setLib(it[0], 'life', ev.target.value, unit); },
       wearCost: (function () { var w = e.wear != null ? !!e.wear : /износ/.test(k); var pr = bpcNum(e.price), lf = bpcNum(e.life); var pc = pr / lf; return w && pr > 0 && lf > 0 ? (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur : ''; })(),
+      unitCost: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / pk; return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       isPalette: true, isLastPalette: !g[1].some(function (x, i) { return i > g[1].indexOf(it) && bpBase(x[0]) === bpBase(k); }),
       isExtraPalette: /\s\d+$/.test(k) && myList.some(function (x) { return (typeof x === 'string' ? x : x.name).toLowerCase() === k; }),
       addPalette: function () {
