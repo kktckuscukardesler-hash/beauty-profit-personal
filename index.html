@@ -1768,26 +1768,6 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="button" @click="v.pick.show" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 2px dashed #8E2F56; background: #FFFFFF; color: #8E2F56; cursor: pointer">+ Добавить услугу</button>
 </div>
 <template v-if="v.noSvc"><div style="color: #776A71; font-size: 14px">Услуг нет — нажмите «+ Добавить услугу»</div></template>
-<template v-if="v.hasSvc">
-<div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px">
-<label style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700"><span>Название услуги</span>
-<input type="text" :value="v.svcName" @input="v.svc.rename" placeholder="Например: Френч" style="min-height: 44px; border-radius: 10px; border: 1px solid #D8CDD3; padding: 0 12px; font-size: 15px; background: #FFFDF8">
-</label>
-<template v-if="v.notDelAsk">
-<button type="button" @click="v.svc.ask" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 44px; padding: 8px 16px; border-radius: 999px; border: 1px solid #9B2C20; background: #FFFFFF; color: #9B2C20; cursor: pointer">Удалить услугу</button>
-</template>
-<template v-if="v.delAsk">
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #FDF1EF; border-radius: 12px; padding: 6px 6px 6px 12px">
-<span style="font-size: 14px; font-weight: 700; color: #9B2C20">Удалить «{{ v.svcName }}»?</span>
-<button type="button" @click="v.svc.remove" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 40px; padding: 6px 14px; border-radius: 999px; border: none; background: #9B2C20; color: #FFFFFF; cursor: pointer">Да, удалить</button>
-<button type="button" @click="v.svc.cancel" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 40px; padding: 6px 14px; border-radius: 999px; border: 1px solid #D8CDD3; background: #FFFFFF; color: #30272D; cursor: pointer">Отмена</button>
-</div>
-</template>
-</div>
-</template>
-<label style="display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 700">Время на услугу, часов
-<input type="number" inputmode="decimal" step="0.5" :value="v.svcTime" @input="v.on.time" style="width: 90px; min-height: 44px; border-radius: 10px; border: 1px solid #D8CDD3; padding: 0 12px; font-size: 15px; background: #FFFDF8">
-</label>
 </div>
 
 </section>
