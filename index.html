@@ -125,13 +125,15 @@ html,body,#app{width:100%;min-width:0}
 @media(max-width:340px){.bp-kpis{grid-template-columns:1fr}.bp-top-actions>span{display:none}}
 
  .bp-home-link{cursor:pointer;text-decoration:none}.bp-home-link:focus-visible{outline:2px solid #8E2F56;outline-offset:4px;border-radius:6px}
-.bp-cur-first{display:flex;flex-direction:column;gap:6px;background:#fff7f9;border:1px solid #f1d3dc;border-radius:14px;padding:12px 14px;margin:0 0 16px;text-align:left}
-.bp-cur-first label{font-weight:700;font-size:15px;color:#6B1F40}
-.bp-cur-first select{color:#30272D;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid #e2c6cf;background:#fff;width:100%}
-.bp-cur-first small{color:#8a7a80;font-size:12.5px}
+.bp-cur-first{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 8px 16px;margin:0 0 14px;border-radius:999px;border:1.5px solid #ffffff22;background:#ffffff12}
+.bp-cur-first label{font-family:Nunito,Arial,sans-serif;font-weight:700;font-size:15px;color:#fff8fb;white-space:nowrap}
+.bp-cur-sel{position:relative;flex:0 1 auto;min-width:0}
+.bp-cur-sel::after{content:"";position:absolute;right:14px;top:50%;width:7px;height:7px;border-right:2px solid #f4c2d8;border-bottom:2px solid #f4c2d8;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+.bp-signup-form .bp-cur-sel select{appearance:none;-webkit-appearance:none;max-width:100%;min-height:0;width:auto;font-family:Nunito,Arial,sans-serif;font-size:15px;font-weight:700;color:#fff8fb!important;background:#7a3556!important;border:1.5px solid #e9abc6!important;border-radius:999px;padding:9px 36px 9px 14px;text-overflow:ellipsis;cursor:pointer}
+.bp-cur-sel select option{color:#30272D;background:#fff}
 .bp-clear-row{display:flex;justify-content:center;padding:6px 0 10px}
-.bp-clear-btn{font-family:Lato,Arial,sans-serif;font-size:15px;font-weight:700;min-height:44px;padding:8px 22px;border-radius:999px;border:1px solid #D9A3B6;background:#fff;color:#8E2F56;cursor:pointer}
-.bp-clear-ask{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #EAE3E7;border-radius:16px;padding:12px 16px;font-size:14px}
+.bp-clear-btn{width:100%;max-width:420px;font-family:Lato,Arial,sans-serif;font-size:15px;font-weight:700;min-height:44px;padding:8px 22px;border-radius:999px;border:1px solid #D9A3B6;background:#fff;color:#8E2F56;cursor:pointer}
+.bp-clear-ask{width:100%;max-width:420px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid #EAE3E7;border-radius:16px;padding:12px 16px;font-size:14px}
 .bp-clear-yes{min-height:40px;padding:6px 16px;border-radius:999px;border:none;background:#8E2F56;color:#fff;font-weight:700;cursor:pointer}
 .bp-clear-no{min-height:40px;padding:6px 16px;border-radius:999px;border:1px solid #D8CDD3;background:#fff;color:#30272D;font-weight:700;cursor:pointer}
 </style>
@@ -869,11 +871,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button v-if="serviceEdit.selected" type="button" class="bp-signup-category" @click="finishCard(false)">Убрать из выбранных</button></form>
           <div v-else-if="signupStep===1" class="bp-signup-form bp-plan-step">
             <div class="bp-cur-first">
-              <label for="bpCurFirst">Ваша валюта</label>
-              <select id="bpCurFirst" v-model="signupCurrency">
-                <option v-for="c in signupCurrencyList" :key="c[0]" :value="c[0]">{{ c[1] }} ({{ c[0] }}) · {{ bpCurSym(c[0]) }}</option>
-              </select>
-              <small>Все цены и расчёты будут в этой валюте. Поменять можно потом в настройках.</small>
+              <label for="bpCurFirst">Валюта</label>
+              <div class="bp-cur-sel"><select id="bpCurFirst" v-model="signupCurrency">
+                <option v-for="c in signupCurrencyList" :key="c[0]" :value="c[0]">{{ bpCurSym(c[0]) }} — {{ c[1] }}</option>
+              </select></div>
             </div>
             <h1>Выберите тариф</h1>
             <p>Калькулятор бесплатный всегда. Тариф можно сменить в любой момент.</p>
