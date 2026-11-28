@@ -632,6 +632,14 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 .bp-network-item{position:relative;display:inline-flex}.bp-network-item>a{display:inline-flex;border-radius:13px}.bp-network-list{gap:16px;padding-bottom:4px}.bp-network-list .bp-network-pencil{position:absolute;right:-8px;bottom:-6px;display:grid;place-items:center;width:25px;height:25px;border:1px solid #dec6d3;background:#fff;color:#742749;box-shadow:0 1px 4px #52213a22}
 .bpc-cabinet .bp-prof{box-sizing:border-box;width:92%;max-width:580px;min-width:0;margin-inline:auto}
 .bp-prof-edit .bp-pf-l input{box-sizing:border-box;min-width:0;max-width:100%}
+
+.bp-service-scope{container-type:inline-size;min-width:0}
+.bp-service-filters{display:grid;gap:5px;grid-template-columns:repeat(var(--sphere-half),minmax(0,1fr))}
+.bp-service-filters.bp-few-spheres{grid-template-columns:repeat(var(--sphere-count),minmax(0,1fr))}
+.bp-service-filters button{box-sizing:border-box;min-width:0;min-height:42px;padding:6px 4px;border:1px solid #dec4d1;border-radius:12px;background:#fff9fb;color:#702847;font:600 13px/1.2 Lato,Arial,sans-serif;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
+.bp-service-filters button[aria-pressed=true]{background:#812d52;border-color:#812d52;color:#fff}
+.bp-service-filters button:focus-visible{outline:2px solid #812d52;outline-offset:2px}
+@container(min-width:760px){.bp-service-filters.bp-single-row{grid-template-columns:repeat(var(--sphere-count),minmax(0,1fr))}}
 </style></head>
 <body>
 <div id="app" v-cloak></div>
@@ -1409,10 +1417,14 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 4px">
 <h2 style="margin: 0; font-family: Lato, Arial, sans-serif; font-weight: 700; font-size: 24px">Мои услуги</h2>
-<p style="margin: 0; font-size: 14px; color: #776A71">{{ v.sphereLabel }} — нажмите на услугу, чтобы открыть её в калькуляторе</p>
+<p style="margin: 0; font-size: 14px; color: #776A71">Нажмите на услугу, чтобы открыть её в калькуляторе</p>
 </div>
 <button type="button" @click="v.pick.show" style="font-family: Lato, Arial, sans-serif; font-size: 15px; font-weight: 700; min-height: 48px; padding: 10px 22px; border-radius: 999px; border: none; background: #8E2F56; color: #FFFFFF; cursor: pointer; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">+ Добавить услугу</button>
 </div>
+<div class="bp-service-scope">
+<div class="bp-service-filters" role="group" aria-label="Сферы услуг" :class="{'bp-few-spheres':v.spheres.length<=3,'bp-single-row':v.spheres.length<=8}" :style="{'--sphere-count':v.spheres.length,'--sphere-half':Math.ceil(v.spheres.length/2)}">
+<button v-for="sp in v.spheres" :key="sp.id" type="button" :aria-pressed="sp.on" @click="sp.pick">{{ sp.label }}</button>
+</div></div>
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 14px">
 <template v-for="(sc, $index) in v.svcCards">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
