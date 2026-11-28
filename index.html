@@ -553,6 +553,16 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-more-btn{min-height:42px;border:1.5px dashed #C25B86;background:#fff;color:#8E2F56;border-radius:12px;padding:0 16px;font-weight:800;font-size:14px;cursor:pointer}
 .bp-less-btn{min-height:42px;border:0;background:#F3E6EC;color:#6B1F40;border-radius:12px;padding:0 14px;font-weight:700;font-size:13px;cursor:pointer}
 .bp-mine-badge{background:#EED8E3;color:#30272D;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;border:0;cursor:pointer}
+
+.bp-sh-tog{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#6B1F40;cursor:pointer}
+.bp-sh-tog input{width:20px;height:20px;accent-color:#8E2F56}
+.bp-sh{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:12px;background:#fff;border:1px dashed #E2BFD0}
+.bp-sh-next{margin:0;font-size:13px;font-weight:800;color:#1C6B30}.bp-sh-next.due{color:#9B2C20}
+.bp-sh-done{align-self:flex-start;min-height:38px;border:1.5px solid #1C6B30;background:#fff;color:#1C6B30;border-radius:999px;padding:0 14px;font-weight:800;font-size:13px;cursor:pointer}
+.bp-sh-rem{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid #F3C9C2;border-radius:16px;padding:12px 16px}
+.bp-sh-rem b{display:block;font-size:15px}.bp-sh-rem small{display:block;font-size:13px;color:#9B2C20}
+.bp-sh-rem button,.bp-sh-banner button{white-space:nowrap;flex:none;min-height:40px;border:1px solid #1C6B30;background:#fff;color:#1C6B30;border-radius:999px;padding:0 14px;font-weight:700;cursor:pointer}
+.bp-sh-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:#FFF6E5;border:1px solid #F1D9A8;border-radius:14px;padding:10px 14px;margin-bottom:12px;font-weight:700;color:#7A5200}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1533,6 +1543,14 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <template v-else>
 <div class="bp-lc-line"><span>Купила за</span><input type="number" inputmode="decimal" placeholder="400" :value="it.price" @input="it.onPrice" aria-label="Цена"><span>{{ v.set.cur }}</span><span>, служит ≈</span><input type="number" inputmode="numeric" placeholder="300" :value="it.life" @input="it.onLife" aria-label="Клиентов"><span>клиентов</span></div>
 <p v-if="it.wearCost" class="bp-lc-res">≈ <b>{{ it.wearCost }}</b> на клиента</p>
+<label class="bp-sh-tog"><input type="checkbox" :checked="it.sharp" @change="it.setSharp"><span>Нужна заточка</span></label>
+<div v-if="it.sharp" class="bp-sh">
+<div class="bp-lc-line"><span>Заточка стоит</span><input type="number" inputmode="decimal" placeholder="цена" :value="it.sharpPrice" @input="it.onSharpPrice" aria-label="Цена заточки"><span>{{ v.set.cur }}</span></div>
+<div class="bp-lc-line"><span>Точу каждые</span><input type="number" inputmode="decimal" placeholder="2" :value="it.sharpEvery" @input="it.onSharpEvery" aria-label="Как часто"><select :value="it.sharpUnit" @change="it.onSharpUnit" aria-label="Недели или месяцы" style="width:96px"><option value="нед">недели</option><option value="мес">месяца</option></select></div>
+<div class="bp-lc-line"><span>Последняя заточка</span><input type="date" :value="it.sharpLast" @input="it.onSharpLast" style="width:150px" aria-label="Дата последней заточки"></div>
+<p v-if="it.sharpNextTxt" class="bp-sh-next" :class="{due: it.sharpDue}">{{ it.sharpNextTxt }}</p>
+<button type="button" class="bp-sh-done" @click="it.sharpDone">Заточила сегодня</button>
+</div>
 </template>
 <div v-if="it.wear" class="bp-lc-stock"><span>В запасе</span><input type="number" inputmode="decimal" placeholder="0" :value="it.stock" @input="it.onStock" aria-label="В запасе"><span>шт</span><template v-if="it.stockLow"><em class="low">{{ it.stockText }}</em></template><template v-if="it.stockOk"><em>{{ it.stockText }}</em></template></div>
 </div>
@@ -1551,6 +1569,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-for="g in v.pick.groups" :key="g.title" class="bp-pick-group"><div v-if="v.pick.groups.length > 1" class="bp-pick-title">{{ g.title }}</div><div class="bp-pick-list"><button v-for="it in g.items" :key="it.name" type="button" class="bp-pick-item" :class="{on: it.on, has: it.has}" :disabled="it.has" :aria-pressed="it.on" @click="v.pick.openCard(it.name)"><span>{{ it.name }}</span><i>{{ it.has ? 'уже есть' : '+' }}</i></button></div></div>
 <div v-if="!v.pick.groups.length" class="bp-empty">Для этого вида деятельности готового списка нет — добавьте услугу вручную.</div>
 <form class="bp-pick-ownform" @submit.prevent="v.pick.ownGo"><input :value="v.pick.ownDraft" @input="v.pick.setOwn" maxlength="80" placeholder="Своя услуга — название"><button type="submit" :disabled="!v.pick.ownDraft.trim()">Далее</button></form></div><div class="bp-pick-actions"><button type="button" class="bp-pick-cancel" @click="v.pick.close">Закрыть</button></div></div></div>
+<template v-if="v.hasSharp"><div class="bp-sh-banner"><span>✂ Пора заточить: {{ v.sharpList.map(x => x.name).join(', ') }}</span><button type="button" @click="v.toRemind">Открыть</button></div></template>
 <template v-if="v.hasLow">
 <div style="background: #FDF1EF; border: 1px solid #F3C9C2; border-radius: 14px; padding: 10px 14px; margin-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
 <span style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; color: #9B2C20"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B2C20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg><span>Заканчиваются материалы: {{ v.lowCount }}</span></span>
@@ -1958,6 +1977,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 </template>
 <template v-if="v.noLow"><div style="background: #FFFFFF; border: 1px dashed #D8CDD3; border-radius: 16px; padding: 20px; color: #776A71">Всего хватает</div></template>
+</section>
+<section v-if="v.hasSharp" aria-label="Заточка инструментов" style="flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-size: 20px; font-weight: 700">Заточка инструментов</h2>
+<template v-for="(sh, $index) in v.sharpList"><div class="bp-sh-rem"><div><b>{{ sh.name }}</b><small>{{ sh.text }}</small></div><button type="button" @click="sh.done">Заточила</button></div></template>
 </section>
 <section aria-label="Записи на завтра" style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
 <h2 style="margin: 0; font-size: 20px; font-weight: 700">Напомнить о записи завтра</h2>
@@ -2716,7 +2739,18 @@ Object.keys(st.lib || {}).forEach(function (k) {
   var nm = k.charAt(0).toUpperCase() + k.slice(1);
   lowList.push({ name: nm, text: si.text, refill: function () { setLib(nm, 'stock', String(Math.round((si.stk + 1) * 1000) / 1000), e.unit); } });
 });
-tabs.forEach(function (t) { if (t.label === 'Напоминания' && lowList.length) { t.label = 'Напоминания · ' + lowList.length; } });
+
+var bpToday = (function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+var bpSharpNext = function (e) { if (!e || !e.sharp || !e.sharpLast || !(parseFloat(e.sharpEvery) > 0)) { return ''; } var d = new Date(e.sharpLast + 'T12:00:00'); var n = parseFloat(e.sharpEvery); if ((e.sharpUnit || 'мес') === 'нед') { d.setDate(d.getDate() + Math.round(n * 7)); } else { d.setMonth(d.getMonth() + Math.round(n)); } return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+var bpFmtD = function (k) { if (!k) { return ''; } var p = k.split('-'); return p[2] + '.' + p[1] + '.' + p[0]; };
+var sharpList = [];
+Object.keys(st.lib || {}).forEach(function (k) {
+  var e = st.lib[k]; if (!e.on || !e.sharp) { return; } var nx = bpSharpNext(e); if (!nx) { return; }
+  var days = Math.round((new Date(nx + 'T12:00:00') - new Date(bpToday + 'T12:00:00')) / 86400000); if (days > 3) { return; }
+  var nm = k.charAt(0).toUpperCase() + k.slice(1);
+  sharpList.push({ name: nm, text: days < 0 ? 'Пора заточить — срок прошёл ' + bpFmtD(nx) : (days === 0 ? 'Пора заточить сегодня' : 'Заточка через ' + days + ' дн. (' + bpFmtD(nx) + ')'), done: function () { setLib(nm, 'sharpLast', bpToday, e.unit); } });
+});
+tabs.forEach(function (t) { if (t.label === 'Напоминания' && (lowList.length + sharpList.length)) { t.label = 'Напоминания · ' + (lowList.length + sharpList.length); } });
 var deduct = function (svcKey, sign, lb) {
   self.matsFor(svcKey).forEach(function (m) {
     var k = (m.name || '').trim().toLowerCase(); var e = lb[k];
@@ -2758,6 +2792,14 @@ var libGroups = libSrc.map(function (g) {
     libTotal += 1; if (used) { libFilled += 1; }
     return { name: it[0], unit: unit, pack: e.pack || '', price: e.price || '', hint: 'напр. ' + it[3], filled: filled, used: used, unused: !used, usedEmpty: used && !filled,
       toggle: function () { if (!used && showAllPre && !(st.libAll || {})[g[0]]) { var la = {}; Object.keys(st.libAll || {}).forEach(function (x) { la[x] = st.libAll[x]; }); la[g[0]] = true; var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); var c0 = lb[k] || {}; var nx = {}; Object.keys(c0).forEach(function (x) { nx[x] = c0[x]; }); nx.unit = c0.unit || unit; nx.on = true; lb[k] = nx; up({ lib: lb, libAll: la }); return; } setLib(it[0], 'on', !used, unit); },
+      sharp: !!e.sharp, setSharp: function (ev) { setLib(it[0], 'sharp', ev.target.checked, unit); if (ev.target.checked && !e.sharpLast) { setLib(it[0], 'sharpLast', bpToday, unit); } },
+      sharpPrice: e.sharpPrice || '', onSharpPrice: function (ev) { setLib(it[0], 'sharpPrice', ev.target.value, unit); },
+      sharpEvery: e.sharpEvery || '', onSharpEvery: function (ev) { setLib(it[0], 'sharpEvery', ev.target.value, unit); },
+      sharpUnit: e.sharpUnit || 'мес', onSharpUnit: function (ev) { setLib(it[0], 'sharpUnit', ev.target.value, unit); },
+      sharpLast: e.sharpLast || '', onSharpLast: function (ev) { setLib(it[0], 'sharpLast', ev.target.value, unit); },
+      sharpDone: function () { setLib(it[0], 'sharpLast', bpToday, unit); },
+      sharpNextTxt: (function () { var nx = bpSharpNext(e); if (!nx) { return ''; } var days = Math.round((new Date(nx + 'T12:00:00') - new Date(bpToday + 'T12:00:00')) / 86400000); return days <= 0 ? 'Пора заточить!' : 'Следующая заточка: ' + bpFmtD(nx) + ' (через ' + days + ' дн.)'; })(),
+      sharpDue: (function () { var nx = bpSharpNext(e); return !!nx && nx <= bpToday; })(),
       wear: e.wear != null ? !!e.wear : /износ/.test(k), life: e.life || '', setWear: function (ev) { setLib(it[0], 'wear', ev.target.checked, unit); }, onLife: function (ev) { setLib(it[0], 'life', ev.target.value, unit); },
       wearCost: (function () { var w = e.wear != null ? !!e.wear : /износ/.test(k); var pr = bpcNum(e.price), lf = bpcNum(e.life); var pc = pr / lf; return w && pr > 0 && lf > 0 ? (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur : ''; })(),
       cont: e.cont || 'Упаковка', setCont: function (ev) { setLib(it[0], 'cont', ev.target.value, unit); },
@@ -3121,7 +3163,7 @@ return {
   aform: { clientId: st.aform.clientId, svc: aformSvc, date: st.aform.date, time: st.aform.time, price: st.aform.price }, aformRec: aformRec > 0 ? String(aformRec) : '0', aformError: st.aformError,
   clientOptions: clients.map(function (c) { return { id: c.id, name: c.name }; }), svcOptions: svcOptions,
   periods: periods, inc: { total: money(total), profit: money(prof), count: inPeriod.length, avg: money(inPeriod.length ? total / inPeriod.length : 0), bars: bars, empty: bars.length === 0 },
-  lowList: lowList, hasLow: lowList.length > 0, noLow: lowList.length === 0, lowCount: lowList.length, toRemind: function () { up({ tab: 'remind', libShow: false }); },
+  sharpList: sharpList, hasSharp: sharpList.length > 0, lowList: lowList, hasLow: lowList.length > 0, noLow: lowList.length === 0, lowCount: lowList.length, toRemind: function () { up({ tab: 'remind', libShow: false }); },
   tomorrow: tomorrow, noTomorrow: tomorrow.length === 0, dueList: dueList, noDue: dueList.length === 0,
   on: {
     cur: setField('set', 'cur'), expenses: setField('set', 'expenses'), hours: setField('set', 'hours'), tax: setField('set', 'tax'), markup: setField('set', 'markup'),
