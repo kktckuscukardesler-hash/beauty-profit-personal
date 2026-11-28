@@ -1521,7 +1521,8 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <article class="bp-manage-service" v-for="sc in v.svcCards" :key="sc.id">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span style="font-size: 17px; font-weight: 700">{{ sc.name }}</span><span style="flex-shrink: 0; font-size: 13px; font-weight: 700; color: #776A71; background: #F7F1F4; padding: 4px 10px; border-radius: 999px">{{ sc.time }}</span></span>
-<span v-if="!sc.ready" class="bp-need-mats">Добавьте материалы, которыми пользуетесь, — тогда посчитаем себестоимость, минимальную и рекомендуемую цену.</span>
+<span v-if="!sc.ready" style="display: flex; gap: 8px; width: 100%"><span style="flex: 1; background: #F7F1F4; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #6B1F40">Ваше время стоит</span><span style="font-size: 16px; font-weight: 700; color: #6B1F40">{{ sc.tOver }}</span></span><span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем за время</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.tRec }}</span></span></span>
+<span v-if="!sc.ready" class="bp-need-mats">Это цена только за ваше время. Добавьте материалы — посчитаем полную себестоимость и цену.</span>
 <span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
 <span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
 <span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
@@ -1654,7 +1655,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-if="v.res.ready" style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Себестоимость</span><span style="font-size: 20px; font-weight: 700">{{ v.res.cost }}</span></div>
 <div v-if="v.res.ready" style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимальная цена</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.min }}</span></div>
 <div v-if="v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуемая цена</span><span style="font-family: Lato, Arial, sans-serif; font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.rec }}</span></div>
-<div v-if="!v.res.ready" class="bp-need-mats bp-need-mats-big">Себестоимость и цены появятся, когда вы добавите материалы на 1 клиента выше. Пока мы не знаем, во сколько вам обходится услуга, честно предложить цену нельзя.</div>
+<div v-if="!v.res.ready" style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимум за время</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.tMin }}</span></div>
+<div v-if="!v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуем за время</span><span style="font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.tRec }}</span></div>
+<div v-if="!v.res.ready" class="bp-need-mats bp-need-mats-big">Пока это цена только за ваше время. Добавьте материалы на 1 клиента выше — посчитаем полную себестоимость и цену.</div>
 </div>
 
 <div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 20px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
@@ -2400,7 +2403,9 @@ var cost = matCost + over;
 var ded = Math.min(bpcNum(st.tax) / 100, 0.9);
 var min = cost / (1 - ded);
 var rec = min > 0 ? Math.ceil(min * (1 + bpcNum(st.markup) / 100) / 10) * 10 : 0;
-return { mats: matCost, over: over, cost: cost, min: min, rec: rec, time: time, hour: hour, ded: ded };
+var tMin = over / (1 - ded);
+var tRec = tMin > 0 ? Math.ceil(tMin * (1 + bpcNum(st.markup) / 100) / 10) * 10 : 0;
+return { mats: matCost, over: over, cost: cost, min: min, rec: rec, time: time, hour: hour, ded: ded, tMin: tMin, tRec: tRec };
 }
 renderVals() {
 var L = this.lib(); var BPC_N = L.BPC_N, bpcNum = L.bpcNum, bpcKey = L.bpcKey, bpcAdd = L.bpcAdd, bpcParse = L.bpcParse, bpcLabel = L.bpcLabel;
@@ -2643,7 +2648,7 @@ var svcCards = svcList.map(function (sv) {
       return '';
     }, remove:function(){removeService(sv);},
     name: sv.name || 'Без названия', time: duration, mats: self.matsFor(k).length, cost: money(c.cost), min: money(c.min), rec: money(c.rec),
-    price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col, ready: ready,
+    price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col, ready: ready, tOver: money(c.over), tMin: money(c.tMin), tRec: money(c.tRec),
     open: function () { up({ tab: 'calc', svcId: sv.id, delAsk: false }); } };
 });
 var svcApi = {
@@ -2865,7 +2870,7 @@ return {
   catCustom: function () { var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = mats.concat([{ name: '', unit: 'шт', pack: '', hint: '1', price: '', use: '1' }]); up({ mats: mm, catOpen: false, catPicked: {}, catQ: '' }); },
   svcCards: svcCards, sphereLabel: active.label, addSvcGo: function () { svcApi.add(); }, pick: { openCard: openCardFor, ownDraft: st.ownDraft || '', setOwn: function (e) { up({ ownDraft: e.target.value }); }, ownGo: function () { var n = String(st.ownDraft || '').trim(); if (n) { openCardFor(n); } }, open: !!st.svcPick, groups: pickGroups, count: pickCount, show: pickApi.open, close: pickApi.close, add: pickApi.add, own: function () { up({ svcPick: false, svcPicked: {} }); svcApi.add(); } },
   svcPills: svcPills, svc: svcApi, svcName: curSvc ? curSvc.name : '', hasSvc: !!curSvc, noSvc: !curSvc, delAsk: !!st.delAsk && !!curSvc, notDelAsk: !st.delAsk && !!curSvc, svcTime: st.times[key] != null ? st.times[key] : String(r.time), matRows: matRows,
-  res: { ready: r.mats > 0, mats: money(r.mats), over: money(r.over), cost: money(r.cost), min: money(r.min), rec: money(r.rec), myPrice: myPrice,
+  res: { ready: r.mats > 0, tMin: money(r.tMin), tRec: money(r.tRec), mats: money(r.mats), over: money(r.over), cost: money(r.cost), min: money(r.min), rec: money(r.rec), myPrice: myPrice,
     profit: mp > 0 ? money(profit) : '—', perHour: mp > 0 && r.time > 0 ? money(profit / r.time) : '—', status: status, statusBg: sBg, statusColor: sCol },
   cform: st.cform, clientQ: st.clientQ, clientRows: clientRows, clientCount: clients.length,
   week: week, dayTitle: st.day === st.today ? 'Сегодня' : bpcLabel(st.day), dayAppts: dayAppts, noDayAppts: dayAppts.length === 0,
