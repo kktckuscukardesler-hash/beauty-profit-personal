@@ -481,6 +481,12 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-svc-price{display:flex;flex-direction:column;gap:1px;background:#F6E3EC;border:1.5px solid #E6B9CD;border-radius:12px;padding:8px 14px}
 .bp-svc-price small{font-size:11px;font-weight:800;color:#8E2F56;text-transform:uppercase;letter-spacing:.06em}
 .bp-svc-price b{font-size:22px;font-weight:800;color:#6B1F40;line-height:1.1}
+
+.bp-mat-params{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(46%,150px),1fr));gap:8px;padding:6px 0 6px 36px}
+.bp-mat-params label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:#6B1F40}
+.bp-mat-params select{height:40px;border-radius:10px;border:1.5px solid #E2BFD0;background:#FBF1F6;padding:0 8px;font-size:14px;color:#30232c}
+@media (max-width:600px){.bp-mat-params{padding-left:0;grid-template-columns:1fr 1fr}.bp-mat-params select{font-size:13px;padding:0 4px}}
+.bp-mat-param-sum{grid-column:1/-1;margin:2px 0 0;font-size:13px;font-weight:800;color:#8E2F56}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1449,6 +1455,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <button type="button" aria-pressed="false" title="Нажмите, если пользуетесь" @click="it.toggle" style="font-family: Lato, Arial, sans-serif; flex: 1 1 220px; min-height: 44px; display: flex; align-items: center; gap: 10px; border: none; background: transparent; padding: 0; cursor: pointer; text-align: left; font-size: 14px; color: #30272D; font-weight: 600"><span style="width: 26px; height: 26px; flex-shrink: 0; box-sizing: border-box; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C9AAB7; background: #FFFFFF"></span><span>{{ it.name }}</span></button>
 </template>
 <template v-if="it.used">
+<div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p></div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px 0 8px 36px">
 <input type="number" aria-label="В упаковке" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack" style="width: 96px; border: 1px solid #D8CDD3; background: #FFFDF8; height: 36px; box-sizing: border-box; border-radius: 8px; padding: 0 8px; font-size: 14px; color: #30272D">
 <select aria-label="Единица" :value="it.unit" @change="it.onUnit" style="width: 100px; height: 36px; border-radius: 8px; border: 1px solid #D8CDD3; background: #FFFDF8; padding: 0 4px; font-size: 13px"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select>
@@ -2316,7 +2323,7 @@ var D_COMMON = function (extra) { return [['Одноразовое', [['Перч
 BPC_CATS.lashes = [
  ['Подготовка', [['Обезжириватель / праймер', 'мл', 0.1, 15], ['Пенка / шампунь для ресниц', 'мл', 1, 50], ['Щёточка для мытья ресниц', 'шт', 1, 50], ['Тоник для век', 'мл', 2, 100], ['Мицеллярная вода', 'мл', 3, 250]]],
  ['Изоляция', [['Патчи гидрогелевые', 'пара', 1, 50], ['Скотч / лента для изоляции', 'см', 10, 900], ['Микропор', 'см', 10, 900], ['Силиконовые патчи (износ)', 'пара', 0.02, 1]]],
- ['Ресницы и клей', [['Ресницы классика (лента)', 'линия', 3, 20], ['Ресницы для объёма (лента)', 'линия', 6, 20], ['Готовые пучки / промо-пучки', 'шт', 80, 500], ['Цветные ресницы', 'линия', 0.5, 16], ['Клей для наращивания', 'мл', 0.15, 5], ['Клей для чувствительных', 'мл', 0.15, 5], ['Фиксатор / закрепитель', 'мл', 0.1, 15], ['Нанотуманайзер / бондер', 'мл', 0.1, 15], ['Нефритовый камень / кольцо для клея', 'шт', 1, 100], ['Кольца для клея одноразовые', 'шт', 1, 100]]],
+ ['Ресницы и клей', [['Палетка ресниц', 'линия', 4, 20], ['Готовые пучки / промо-пучки', 'шт', 80, 500], ['Клей для наращивания', 'мл', 0.15, 5], ['Клей для чувствительных', 'мл', 0.15, 5], ['Фиксатор / закрепитель', 'мл', 0.1, 15], ['Нанотуманайзер / бондер', 'мл', 0.1, 15], ['Нефритовый камень / кольцо для клея', 'шт', 1, 100], ['Кольца для клея одноразовые', 'шт', 1, 100]]],
  ['Ламинирование ресниц', [['Состав №1 (поднимающий)', 'мл', 0.3, 10], ['Состав №2 (фиксирующий)', 'мл', 0.3, 10], ['Состав №3 (уход / ботокс)', 'мл', 0.3, 10], ['Клей для валиков', 'мл', 0.1, 5], ['Валики / бигуди силиконовые', 'пара', 0.05, 1], ['Плёнка пищевая', 'см', 15, 3000], ['Краска для ресниц', 'мл', 0.3, 15], ['Оксид для краски', 'мл', 0.5, 50]]],
  ['Снятие', [['Ремувер гелевый', 'г', 0.2, 15], ['Ремувер кремовый', 'г', 0.2, 15], ['Ремувер жидкий', 'мл', 0.2, 15]]],
  ['Инструмент и износ', [['Пинцет прямой (износ)', 'шт', 0.002, 1], ['Пинцет изогнутый (износ)', 'шт', 0.002, 1], ['Пинцет для объёма (износ)', 'шт', 0.002, 1], ['Щёточки для ресниц', 'шт', 1, 50], ['Микробраши', 'шт', 3, 100], ['Кисть для составов (износ)', 'шт', 0.01, 1], ['Подушка / валик под шею (чехол)', 'шт', 1, 100], ['Батарейки для фена', 'шт', 0.02, 2]]]
@@ -2610,7 +2617,7 @@ var tabs = tabDefs.map(function (t) { var on = st.tab === t[0]; return { id: t[0
 
 var r = this.calc(key);
 var mats = this.matsFor(key);
-var setLib = function (name, field, val, unit) { var k = (name || '').trim().toLowerCase(); var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); var cur0 = lb[k] || { pack: '', price: '', unit: unit || '' }; var nx = { pack: cur0.pack, price: cur0.price, unit: cur0.unit || unit || '', on: cur0.on, stock: cur0.stock }; nx[field] = val; lb[k] = nx; up({ lib: lb }); };
+var setLib = function (name, field, val, unit) { var k = (name || '').trim().toLowerCase(); var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); var cur0 = lb[k] || { pack: '', price: '', unit: unit || '' }; var nx = {}; Object.keys(cur0).forEach(function (x) { nx[x] = cur0[x]; }); nx.unit = cur0.unit || unit || ''; nx[field] = val; lb[k] = nx; up({ lib: lb }); };
 var setMat = function (i, field) { return function (e) { if ((field === 'pack' || field === 'price' || field === 'unit') && (mats[i].name || '').trim()) { setLib(mats[i].name, field, e.target.value, mats[i].unit); return; } var list = mats.map(function (m) { return { name: m.name, unit: m.unit, pack: m.pack, hint: m.hint, price: m.price, use: m.use }; }); list[i][field] = e.target.value; var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = list; up({ mats: mm }); }; };
 var matRows = mats.map(function (m0, i) { var ef = self.eff(m0); var m = { name: m0.name, unit: ef.unit, pack: ef.pack, hint: m0.hint, price: ef.price, use: m0.use }; var p = bpcNum(m.pack); var pr = bpcNum(m.price); var ready = p > 0 && pr > 0; var per = ready ? pr / p : 0; return { num: i + 1, name: m.name, unit: m.unit, pack: m.pack, hint: m.unit === 'упаковка' ? 'шт в 1 уп.' : 'напр. ' + (m.hint || '1'), useUnit: m.unit === 'упаковка' ? 'шт' : m.unit, packLabel: m.unit === 'упаковка' ? 'Штук в 1 упаковке' : 'В упаковке', price: m.price, use: m.use, ready: ready, notReady: !ready, perUnit: (per < 10 ? (Math.round(per * 100) / 100).toLocaleString('ru-RU') : Math.round(per).toLocaleString('ru-RU')) + ' ' + cur, cost: money(ready ? per * bpcNum(m.use) : 0), remove: function () { var list = mats.filter(function (x, j) { return j !== i; }).map(function (m) { return { name: m.name, unit: m.unit, pack: m.pack, hint: m.hint, price: m.price, use: m.use }; }); var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = list; up({ mats: mm }); }, onName: setMat(i, 'name'), onUnit: setMat(i, 'unit'), onPack: setMat(i, 'pack'), onPrice: setMat(i, 'price'), onUse: setMat(i, 'use') }; });
 var usage = {};
@@ -2641,6 +2648,15 @@ var deduct = function (svcKey, sign, lb) {
     lb[k] = { pack: e.pack, price: e.price, unit: e.unit, on: e.on, stock: String(Math.round(nv * 1000) / 1000) };
   });
 };
+
+var BP_MAT_PARAMS = { 'палетка ресниц': [
+  ['curl', 'Изгиб', ['J', 'B', 'C', 'CC', 'D', 'DD', 'L', 'L+', 'M', 'U']],
+  ['thick', 'Толщина', ['0,03', '0,05', '0,06', '0,07', '0,085', '0,10', '0,12', '0,15', '0,18', '0,20']],
+  ['len', 'Длина', ['6 мм', '7 мм', '8 мм', '9 мм', '10 мм', '11 мм', '12 мм', '13 мм', '14 мм', '15 мм', '16 мм', 'Микс 6–10', 'Микс 7–12', 'Микс 8–13', 'Микс 9–14', 'Микс 10–15', 'Микс 12–16']],
+  ['color', 'Цвет', ['Чёрный', 'Глубокий чёрный', 'Графит', 'Тёмно-коричневый', 'Коричневый', 'Шоколад', 'Цветной микс', 'Синий', 'Зелёный', 'Фиолетовый', 'Красный', 'Розовый', 'Белый']],
+  ['type', 'Вид', ['Классика', 'Для объёма (2D–3D)', 'Для мегаобъёма', 'Лёгкий объём (easy fan)', 'Двухцветные', 'Мокрый эффект', 'Ресницы Y / W-форма']],
+  ['lines', 'Линий в палетке', ['16', '18', '20', '25']]
+] };
 var libSrc = ((L.BPC_CATS && L.BPC_CATS[active.id]) ? L.BPC_CATS[active.id] : [['Материалы', active.mats.map(function (m) { return [m[0], m[1], 1, m[2]]; })]]).slice();
 var myList = (st.libCustom || {})[active.id] || [];
 libSrc = libSrc.map(function (g) { return [g[0], g[1].slice()]; });
@@ -2665,6 +2681,8 @@ var libGroups = libSrc.map(function (g) {
       onPrice: function (ev) { setLib(it[0], 'price', ev.target.value, unit); },
       onUnit: function (ev) { setLib(it[0], 'unit', ev.target.value, unit); },
       stock: e.stock == null ? '' : e.stock, onStock: function (ev) { setLib(it[0], 'stock', ev.target.value, unit); },
+      params: (BP_MAT_PARAMS[k] || []).map(function (p) { return { id: p[0], label: p[1], opts: p[2], val: e[p[0]] || '', set: function (ev) { setLib(it[0], p[0], ev.target.value, unit); } }; }),
+      paramText: (BP_MAT_PARAMS[k] || []).map(function (p) { return e[p[0]]; }).filter(Boolean).join(' · '),
       stockText: (stockInfo(k, e) || {}).text || '', stockLow: !!(stockInfo(k, e) || {}).low, stockOk: !!stockInfo(k, e) && !stockInfo(k, e).low };
   });
   var gf = items.filter(function (x) { return x.used; }).length;
@@ -2973,7 +2991,7 @@ return {
   hasBack: typeof this.props.onBack === 'function', back: function () { if (self.props.onBack) { self.props.onBack(); } },
   planName: planNames[this.props.plan] || 'Premium', spheres: spheres, tabs: tabs,
   tabMaterials: st.tab === 'materials', tabDash: st.tab === 'dash', dashboard: dashboard, pageLabel: (tabDefs.find(function(t){return t[0]===st.tab;}) || tabDefs[0])[1], tabCalc: st.tab === 'calc', tabClients: st.tab === 'appts', tabSvcs: st.tab === 'svcs', tabAppts: st.tab === 'appts', tabIncome: st.tab === 'income', tabRemind: st.tab === 'remind', tabProfile: st.tab === 'profile', profile: profile,
-  units: ['мл', 'г', 'шт', 'пара', 'м', 'упаковка'].map(function (v) { return { v: v }; }),
+  units: ['мл', 'г', 'шт', 'пара', 'м', 'см', 'линия', 'упаковка'].map(function (v) { return { v: v }; }),
   currencies: serviceCurrencies.map(([code, name]) => ({v: window.BP_CUR_SYM(code), label: name + ' (' + code + ')'})), set: st.set, hourCost: money(r.hour),
   libShow: !!st.libShow, libBtn: 'Мои материалы', libGroups: libGroups, libApi: libApi, libQ: st.libQ, libNew: st.libNew, addOpen: !!st.addOpen, addCatV: st.addCat, addNameV: st.addName || '', addUnitV: st.addUnit || 'шт', addIsPack: st.addUnit === 'упаковка', addPerV: st.addPer || '', addErr: !!st.addErr, libCatOpts: libCats.map(function (c) { return { v: c }; }), libStat: libFilled + ' из ' + libTotal,
   catOpen: st.catOpen, catGroups: catGroups, catCount: catCount, catHas: catCount > 0, catNone: catCount === 0, catQ: st.catQ, catAdd: catAdd,
