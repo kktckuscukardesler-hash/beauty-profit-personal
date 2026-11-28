@@ -548,6 +548,11 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-lc-stock em{font-style:normal;padding:4px 8px;border-radius:999px;background:#EFF7EF;color:#1C6B30}.bp-lc-stock em.low{background:#FDF1EF;color:#9B2C20}
 @media (max-width:600px){.bp-lc{margin-left:0}}
 @media (min-width:601px){.bp-lc{max-width:560px}}
+
+.bp-more-row{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0 6px;border-top:1px solid #F5EBEF}
+.bp-more-btn{min-height:42px;border:1.5px dashed #C25B86;background:#fff;color:#8E2F56;border-radius:12px;padding:0 16px;font-weight:800;font-size:14px;cursor:pointer}
+.bp-less-btn{min-height:42px;border:0;background:#F3E6EC;color:#6B1F40;border-radius:12px;padding:0 14px;font-weight:700;font-size:13px;cursor:pointer}
+.bp-mine-badge{background:#EED8E3;color:#30272D;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;border:0;cursor:pointer}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1480,7 +1485,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <p style="margin: 0; font-size: 12px; line-height: 1.4; color: #776A71">Отметьте кружочком, чем пользуетесь, и впишите объём и цену упаковки</p>
 </div>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
-<span style="background: #EED8E3; color: #30272D; font-weight: 700; font-size: 12px; padding: 6px 12px; border-radius: 999px">Выбрано: {{ v.libStat }}</span>
+<button type="button" class="bp-mine-badge" @click="v.libApi.showMine" title="Показать все мои материалы">Выбрано: {{ v.libStat }} ›</button>
 <button v-if="!v.tabMaterials" type="button" @click="v.libApi.open" style="font-family: Lato, Arial, sans-serif; font-size: 13px; font-weight: 700; min-height: 36px; padding: 4px 14px; border-radius: 999px; border: 1px solid #FAF9F8; background: #FAF9F8; color: #30272D; cursor: pointer">Готово ✕</button>
 </div>
 </div>
@@ -1535,6 +1540,7 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </template>
 </div>
 </template>
+<div class="bp-more-row"><button v-if="g.canMore" type="button" class="bp-more-btn" @click="g.more">+ Добавить ещё материал</button><button v-if="g.canLess" type="button" class="bp-less-btn" @click="g.less">Показать только мои</button></div>
 </template>
 </section>
 </template>
@@ -2744,12 +2750,14 @@ myList.forEach(function (n) {
 var lq = (st.libQ || '').toLowerCase();
 var libTotal = 0, libFilled = 0;
 var libGroups = libSrc.map(function (g) {
+  var gfPre = g[1].filter(function (x) { return !!((st.lib || {})[x[0].toLowerCase()] || {}).on; }).length;
+  var showAllPre = !!(st.libAll || {})[g[0]] || !!lq || gfPre === 0;
   var items = g[1].map(function (it) {
     var k = it[0].toLowerCase(); var e = (st.lib || {})[k] || {};
     var unit = e.unit || it[1]; var used = !!e.on; var filled = used && bpcNum(e.pack) > 0 && bpcNum(e.price) > 0;
     libTotal += 1; if (used) { libFilled += 1; }
     return { name: it[0], unit: unit, pack: e.pack || '', price: e.price || '', hint: 'напр. ' + it[3], filled: filled, used: used, unused: !used, usedEmpty: used && !filled,
-      toggle: function () { setLib(it[0], 'on', !used, unit); },
+      toggle: function () { if (!used && showAllPre && !(st.libAll || {})[g[0]]) { var la = {}; Object.keys(st.libAll || {}).forEach(function (x) { la[x] = st.libAll[x]; }); la[g[0]] = true; var lb = {}; Object.keys(st.lib || {}).forEach(function (x) { lb[x] = st.lib[x]; }); var c0 = lb[k] || {}; var nx = {}; Object.keys(c0).forEach(function (x) { nx[x] = c0[x]; }); nx.unit = c0.unit || unit; nx.on = true; lb[k] = nx; up({ lib: lb, libAll: la }); return; } setLib(it[0], 'on', !used, unit); },
       wear: e.wear != null ? !!e.wear : /износ/.test(k), life: e.life || '', setWear: function (ev) { setLib(it[0], 'wear', ev.target.checked, unit); }, onLife: function (ev) { setLib(it[0], 'life', ev.target.value, unit); },
       wearCost: (function () { var w = e.wear != null ? !!e.wear : /износ/.test(k); var pr = bpcNum(e.price), lf = bpcNum(e.life); var pc = pr / lf; return w && pr > 0 && lf > 0 ? (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur : ''; })(),
       cont: e.cont || 'Упаковка', setCont: function (ev) { setLib(it[0], 'cont', ev.target.value, unit); },
@@ -2788,12 +2796,16 @@ var libGroups = libSrc.map(function (g) {
       stockText: (stockInfo(k, e) || {}).text || '', stockLow: !!(stockInfo(k, e) || {}).low, stockOk: !!stockInfo(k, e) && !stockInfo(k, e).low };
   });
   var gf = items.filter(function (x) { return x.used; }).length;
-  var vis = items.filter(function (x) { return x.show; });
+  var showAll = !!(st.libAll || {})[g[0]] || !!lq || gf === 0;
+  var vis = items.filter(function (x) { return x.show && (showAll || x.used); });
   var closed = !lq && !(st.libOpen || {})[g[0]];
-  return { title: g[0], items: vis, show: vis.length > 0, open: !closed, closed: closed, stat: gf + ' из ' + items.length,
-    toggle: function () { var o = {}; Object.keys(st.libOpen || {}).forEach(function (k) { o[k] = st.libOpen[k]; }); o[g[0]] = closed; up({ libOpen: o }); } };
+  var setAll = function (val) { var o = {}; Object.keys(st.libAll || {}).forEach(function (k) { o[k] = st.libAll[k]; }); o[g[0]] = val; up({ libAll: o }); };
+  return { title: g[0], items: vis, show: items.some(function (x) { return x.show; }), open: !closed, closed: closed, stat: gf + ' из ' + items.length,
+    canMore: !showAll, canLess: !!(st.libAll || {})[g[0]] && gf > 0 && !lq, more: function () { setAll(true); }, less: function () { setAll(false); },
+    toggle: function () { var o = {}; Object.keys(st.libOpen || {}).forEach(function (k) { o[k] = st.libOpen[k]; }); o[g[0]] = closed; var la = {}; Object.keys(st.libAll || {}).forEach(function (k) { la[k] = st.libAll[k]; }); if (!closed) { la[g[0]] = false; } up({ libOpen: o, libAll: la }); } };
 });
 var libApi = {
+  showMine: function () { var op = {}; libGroups.forEach(function (g) { if (/^[1-9]/.test(g.stat)) { op[g.title] = true; } }); up({ libOpen: op, libAll: {}, libQ: '' }); },
   collapseAll: function () { up({ libOpen: {} }); },
   expandAll: function () { var o = {}; libSrc.forEach(function (g) { o[g[0]] = true; }); up({ libOpen: o }); },
   search: function (e) { up({ libQ: e.target.value }); },
