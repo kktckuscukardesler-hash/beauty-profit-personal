@@ -172,6 +172,10 @@ html,body,#app{width:100%;min-width:0}
 .bp-card-mc{display:flex;justify-content:space-between;align-items:center;width:100%;gap:8px;background:#FFF7E8;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;color:#6B4E00}
 .bp-card-mc b{font-size:16px}
 .bp-card-mc.warn{background:#FDF1EF;color:#9B2C20;font-weight:600}
+.bp-catg{display:flex;flex-direction:column;background:#fff;border:1px solid #EAE3E7;border-radius:14px;padding:0 14px}
+.bp-catg-head{display:flex;align-items:center;gap:10px;width:100%;min-height:50px;border:none;background:none;padding:0;cursor:pointer;text-align:left;font-family:Lato,Arial,sans-serif}
+.bp-catg-t{flex:1;font-size:13px;font-weight:700;color:#6B1F40;text-transform:uppercase;letter-spacing:.05em}
+.bp-catg-i{font-size:12px;font-weight:700;color:#776A71}
 </style>
 <style>
 /* Beauty Profit first-run experience */
@@ -2123,13 +2127,13 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 </div>
 <input type="search" aria-label="Поиск материала" placeholder="Поиск материала…" :value="v.catQ" @input="v.catSearch" style="min-height: 44px; border-radius: 999px; border: 1px solid #D8CDD3; padding: 0 16px; font-size: 15px; background: #FFFFFF">
 </div>
-<div style="padding: 16px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px">
+<div style="padding: 16px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px">
 <div v-if="v.catMineEmpty" class="bp-cat-empty"><p>Вы ещё не отметили ни одного материала. Сначала выберите в разделе «Материалы», чем пользуетесь, — и они появятся здесь.</p><button type="button" class="bp-gsave" @click="v.catToMaterials">Перейти в «Материалы»</button></div>
 <template v-for="(g, $index) in v.catGroups">
 <template v-if="g.show">
-<div style="display: flex; flex-direction: column; gap: 8px">
-<div style="font-size: 13px; font-weight: 700; color: #6B1F40; text-transform: uppercase; letter-spacing: 0.05em">{{ g.title }}</div>
-<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<div class="bp-catg">
+<button type="button" class="bp-catg-head" :aria-expanded="g.open ? 'true' : 'false'" @click="g.toggle"><span class="bp-catg-t">{{ g.title }}</span><span class="bp-catg-i">{{ g.info }}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B1F40" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path :d="g.open ? 'M6 15l6-6 6 6' : 'M6 9l6 6 6-6'"></path></svg></button>
+<div v-if="g.open" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 10px">
 <template v-for="(it, $index) in g.items">
 <template v-if="it.on">
 <button type="button" aria-pressed="true" @click="it.pick" style="font-family: Lato, Arial, sans-serif; font-size: 14px; font-weight: 700; min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 1px solid #8E2F56; background: #8E2F56; color: #FFFFFF; cursor: pointer">✓ {{ it.name }}</button>
@@ -2966,7 +2970,8 @@ if (myList.length) { catSrc = [['Мои материалы', myList.map(function
 var bpLibOn = st.lib || {};
 catSrc = libSrc.map(function (g) { return [g[0], g[1].filter(function (it) { return (bpLibOn[it[0].toLowerCase()] || {}).on; })]; }).filter(function (g) { return g[1].length > 0; });
 var catMineEmpty = catSrc.length === 0;
-catGroups = catSrc.map(function (g) { var items = g[1].filter(function (it) { return !cq || it[0].toLowerCase().indexOf(cq) >= 0; }).map(function (it) { var has = !!have[it[0].toLowerCase()]; var on = !has && !!cp[it[0]]; return { name: it[0], has: has, on: on, off: !has && !on, pick: function () { var n = {}; Object.keys(cp).forEach(function (k) { n[k] = cp[k]; }); n[it[0]] = !cp[it[0]]; up({ catPicked: n }); } }; }); return { title: g[0], items: items, show: items.length > 0 }; });
+catGroups = catSrc.map(function (g) { var items = g[1].filter(function (it) { return !cq || it[0].toLowerCase().indexOf(cq) >= 0; }).map(function (it) { var has = !!have[it[0].toLowerCase()]; var on = !has && !!cp[it[0]]; return { name: it[0], has: has, on: on, off: !has && !on, pick: function () { var n = {}; Object.keys(cp).forEach(function (k) { n[k] = cp[k]; }); n[it[0]] = !cp[it[0]]; up({ catPicked: n }); } }; }); var cgo = st.catGOpen || {}; var gOpen = !!cq || !!cgo[g[0]]; var gPicked = items.filter(function (x) { return x.on; }).length; var gHas = items.filter(function (x) { return x.has; }).length;
+  return { title: g[0], items: items, show: items.length > 0, open: gOpen, info: (gPicked ? 'выбрано ' + gPicked : '') + (gPicked && gHas ? ' · ' : '') + (gHas ? 'уже в услуге ' + gHas : '') || (items.length + ' шт.'), toggle: function () { var o = {}; Object.keys(cgo).forEach(function (k) { o[k] = cgo[k]; }); o[g[0]] = !cgo[g[0]]; up({ catGOpen: o }); } }; });
 var catAll = []; catSrc.forEach(function (g) { g[1].forEach(function (it) { catAll.push(it); }); });
 var catAdd = function () {
   var add = catAll.filter(function (it) { return cp[it[0]] && !have[it[0].toLowerCase()]; }).map(function (it) { return { name: it[0], unit: it[1], pack: '', hint: String(it[3]), price: '', use: String(it[2]) }; });
@@ -3018,7 +3023,7 @@ var svcCards = svcList.map(function (sv) {
       });
     },
     name: sv.name || 'Без названия', time: duration, mats: self.matsFor(k).length, cost: money(c.cost), min: money(c.min), rec: money(c.rec),
-    matCount: self.matsFor(k).length, matCost: money(c.mats), addMats: function () { up({ svcId: sv.id, delAsk: false, catOpen: true, catPicked: {}, catQ: '' }); }, price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col, ready: ready, tOver: money(c.over), tMin: money(c.tMin), tRec: money(c.tRec),
+    matCount: self.matsFor(k).length, matCost: money(c.mats), addMats: function () { up({ svcId: sv.id, delAsk: false, catOpen: true, catPicked: {}, catQ: '', catGOpen: {} }); }, price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col, ready: ready, tOver: money(c.over), tMin: money(c.tMin), tRec: money(c.tRec),
     open: function () { up({ tab: 'calc', svcId: sv.id, delAsk: false }); } };
 });
 var svcApi = {
@@ -3262,7 +3267,7 @@ return {
     cur: setField('set', 'cur'), expenses: setField('set', 'expenses'), hours: setField('set', 'hours'), tax: setField('set', 'tax'), markup: setField('set', 'markup'),
     time: function (e) { var t = {}; Object.keys(st.times).forEach(function (k) { t[k] = st.times[k]; }); t[key] = e.target.value; up({ times: t }); },
     myPrice: function (e) { var p = {}; Object.keys(st.prices).forEach(function (k) { p[k] = st.prices[k]; }); p[key] = e.target.value; up({ prices: p }); },
-    addMat: function () { up({ catOpen: true, catPicked: {}, catQ: '' }); },
+    addMat: function () { up({ catOpen: true, catPicked: {}, catQ: '', catGOpen: {} }); },
 
     cName: setField('cform', 'name'), cPhone: setField('cform', 'phone'), cNote: setField('cform', 'note'),
     clientQ: function (e) { up({ clientQ: e.target.value }); },
