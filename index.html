@@ -470,6 +470,9 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-pick-ownform{display:flex;gap:8px}
 .bp-pick-ownform input{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px dashed #C25B86;padding:0 14px;font-size:15px;color:#30232c;background:#fff}
 .bp-pick-ownform button{min-height:48px;border:0;border-radius:12px;padding:0 18px;background:linear-gradient(120deg,#7A2449,#B8507D);color:#fff;font-weight:800;cursor:pointer}.bp-pick-ownform button:disabled{opacity:.45}
+
+.bp-need-mats{display:block;width:100%;font-size:13px;line-height:1.45;color:#6B1F40;background:#FBF1F6;border:1px dashed #E2BFD0;border-radius:12px;padding:10px 12px;text-align:left}
+.bp-need-mats-big{grid-column:1/-1;font-size:14px;padding:14px 16px}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1518,8 +1521,9 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <article class="bp-manage-service" v-for="sc in v.svcCards" :key="sc.id">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span style="font-size: 17px; font-weight: 700">{{ sc.name }}</span><span style="flex-shrink: 0; font-size: 13px; font-weight: 700; color: #776A71; background: #F7F1F4; padding: 4px 10px; border-radius: 999px">{{ sc.time }}</span></span>
-<span style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
-<span style="display: flex; gap: 8px; width: 100%">
+<span v-if="!sc.ready" class="bp-need-mats">Добавьте материалы, которыми пользуетесь, — тогда посчитаем себестоимость, минимальную и рекомендуемую цену.</span>
+<span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
+<span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
 <span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
 <span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.rec }}</span></span>
 </span>
@@ -1647,18 +1651,19 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
 <div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Материалы</span><span style="font-size: 20px; font-weight: 700">{{ v.res.mats }}</span></div>
 <div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Расходы за время</span><span style="font-size: 20px; font-weight: 700">{{ v.res.over }}</span></div>
-<div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Себестоимость</span><span style="font-size: 20px; font-weight: 700">{{ v.res.cost }}</span></div>
-<div style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимальная цена</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.min }}</span></div>
-<div style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуемая цена</span><span style="font-family: Lato, Arial, sans-serif; font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.rec }}</span></div>
+<div v-if="v.res.ready" style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #776A71; font-weight: 700">Себестоимость</span><span style="font-size: 20px; font-weight: 700">{{ v.res.cost }}</span></div>
+<div v-if="v.res.ready" style="background: #FDF1EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #9B2C20; font-weight: 700">Минимальная цена</span><span style="font-size: 22px; font-weight: 700; color: #9B2C20">{{ v.res.min }}</span></div>
+<div v-if="v.res.ready" style="background: #EFF7EF; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; color: #1C6B30; font-weight: 700">Рекомендуемая цена</span><span style="font-family: Lato, Arial, sans-serif; font-size: 24px; font-weight: 700; color: #1C6B30">{{ v.res.rec }}</span></div>
+<div v-if="!v.res.ready" class="bp-need-mats bp-need-mats-big">Себестоимость и цены появятся, когда вы добавите материалы на 1 клиента выше. Пока мы не знаем, во сколько вам обходится услуга, честно предложить цену нельзя.</div>
 </div>
 
 <div style="background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 20px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
 <label style="display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700">Ваша цена сейчас
 <input type="number" inputmode="decimal" placeholder="0" :value="v.res.myPrice" @input="v.on.myPrice" style="width: 120px; min-height: 44px; border-radius: 10px; border: 1px solid #D8CDD3; padding: 0 12px; font-size: 15px; background: #FFFDF8">
 </label>
-<span style="font-size: 15px; font-weight: 700">Прибыль с клиента: {{ v.res.profit }}</span>
-<span style="font-size: 15px; font-weight: 700">В час: {{ v.res.perHour }}</span>
-<span :style="`font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 999px; background: ${v.res.statusBg}; color: ${v.res.statusColor}`">{{ v.res.status }}</span>
+<span v-if="v.res.ready" style="font-size: 15px; font-weight: 700">Прибыль с клиента: {{ v.res.profit }}</span>
+<span v-if="v.res.ready" style="font-size: 15px; font-weight: 700">В час: {{ v.res.perHour }}</span>
+<span v-if="v.res.ready" :style="`font-size: 14px; font-weight: 700; padding: 8px 14px; border-radius: 999px; background: ${v.res.statusBg}; color: ${v.res.statusColor}`">{{ v.res.status }}</span>
 </div>
 </section>
 </div>
@@ -2622,9 +2627,10 @@ var svcCards = svcList.map(function (sv) {
   var k = active.id + '|' + sv.id; var c = self.calc(k); var mp = bpcNum(st.prices[k]);
   var minutes=Math.round(c.time*60), hours=Math.floor(minutes/60), remainder=minutes%60;
   var duration=[hours && hours+' ч', remainder && remainder+' мин'].filter(Boolean).join(' ') || '0 мин';
-  var stx = mp <= 0 ? 'Цена не указана' : (mp < c.min ? 'В минус' : (mp < c.rec ? 'Можно дороже' : 'Отлично'));
-  var bg = mp <= 0 ? '#F3DDE4' : (mp < c.min ? '#FDECEA' : (mp < c.rec ? '#FFF4CC' : '#E8F5E9'));
-  var col = mp <= 0 ? '#6B1F40' : (mp < c.min ? '#9B2C20' : (mp < c.rec ? '#6B4E00' : '#1C6B30'));
+  var ready = c.mats > 0;
+  var stx = !ready ? 'Нужны материалы' : (mp <= 0 ? 'Цена не указана' : (mp < c.min ? 'В минус' : (mp < c.rec ? 'Можно дороже' : 'Отлично')));
+  var bg = !ready ? '#F3E6EC' : (mp <= 0 ? '#F3DDE4' : (mp < c.min ? '#FDECEA' : (mp < c.rec ? '#FFF4CC' : '#E8F5E9')));
+  var col = !ready ? '#6B1F40' : (mp <= 0 ? '#6B1F40' : (mp < c.min ? '#9B2C20' : (mp < c.rec ? '#6B4E00' : '#1C6B30')));
   return { id:k, rawName:sv.name, minutes:minutes, rawPrice:st.prices[k] ?? '',
     save:function(name,minutes,price) {
       name = name.trim();
@@ -2637,7 +2643,7 @@ var svcCards = svcList.map(function (sv) {
       return '';
     }, remove:function(){removeService(sv);},
     name: sv.name || 'Без названия', time: duration, mats: self.matsFor(k).length, cost: money(c.cost), min: money(c.min), rec: money(c.rec),
-    price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col,
+    price: mp > 0 ? money(mp) : '—', status: stx, sBg: bg, sCol: col, ready: ready,
     open: function () { up({ tab: 'calc', svcId: sv.id, delAsk: false }); } };
 });
 var svcApi = {
@@ -2859,7 +2865,7 @@ return {
   catCustom: function () { var mm = {}; Object.keys(st.mats).forEach(function (k) { mm[k] = st.mats[k]; }); mm[key] = mats.concat([{ name: '', unit: 'шт', pack: '', hint: '1', price: '', use: '1' }]); up({ mats: mm, catOpen: false, catPicked: {}, catQ: '' }); },
   svcCards: svcCards, sphereLabel: active.label, addSvcGo: function () { svcApi.add(); }, pick: { openCard: openCardFor, ownDraft: st.ownDraft || '', setOwn: function (e) { up({ ownDraft: e.target.value }); }, ownGo: function () { var n = String(st.ownDraft || '').trim(); if (n) { openCardFor(n); } }, open: !!st.svcPick, groups: pickGroups, count: pickCount, show: pickApi.open, close: pickApi.close, add: pickApi.add, own: function () { up({ svcPick: false, svcPicked: {} }); svcApi.add(); } },
   svcPills: svcPills, svc: svcApi, svcName: curSvc ? curSvc.name : '', hasSvc: !!curSvc, noSvc: !curSvc, delAsk: !!st.delAsk && !!curSvc, notDelAsk: !st.delAsk && !!curSvc, svcTime: st.times[key] != null ? st.times[key] : String(r.time), matRows: matRows,
-  res: { mats: money(r.mats), over: money(r.over), cost: money(r.cost), min: money(r.min), rec: money(r.rec), myPrice: myPrice,
+  res: { ready: r.mats > 0, mats: money(r.mats), over: money(r.over), cost: money(r.cost), min: money(r.min), rec: money(r.rec), myPrice: myPrice,
     profit: mp > 0 ? money(profit) : '—', perHour: mp > 0 && r.time > 0 ? money(profit / r.time) : '—', status: status, statusBg: sBg, statusColor: sCol },
   cform: st.cform, clientQ: st.clientQ, clientRows: clientRows, clientCount: clients.length,
   week: week, dayTitle: st.day === st.today ? 'Сегодня' : bpcLabel(st.day), dayAppts: dayAppts, noDayAppts: dayAppts.length === 0,
