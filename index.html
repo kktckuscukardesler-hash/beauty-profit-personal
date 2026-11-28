@@ -176,6 +176,16 @@ html,body,#app{width:100%;min-width:0}
 .bp-catg-head{display:flex;align-items:center;gap:10px;width:100%;min-height:50px;border:none;background:none;padding:0;cursor:pointer;text-align:left;font-family:Lato,Arial,sans-serif}
 .bp-catg-t{flex:1;font-size:13px;font-weight:700;color:#6B1F40;text-transform:uppercase;letter-spacing:.05em}
 .bp-catg-i{font-size:12px;font-weight:700;color:#776A71}
+.bp-card-sub{width:100%;font-size:13px;color:#554A50}
+.bp-card-sub b{color:#30272D}
+.bp-pp{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.bp-pp .bp-svc-price{min-width:0}
+.bp-rec-price{display:flex;flex-direction:column;gap:1px;background:#EAF6EC;border:1.5px solid #A9D7B4;border-radius:12px;padding:8px 10px;min-width:0}
+.bp-pp .bp-svc-price{padding:8px 10px}
+.bp-pp small{font-size:10px!important;letter-spacing:.02em!important;white-space:nowrap}
+.bp-rec-price small{font-size:11px;font-weight:800;color:#1C6B30;text-transform:uppercase;letter-spacing:.06em}
+.bp-rec-price b{font-size:22px;font-weight:800;color:#1C6B30;line-height:1.1}
+.bp-card-st{align-self:flex-start;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px}
 </style>
 <style>
 /* Beauty Profit first-run experience */
@@ -1689,13 +1699,11 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <article class="bp-manage-service" v-for="sc in v.svcCards" :key="sc.id">
 <button type="button" @click="sc.open" style="font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span class="bp-svc-title">{{ sc.name }}</span><span class="bp-svc-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ sc.time }}</span></span>
-<span v-if="!sc.ready" style="display: flex; gap: 8px; width: 100%"><span style="flex: 1; background: #F7F1F4; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #6B1F40">Ваше время стоит</span><span style="font-size: 16px; font-weight: 700; color: #6B1F40">{{ sc.tOver }}</span></span><span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем за время</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.tRec }}</span></span></span>
-<span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 14px; color: #554A50"><span>Материалов: {{ sc.mats }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
-<span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
-<span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
-<span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.rec }}</span></span>
-</span>
-<span style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px"><span class="bp-svc-price"><small>Ваша цена</small><b>{{ sc.price }}</b></span><span :style="`font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: ${sc.sBg}; color: ${sc.sCol}`">{{ sc.status }}</span></span>
+<span v-if="!sc.ready" class="bp-card-sub">Ваше время стоит <b>{{ sc.tOver }}</b></span>
+<span v-if="sc.ready" class="bp-card-mc"><span>Расходники на 1 клиента</span><b>{{ sc.matCost }}</b></span>
+<span v-if="sc.ready" class="bp-card-sub">Себестоимость <b>{{ sc.cost }}</b> · минимум <b>{{ sc.min }}</b></span>
+<span class="bp-pp"><span class="bp-svc-price"><small>Ваша цена</small><b>{{ sc.price }}</b></span><span class="bp-rec-price"><small>Рекомендуемая</small><b>{{ sc.ready ? sc.rec : sc.tRec }}</b></span></span>
+<span class="bp-card-st" :style="`background: ${sc.sBg}; color: ${sc.sCol}`">{{ sc.status }}</span>
 </button>
 <bp-service-actions :service="sc"></bp-service-actions>
 </article>
@@ -1746,15 +1754,12 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-for="sc in v.svcCards" :key="sc.id" class="bp-calc-svc-wrap" :class="{on: sc.on}">
 <button type="button" class="bp-calc-svc" :class="{on: sc.on}" :aria-pressed="sc.on ? 'true' : 'false'" @click="sc.pick" style="width: 100%; font-family: Lato, Arial, sans-serif; text-align: left; cursor: pointer; background: #FFFFFF; border: 1px solid #EAE3E7; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 10px; color: #30272D; box-shadow: 0 3px 14px rgba(58, 38, 48, 0.045)">
 <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; width: 100%"><span class="bp-svc-title">{{ sc.name }}</span><span class="bp-svc-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ sc.time }}</span></span>
-<span v-if="!sc.ready" style="display: flex; gap: 8px; width: 100%"><span style="flex: 1; background: #F7F1F4; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #6B1F40">Ваше время стоит</span><span style="font-size: 16px; font-weight: 700; color: #6B1F40">{{ sc.tOver }}</span></span><span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем за время</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.tRec }}</span></span></span>
+<span v-if="!sc.ready" class="bp-card-sub">Ваше время стоит <b>{{ sc.tOver }}</b></span>
 <span v-if="sc.ready" class="bp-card-mc"><span>Расходники на 1 клиента</span><b>{{ sc.matCost }}</b></span>
-<span v-if="sc.ready" style="display: flex; justify-content: space-between; width: 100%; font-size: 13px; color: #554A50"><span>Материалов: {{ sc.matCount }}</span><span>Себестоимость: <b>{{ sc.cost }}</b></span></span>
 <span v-if="!sc.ready &amp;&amp; sc.matCount" class="bp-card-mc warn"><span>Материалов: {{ sc.matCount }} — впишите их цены в «Материалах»</span></span>
-<span v-if="sc.ready" style="display: flex; gap: 8px; width: 100%">
-<span style="flex: 1; background: #FDF1EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #9B2C20">Минимум</span><span style="font-size: 16px; font-weight: 700; color: #9B2C20">{{ sc.min }}</span></span>
-<span style="flex: 1; background: #EFF7EF; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #1C6B30">Рекомендуем</span><span style="font-size: 16px; font-weight: 700; color: #1C6B30">{{ sc.rec }}</span></span>
-</span>
-<span style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px"><span class="bp-svc-price"><small>Ваша цена</small><b>{{ sc.price }}</b></span><span :style="`font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: ${sc.sBg}; color: ${sc.sCol}`">{{ sc.status }}</span></span>
+<span v-if="sc.ready" class="bp-card-sub">Себестоимость <b>{{ sc.cost }}</b> · минимум <b>{{ sc.min }}</b></span>
+<span class="bp-pp"><span class="bp-svc-price"><small>Ваша цена</small><b>{{ sc.price }}</b></span><span class="bp-rec-price"><small>Рекомендуемая</small><b>{{ sc.ready ? sc.rec : sc.tRec }}</b></span></span>
+<span class="bp-card-st" :style="`background: ${sc.sBg}; color: ${sc.sCol}`">{{ sc.status }}</span>
 </button>
 <button type="button" class="bp-card-addmat" @click="sc.addMats">+ Добавить материалы<template v-if="sc.matCount"> ({{ sc.matCount }})</template></button>
 </div>
