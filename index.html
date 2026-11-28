@@ -502,7 +502,10 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-wear-sum{grid-column:1/-1;margin:0;font-size:13px;font-weight:800;color:#1C6B30}
 @media (max-width:600px){.bp-wear-tog,.bp-wear-row{padding-left:0}}
 
-.bp-pack-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:2px 0 10px 36px;align-items:end}
+.bp-pack-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
+.bp-pack-q{grid-column:1/-1;margin:0;font-size:12px;color:#8a6f7c}
+.bp-pack-wide{grid-column:span 2}
+.bp-pack-row{gap:8px;padding:2px 0 10px 36px;align-items:end}
 .bp-pack-row label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:#554A50;min-width:0}
 .bp-pack-row input,.bp-pack-row select{height:40px;border-radius:10px;border:1px solid #D8CDD3;background:#FFFDF8;padding:0 8px;font-size:14px;color:#30272D;min-width:0;width:100%;box-sizing:border-box}
 .bp-pack-pair{display:grid;grid-template-columns:1fr 76px;gap:6px}
@@ -1480,10 +1483,10 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <label class="bp-wear-tog"><input type="checkbox" :checked="it.wear" @change="it.setWear"><span>На износ — служит много клиентов (пинцет, камень, кисть)</span></label>
 <div v-if="it.wear" class="bp-wear-row"><label><span>Цена за 1 шт, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 400" :value="it.price" @input="it.onPrice"></label><label><span>Хватает примерно на … клиентов</span><input type="number" inputmode="numeric" placeholder="напр. 300" :value="it.life" @input="it.onLife"></label><p v-if="it.wearCost" class="bp-wear-sum">На 1 клиента: {{ it.wearCost }}</p></div>
 <div v-if="!it.wear" class="bp-pack-row">
-<label><span>Единица</span><select aria-label="Единица" :value="it.unit" @change="it.onUnit"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select></label>
-<label><span>{{ it.unit === 'упаковка' ? 'Сколько штук в 1 упаковке' : 'Количество, ' + it.unit }}</span><input type="number" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack"></label>
-<label><span>{{ it.unit === 'упаковка' ? 'Цена 1 упаковки' : 'Цена за это количество' }}, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 50" :value="it.price" @input="it.onPrice"></label>
-<label><span>Остаток, упаковок</span><input type="number" inputmode="decimal" placeholder="уп." :value="it.stock" @input="it.onStock"></label>
+<p class="bp-pack-q">Вы покупаете 1 шт (флакон, упаковку, баночку) — сколько в ней и сколько она стоит?</p>
+<label class="bp-pack-wide"><span>Сколько в 1 шт</span><span class="bp-pack-pair"><input type="number" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack"><select aria-label="Единица" :value="it.unit === 'упаковка' ? 'шт' : it.unit" @change="it.onUnit"><template v-for="(u, $index) in v.units"><option v-if="u.v !== 'упаковка'" :value="u.v">{{ u.v }}</option></template></select></span></label>
+<label><span>Цена за 1 шт, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 50" :value="it.price" @input="it.onPrice"></label>
+<label><span>Есть в запасе, шт</span><input type="number" inputmode="decimal" placeholder="напр. 2" :value="it.stock" @input="it.onStock"></label>
 <p v-if="it.unitCost" class="bp-wear-sum">1 {{ it.unit === 'упаковка' ? 'шт' : it.unit }} = {{ it.unitCost }}</p>
 <template v-if="it.stockLow"><span style="font-size: 12px; font-weight: 700; color: #9B2C20; background: #FDF1EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
 <template v-if="it.stockOk"><span style="font-size: 12px; font-weight: 700; color: #1C6B30; background: #EFF7EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
