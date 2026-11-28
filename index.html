@@ -520,6 +520,18 @@ section.bp-signup .bp-card-editor p{color:#634859!important;margin:0}
 .bp-buy-res b{font-size:15px}
 .bp-buy-hint{color:#7c6470;font-weight:600}
 @media (max-width:600px){.bp-buy{grid-template-columns:1fr 1fr;padding-left:0}}
+
+.bp-mc{display:flex;flex-direction:column;gap:12px;padding:4px 0 12px 36px}
+.bp-mc section{background:#fff;border:1px solid #F0E4EA;border-radius:14px;padding:12px 14px}
+.bp-mc h4{margin:0 0 8px;font-size:14px;font-weight:800;color:#30232c}
+.bp-mc-row{display:grid;grid-template-columns:1fr minmax(120px,46%);align-items:center;gap:10px;padding:8px 0;border-top:1px solid #F5ECF0;font-size:14px;color:#554A50}
+.bp-mc h4+.bp-mc-row,.bp-mc-q+.bp-mc-row{border-top:0}
+.bp-mc-row input,.bp-mc-row select{height:42px;border-radius:10px;border:1px solid #D8CDD3;background:#FFFDF8;padding:0 10px;font-size:15px;color:#30272D;width:100%;box-sizing:border-box;min-width:0}
+.bp-mc-pair{display:grid;grid-template-columns:1fr 56px;gap:6px}.bp-mc-pair b{display:grid;place-items:center;border-radius:10px;background:#F6E3EC;color:#6B1F40}
+.bp-mc-q{margin:0 0 4px;font-size:14px;font-weight:700;color:#6B1F40}
+.bp-mc-tip{margin:4px 0 0;font-size:12px;font-style:italic;color:#9a8290}
+.bp-mc-res{background:#F3FAF4!important;border-color:#D7EEDC!important}.bp-mc-res .bp-mc-row b{text-align:right;color:#1C6B30;font-size:15px}.bp-mc-res .bp-mc-row b.big{font-size:19px}
+@media (max-width:600px){.bp-mc{padding-left:0}}
 .bpd{display:flex;flex-direction:column;gap:16px}
 .bpd-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .bpd-head h1{margin:0;font-size:clamp(22px,3vw,28px)!important;color:#30232c!important;font-weight:800!important}
@@ -1491,13 +1503,21 @@ section.bp-signup .bp-client-intro h1{text-align:center;margin:18px 0 10px}
 <div v-if="it.params.length" class="bp-mat-params"><label v-for="p in it.params" :key="p.id"><span>{{ p.label }}</span><select :value="p.val" @change="p.set"><option value="">— выбрать —</option><option v-for="o in p.opts" :key="o" :value="o">{{ o }}</option></select></label><p v-if="it.paramText" class="bp-mat-param-sum">{{ it.paramText }}</p></div>
 <label class="bp-wear-tog"><input type="checkbox" :checked="it.wear" @change="it.setWear"><span>На износ — служит много клиентов (пинцет, камень, кисть)</span></label>
 <div v-if="it.wear" class="bp-wear-row"><label><span>Цена за 1 шт, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 400" :value="it.price" @input="it.onPrice"></label><label><span>Хватает примерно на … клиентов</span><input type="number" inputmode="numeric" placeholder="напр. 300" :value="it.life" @input="it.onLife"></label><p v-if="it.wearCost" class="bp-wear-sum">На 1 клиента: {{ it.wearCost }}</p></div>
-<div v-if="!it.wear" class="bp-buy">
-<label class="bp-buy-f"><span>Что покупаете</span><select :value="it.cont" @change="it.setCont"><option v-for="c in ['Упаковка','Флакон','Пакет','Баночка','Туба','Бутылка','Коробка','Штука']" :key="c" :value="c">{{ c }}</option></select></label>
-<label class="bp-buy-f"><span>Сколько в 1 {{ ({'Упаковка':'упаковке','Флакон':'флаконе','Пакет':'пакете','Баночка':'баночке','Туба':'тубе','Бутылка':'бутылке','Коробка':'коробке','Штука':'штуке'})[it.cont] || 'упаковке' }}</span><span class="bp-pack-pair"><input type="number" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack"><select aria-label="Единица" :value="it.unit === 'упаковка' ? 'шт' : it.unit" @change="it.onUnit"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select></span></label>
-<label class="bp-buy-f"><span>Сколько заплатили за 1, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 300" :value="it.price" @input="it.onPrice"></label>
-<label class="bp-buy-f"><span>Уходит на 1 клиента ≈</span><span class="bp-pack-pair"><input type="number" inputmode="decimal" placeholder="напр. 5" :value="it.use" @input="it.onUse"><b class="bp-buy-u">{{ it.useUnit }}</b></span></label>
-<label class="bp-buy-f"><span>Есть в запасе</span><input type="number" inputmode="decimal" placeholder="напр. 2" :value="it.stock" @input="it.onStock"></label>
-<div class="bp-buy-res"><span v-if="it.unitCostTxt">{{ it.unitCostTxt }}</span><b v-if="it.perClient">На 1 клиента ≈ {{ it.perClient }}</b><span v-if="!it.unitCostTxt" class="bp-buy-hint">Пример: воск — пакет, 1 кг, 600, уходит 5 г → на клиента ≈ 3</span></div>
+<div v-if="!it.wear" class="bp-mc">
+<section><h4>1. Информация о покупке</h4>
+<label class="bp-mc-row"><span>Что покупаете?</span><select :value="it.cont" @change="it.setCont"><option v-for="c in ['Упаковка','Флакон','Пакет','Баночка','Туба','Бутылка','Коробка','Штука']" :key="c" :value="c">{{ c }}</option></select></label>
+<label class="bp-mc-row"><span>Количество</span><input type="number" inputmode="decimal" :placeholder="it.hint" :value="it.pack" @input="it.onPack"></label>
+<label class="bp-mc-row"><span>Единица измерения</span><select :value="it.unit === 'упаковка' ? 'шт' : it.unit" @change="it.onUnit"><template v-for="(u, $index) in v.units"><option :value="u.v">{{ u.v }}</option></template></select></label>
+<label class="bp-mc-row"><span>Цена покупки, {{ v.set.cur }}</span><input type="number" inputmode="decimal" placeholder="напр. 250" :value="it.price" @input="it.onPrice"></label>
+<label class="bp-mc-row"><span>Есть в запасе, шт</span><input type="number" inputmode="decimal" placeholder="напр. 2" :value="it.stock" @input="it.onStock"></label></section>
+<section><h4>2. Расход материала</h4><p class="bp-mc-q">Сколько «{{ it.shortName }}» используете на одного клиента?</p>
+<label class="bp-mc-row"><span>Количество</span><span class="bp-mc-pair"><input type="number" inputmode="decimal" placeholder="напр. 5" :value="it.use" @input="it.onUse"><b>{{ it.useUnit }}</b></span></label>
+<p class="bp-mc-tip">Укажите примерный расход. Его можно изменить в любое время.</p></section>
+<section class="bp-mc-res"><h4>3. Результат расчёта</h4>
+<div class="bp-mc-row"><span>Цена за 1 {{ it.useUnit }}</span><b>{{ it.unitPriceOnly || '—' }}</b></div>
+<div class="bp-mc-row"><span>Расход на клиента</span><b>{{ it.use ? it.use + ' ' + it.useUnit : '—' }}</b></div>
+<div class="bp-mc-row"><span>Себестоимость на 1 клиента</span><b class="big">{{ it.perClient || '—' }}</b></div>
+<div class="bp-mc-row"><span>Хватит примерно на</span><b>{{ it.clientsFit ? it.clientsFit + ' клиентов' : '—' }}</b></div></section>
 <template v-if="it.stockLow"><span style="font-size: 12px; font-weight: 700; color: #9B2C20; background: #FDF1EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
 <template v-if="it.stockOk"><span style="font-size: 12px; font-weight: 700; color: #1C6B30; background: #EFF7EF; padding: 6px 10px; border-radius: 999px">{{ it.stockText }}</span></template>
 </div>
@@ -2725,6 +2745,9 @@ var libGroups = libSrc.map(function (g) {
       cont: e.cont || 'Упаковка', setCont: function (ev) { setLib(it[0], 'cont', ev.target.value, unit); },
       use: e.use || '', onUse: function (ev) { setLib(it[0], 'use', ev.target.value, unit); },
       useUnit: ({ 'кг': 'г', 'л': 'мл' })[e.unit || unit] || (e.unit || unit),
+      clientsFit: (function () { var pk = bpcNum(e.pack), us = bpcNum(e.use); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && us > 0)) { return ''; } return Math.floor(pk * mul / us).toLocaleString('ru-RU'); })(),
+      unitPriceOnly: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / (pk * mul); return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
+      shortName: it[0].replace(/\s+\d+$/, '').replace(/\s*\(.*\)$/, '').toLowerCase(),
       perClient: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price), us = bpcNum(e.use); var mul = ({ 'кг': 1000, 'л': 1000 })[e.unit || unit] || 1; if (!(pk > 0 && pr > 0 && us > 0)) { return ''; } var pc = pr / (pk * mul) * us; return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       unitCostTxt: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); var u0 = e.unit || unit; var mul = ({ 'кг': 1000, 'л': 1000 })[u0] || 1; var uu = ({ 'кг': 'г', 'л': 'мл' })[u0] || u0; if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / (pk * mul); return '1 ' + uu + ' = ' + (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
       unitCost: (function () { var pk = bpcNum(e.pack), pr = bpcNum(e.price); if (!(pk > 0 && pr > 0)) { return ''; } var pc = pr / pk; return (pc < 10 ? (Math.round(pc * 100) / 100).toLocaleString('ru-RU') : Math.round(pc).toLocaleString('ru-RU')) + ' ' + cur; })(),
